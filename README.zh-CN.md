@@ -38,3 +38,5 @@
 `npx skills add full-aigc-skills/photocraft-skills --skill <skill-name>`
 
 命令统一使用 `SKILL_DIR`，其值为宿主实际加载的 `SKILL.md` 所在绝对目录。支持用户级、项目级 `.agents/skills` 及插件内部或缓存目录；CLI 运行时另外安装到用户数据目录。每个技能单独复制到三种含空格的布局后，文档中的脚本入口均可运行 `--help`。[路径验证](docs/evidence/installed-skill-paths.json)。既有宿主缓存需更新后才会收到修正文档。
+
+dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及画笔/克隆/修复数值范围。九类场景均只复制当前技能并冷安装，完成真实原生编辑、结构和像素核验；完整回归 36 项、零跳过。[证据](docs/evidence/task-skill-first-use.json)。此证据不覆盖全部 748 命令、复杂纹理修复质量或 GUI/模型派发。

@@ -1,7 +1,7 @@
 {
   "schema": "craft-skill-suite/v1",
   "pluginId": "photocraft",
-  "version": "0.1.0-dev.4",
+  "version": "0.1.0-dev.5",
   "source": {
     "repository": "https://github.com/storytold/photocraft",
     "commit": "f114f621799a96dc9f28ffb8faa01da680b64947",
@@ -83,11 +83,15 @@
       "title": "非破坏调整",
       "description": "使用调整图层或指定局部颜色调整",
       "kind": "scenario",
-      "commandCount": 40,
+      "commandCount": 46,
       "commandPrefixes": [
         "layer.newAdjustmentLayer.",
         "layer.setAdjustment",
-        "image.adjustments."
+        "image.adjustments.",
+        "layer.select",
+        "select.rect",
+        "select.deselect",
+        "layer.layerMask.revealSelection"
       ]
     },
     {
@@ -95,11 +99,12 @@
       "title": "修图与绘画",
       "description": "对已授权图像做修复、克隆、画笔和局部修饰",
       "kind": "scenario",
-      "commandCount": 30,
+      "commandCount": 32,
       "commandPrefixes": [
         "paint.",
         "cloneSource.",
-        "brush."
+        "brush.",
+        "layer.select"
       ]
     },
     {
