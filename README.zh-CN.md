@@ -40,3 +40,5 @@
 命令统一使用 `SKILL_DIR`，其值为宿主实际加载的 `SKILL.md` 所在绝对目录。支持用户级、项目级 `.agents/skills` 及插件内部或缓存目录；CLI 运行时另外安装到用户数据目录。每个技能单独复制到三种含空格的布局后，文档中的脚本入口均可运行 `--help`。[路径验证](docs/evidence/installed-skill-paths.json)。既有宿主缓存需更新后才会收到修正文档。
 
 dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及画笔/克隆/修复数值范围。九类场景均只复制当前技能并冷安装，完成真实原生编辑、结构和像素核验；完整回归 36 项、零跳过。[证据](docs/evidence/task-skill-first-use.json)。此证据不覆盖全部 748 命令、复杂纹理修复质量或 GUI/模型派发。
+
+固定插件 dev.6／技能 dev.5 的实际安装单文字技能中文海报冷启动与标题修订通过（1 项，5.927 秒）。源文件和保护区域不变，PSD 保留文字且解码像素与 PNG 一致；未知图层和缺失字体被拒绝。人工接受仍为 NOT_RUN。[架构](docs/PhotoCraft-Chinese-Text-Architecture.zh_CN.md)、[证据](docs/evidence/chinese-text-first-use.json)。
