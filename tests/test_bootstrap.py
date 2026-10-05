@@ -90,6 +90,55 @@ class BootstrapTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'unsupported_platform'):
                 self.module.install(self.lock, self.root / 'runtime', platform_key='unknown')
 
+    def hold_install_lock(self):
+        import subprocess
+        import sys
+        path = self.root / 'runtime/filmcraft/.install.lock'
+        path.parent.mkdir(parents=True, exist_ok=True)
+        child = subprocess.Popen([sys.executable, '-c', "import fcntl,sys; f=open(sys.argv[1],'w'); fcntl.flock(f,fcntl.LOCK_EX); print('locked',flush=True); sys.stdin.readline()", str(path)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+        self.assertEqual(child.stdout.readline().strip(), 'locked')
+        self.addCleanup(lambda: child.poll() is None and child.kill())
+        return child
+
+    def test_busy_installer_waits_for_other_process_and_reuses_verified_install(self):
+        import threading
+        self.install()
+        child = self.hold_install_lock()
+        release = threading.Timer(.15, lambda: child.stdin.write('release\n') and child.stdin.flush())
+        release.start()
+        try:
+            result = self.install()
+            self.assertTrue(result['reused'])
+            self.assertEqual(Path(result['executable']).read_bytes(), self.binary)
+        finally:
+            release.join(); child.wait(timeout=5); child.stdin.close(); child.stdout.close()
+
+    def test_busy_installer_timeout_preserves_existing_install(self):
+        initial = self.install()
+        child = self.hold_install_lock()
+        try:
+            with patch.object(self.module, 'LOCK_WAIT_SECONDS', .05, create=True):
+                with self.assertRaisesRegex(TimeoutError, 'runtime_install_busy'):
+                    self.install()
+            self.assertEqual(Path(initial['executable']).read_bytes(), self.binary)
+        finally:
+            child.stdin.write('release\n'); child.stdin.flush(); child.wait(timeout=5); child.stdin.close(); child.stdout.close()
+
+    def test_two_processes_first_install_once_and_share_verified_result(self):
+        import subprocess
+        import sys
+        code = "import importlib.util,json,sys; spec=importlib.util.spec_from_file_location('boot',sys.argv[1]); boot=importlib.util.module_from_spec(spec); spec.loader.exec_module(boot); print(json.dumps(boot.install(json.loads(sys.argv[2]),sys.argv[3],sys.argv[4],'darwin-arm64')))"
+        argv = [sys.executable, '-I', '-B', '-c', code, str(SOURCE), json.dumps(self.lock), str(self.root/'runtime'), str(self.archive)]
+        children = [subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) for _ in range(2)]
+        results = []
+        for child in children:
+            stdout, stderr = child.communicate(timeout=10)
+            self.assertEqual(child.returncode, 0, stderr)
+            results.append(json.loads(stdout))
+        self.assertEqual(sorted(item['reused'] for item in results), [False, True])
+        self.assertEqual(results[0]['executable'], results[1]['executable'])
+        self.assertEqual(Path(results[0]['executable']).read_bytes(), self.binary)
+
 
 if __name__ == '__main__':
     unittest.main()

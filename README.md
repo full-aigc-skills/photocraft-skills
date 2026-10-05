@@ -11,3 +11,5 @@ Normative requirements and implementation tracking: [PhotoCraft plugin OpenSpec]
 [简体中文](README.zh-CN.md)
 
 The independent skill now includes a scoped native workflow helper for raster assets, editable text, masks, native/PSD exports and immutable size variants. Live tests verify protected pixels and exact PSD roundtrip pixels for the synthetic fixture. Full plugin Harness and host acceptance remain pending.
+
+Development version `0.1.0-dev.1` fixes concurrent first-use/reuse install-lock contention: wait up to 120 seconds, then verify and reuse; timeout preserves installations and never replays editing tasks.
