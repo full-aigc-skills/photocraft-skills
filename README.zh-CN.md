@@ -15,3 +15,24 @@
 开发版本 `0.1.0-dev.1` 修复并行首次安装/复用时的安装锁竞争：等待最多 120 秒，再核验复用；超时不覆盖安装或重放编辑任务。
 
 开发版本 dev.2 的原生交付包含摘要绑定的 exchange-loss.json，区分格式损失、结构观察与未验证字体/效果保真；导出派生物不替代原生工程。
+
+## CLI 与场景技能体系
+
+[PhotoCraft Skill Suite Architecture](docs/PhotoCraft-Skill-Suite-Architecture.zh_CN.md)
+
+| 技能 | 用途 |
+| :--- | :--- |
+| `photocraft-use` | 组合多个本工具能力并保留可编辑原生交付 |
+| `photocraft-cli` | 查询实际命令参数和能力，调用公开 CLI、MCP 与诊断 |
+| `photocraft-cli-setup` | 首次安装、摘要校验、版本检查与缺失运行时排障 |
+| `photocraft-cli-project` | 创建、打开和保存 pcraft，检查尺寸、深度和色彩模式 |
+| `photocraft-cli-layers` | 组织产品、背景、文本与图层组，调整混合和层级 |
+| `photocraft-cli-selection` | 创建选区、反选、羽化和局部选择 |
+| `photocraft-cli-masks` | 建立图层蒙版、矢量蒙版与剪贴合成 |
+| `photocraft-cli-adjustments` | 使用调整图层或指定局部颜色调整 |
+| `photocraft-cli-retouch` | 对已授权图像做修复、克隆、画笔和局部修饰 |
+| `photocraft-cli-text` | 创建和修改文字图层、字体、段落和布局 |
+| `photocraft-cli-resize` | 调整画布和图像尺寸，制作海报封面变体 |
+| `photocraft-cli-export` | 从原生图层工程输出 PSD、PNG 或其他交换文件 |
+
+`npx skills add full-aigc-skills/photocraft-skills --skill <skill-name>`

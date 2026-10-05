@@ -15,3 +15,24 @@ The independent skill now includes a scoped native workflow helper for raster as
 Development version `0.1.0-dev.1` fixes concurrent first-use/reuse install-lock contention: wait up to 120 seconds, then verify and reuse; timeout preserves installations and never replays editing tasks.
 
 Development version dev.2 includes hash-bound exchange-loss.json with every native delivery. Reports distinguish format losses, observed structure and unknown font/effect fidelity; exported derivatives never replace the retained native project.
+
+## CLI and task skill suite
+
+[PhotoCraft Skill Suite Architecture](docs/PhotoCraft-Skill-Suite-Architecture.md)
+
+| Skill | Purpose |
+| :--- | :--- |
+| `photocraft-use` | use |
+| `photocraft-cli` | cli |
+| `photocraft-cli-setup` | cli setup |
+| `photocraft-cli-project` | cli project |
+| `photocraft-cli-layers` | cli layers |
+| `photocraft-cli-selection` | cli selection |
+| `photocraft-cli-masks` | cli masks |
+| `photocraft-cli-adjustments` | cli adjustments |
+| `photocraft-cli-retouch` | cli retouch |
+| `photocraft-cli-text` | cli text |
+| `photocraft-cli-resize` | cli resize |
+| `photocraft-cli-export` | cli export |
+
+`npx skills add full-aigc-skills/photocraft-skills --skill <skill-name>`

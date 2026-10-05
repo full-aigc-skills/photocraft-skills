@@ -1,0 +1,143 @@
+{
+  "schema": "craft-skill-suite/v1",
+  "pluginId": "photocraft",
+  "version": "0.1.0-dev.3",
+  "source": {
+    "repository": "https://github.com/storytold/photocraft",
+    "commit": "f114f621799a96dc9f28ffb8faa01da680b64947",
+    "analysis": "CodeGraph CLI/engine or Tauri scene/task flow; current installed runtime checked separately"
+  },
+  "skills": [
+    {
+      "name": "photocraft-use",
+      "title": "完整任务路由",
+      "description": "组合多个本工具能力并保留可编辑原生交付",
+      "kind": "router",
+      "commandCount": 748,
+      "commandPrefixes": []
+    },
+    {
+      "name": "photocraft-cli",
+      "title": "CLI 公共操作",
+      "description": "查询实际命令参数和能力，调用公开 CLI、MCP 与诊断",
+      "kind": "cli",
+      "commandCount": 748,
+      "commandPrefixes": []
+    },
+    {
+      "name": "photocraft-cli-setup",
+      "title": "CLI 安装诊断",
+      "description": "首次安装、摘要校验、版本检查与缺失运行时排障",
+      "kind": "setup",
+      "commandCount": 748,
+      "commandPrefixes": []
+    },
+    {
+      "name": "photocraft-cli-project",
+      "title": "图像工程与色彩模式",
+      "description": "创建、打开和保存 pcraft，检查尺寸、深度和色彩模式",
+      "kind": "scenario",
+      "commandCount": 50,
+      "commandPrefixes": [
+        "file.",
+        "document."
+      ]
+    },
+    {
+      "name": "photocraft-cli-layers",
+      "title": "图层合成",
+      "description": "组织产品、背景、文本与图层组，调整混合和层级",
+      "kind": "scenario",
+      "commandCount": 194,
+      "commandPrefixes": [
+        "layer.",
+        "layerComp."
+      ]
+    },
+    {
+      "name": "photocraft-cli-selection",
+      "title": "选区与局部区域",
+      "description": "创建选区、反选、羽化和局部选择",
+      "kind": "scenario",
+      "commandCount": 52,
+      "commandPrefixes": [
+        "select.",
+        "channel."
+      ]
+    },
+    {
+      "name": "photocraft-cli-masks",
+      "title": "蒙版与剪贴",
+      "description": "建立图层蒙版、矢量蒙版与剪贴合成",
+      "kind": "scenario",
+      "commandCount": 21,
+      "commandPrefixes": [
+        "layer.layerMask.",
+        "layer.vectorMask.",
+        "layer.createClippingMask",
+        "layer.releaseClippingMask"
+      ]
+    },
+    {
+      "name": "photocraft-cli-adjustments",
+      "title": "非破坏调整",
+      "description": "使用调整图层或指定局部颜色调整",
+      "kind": "scenario",
+      "commandCount": 40,
+      "commandPrefixes": [
+        "layer.newAdjustmentLayer.",
+        "layer.setAdjustment",
+        "image.adjustments."
+      ]
+    },
+    {
+      "name": "photocraft-cli-retouch",
+      "title": "修图与绘画",
+      "description": "对已授权图像做修复、克隆、画笔和局部修饰",
+      "kind": "scenario",
+      "commandCount": 30,
+      "commandPrefixes": [
+        "paint.",
+        "cloneSource.",
+        "brush."
+      ]
+    },
+    {
+      "name": "photocraft-cli-text",
+      "title": "海报文字排版",
+      "description": "创建和修改文字图层、字体、段落和布局",
+      "kind": "scenario",
+      "commandCount": 56,
+      "commandPrefixes": [
+        "type."
+      ]
+    },
+    {
+      "name": "photocraft-cli-resize",
+      "title": "尺寸适配",
+      "description": "调整画布和图像尺寸，制作海报封面变体",
+      "kind": "scenario",
+      "commandCount": 8,
+      "commandPrefixes": [
+        "image.imageSize",
+        "image.canvasSize",
+        "image.crop",
+        "image.imageRotation."
+      ]
+    },
+    {
+      "name": "photocraft-cli-export",
+      "title": "PSD 与平面输出",
+      "description": "从原生图层工程输出 PSD、PNG 或其他交换文件",
+      "kind": "scenario",
+      "commandCount": 13,
+      "commandPrefixes": [
+        "file.export",
+        "layer.exportAs",
+        "layer.quickExportAsPng"
+      ]
+    }
+  ],
+  "resourceSource": "photocraft-use",
+  "runtimeVersion": "0.2.0"
+}
