@@ -1,6 +1,10 @@
 """原生图层、蒙版、改字保护区域与 PSD 交换的真实验收。"""
 import hashlib
 import importlib.util
+import sys
+
+# 宿主技能快照必须保持不可变；动态导入也不写字节码。
+sys.dont_write_bytecode = True
 import json
 import os
 from pathlib import Path
@@ -11,7 +15,8 @@ import unittest
 import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / 'skills/photocraft-use/scripts'
+SKILL = Path(os.environ['CRAFT_INSTALLED_SKILL_ROOT']).resolve() if os.environ.get('CRAFT_INSTALLED_SKILL_ROOT') else ROOT / 'skills/photocraft-use'
+SCRIPTS = SKILL / 'scripts'
 
 def product_fixture(path):
     def chunk(kind, data):
@@ -30,7 +35,7 @@ class NativeWorkflowTests(unittest.TestCase):
             root = Path(tmp)
             product = root / 'product.png'
             product_fixture(product)
-            plan = json.loads((ROOT / 'skills/photocraft-use/examples/poster-plan.json').read_text())
+            plan = json.loads((SKILL / 'examples/poster-plan.json').read_text())
             plan['assets'] = {'product': {'path': str(product), 'sha256': module.sha(product)}}
             # 无蒙版版本提供保护区域的真实对照。
             mask_operations = plan['operations'][1:4]
