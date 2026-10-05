@@ -1,0 +1,10 @@
+{
+  "name": "photocraft-skills",
+  "version": "0.1.0-dev.0",
+  "description": "Photocraft independent skills with pinned first-use installation; development release.",
+  "author": {
+    "name": "Full AIGC Skills"
+  },
+  "repository": "https://github.com/full-aigc-skills/photocraft-skills",
+  "license": "Apache-2.0"
+}
