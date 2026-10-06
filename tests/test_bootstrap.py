@@ -85,6 +85,20 @@ class BootstrapTests(unittest.TestCase):
         self.lock['artifacts']['darwin-arm64']['versionOutput'] = 'filmcraft-cli 0.2.0 (build, date)'
         self.assertFalse(self.install()['reused'])
 
+    def test_maintained_version_installs_without_replacing_official(self):
+        official=self.install()
+        self.binary=b'#!/bin/sh\nprintf "filmcraft-cli 0.2.0-craft.1\\n"\n'
+        self.make_archive();self.lock['resolvedVersion']='0.2.0-craft.1'
+        maintained=self.install()
+        self.assertNotEqual(official['executable'],maintained['executable'])
+        self.assertTrue(Path(official['executable']).is_file())
+
+    def test_only_pinned_photo_release_urls_trusted(self):
+        self.assertTrue(self.module.trusted_release_url('https://github.com/full-aigc-skills/photocraft-skills/releases/download/runtime-v0.2.0-craft.1/photo.zip'))
+        self.assertTrue(self.module.trusted_release_url('https://github.com/storytold/photocraft/releases/download/v0.2.0/photo.zip'))
+        for url in ['https://github.com/storytold/other/releases/download/v1/a.zip','https://github.com.evil/photocraft/a.zip','https://github.com/full-aigc-skills/photocraft-skills/releases/download/x/a.zip?token=x']:
+            self.assertFalse(self.module.trusted_release_url(url))
+
     def test_unknown_platform_fails_without_download(self):
         with patch.object(self.module, 'download', side_effect=AssertionError('downloaded')):
             with self.assertRaisesRegex(ValueError, 'unsupported_platform'):

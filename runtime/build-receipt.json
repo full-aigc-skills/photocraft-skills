@@ -1,0 +1,25 @@
+{
+  "schema": "craft-maintained-runtime-build/v1",
+  "runtimeVersion": "0.2.0-craft.1",
+  "platform": "darwin-arm64",
+  "archive": "photocraft-cli-0.2.0-craft.1-macos-arm64.zip",
+  "archiveSha256": "02f38c95b7f700d7c26774be93065b86776b71dc5d866345614b51289875969c",
+  "binarySha256": "3b59686b288c399078e51a631ca9133cdb075ba9fe8f2ae705db4a6f76e464bf",
+  "versionOutput": "photocraft-cli 0.2.0-craft.1 (dev build)",
+  "provenance": {
+    "schema": "craft-maintained-runtime-patch/v1",
+    "upstreamRepository": "https://github.com/storytold/photocraft",
+    "upstreamCommit": "f114f621799a96dc9f28ffb8faa01da680b64947",
+    "patch": "runtime/patches/scoped-smart-content.patch",
+    "patchSha256": "7916c7bfee9c38ef6387d026cc5a1d9335b800b2e4e572a2b663076894348c5c",
+    "scope": "capability-scoped smart bytes; relink collected as embedded; ambient engine guard remains intact",
+    "runtimeVersion": "0.2.0-craft.1",
+    "status": "built-maintained-runtime",
+    "binarySha256": "3b59686b288c399078e51a631ca9133cdb075ba9fe8f2ae705db4a6f76e464bf",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "platform": "darwin-arm64",
+    "cargoLockSha256": "faf86822bb5a8ada211296ca7920a979b888f8c9f9416d36aa276b3a167f9296",
+    "sourceArchiveSha256": "a4d50f6954702a23721ab4d4ef3d12ee858f93be163f8f24455b579ae286d06c"
+  },
+  "provenanceSha256": "c16bb9f1a3342bbe7273f4859a6edc1f9e8ed0e0158f0fffc94a38d5cb028286"
+}

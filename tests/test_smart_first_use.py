@@ -18,6 +18,9 @@ class SmartFirstUse(unittest.TestCase):
   from PIL import Image
   with tempfile.TemporaryDirectory() as temp:
    root=Path(temp);source=Path(os.environ.get('CRAFT_INSTALLED_SMART_SKILL',Path(__file__).resolve().parents[1]/'skills/photocraft-cli-layers'));skill=root/'.agents/skills/photocraft-cli-layers';shutil.copytree(source,skill,ignore=shutil.ignore_patterns('__pycache__'));baseline=hashes(skill);runtime=root/'empty-runtime'
+   self.assertFalse(runtime.exists())
+   if os.environ.get('CRAFT_SMART_CANDIDATE_ARCHIVE'):
+    result=subprocess.run([sys.executable,'-I','-B',str(skill/'scripts/bootstrap.py'),'--runtime-home',str(runtime),'--archive',os.environ['CRAFT_SMART_CANDIDATE_ARCHIVE']],capture_output=True,text=True);self.assertEqual(result.returncode,0,result.stdout+result.stderr)
    red=root/'red.png';green=root/'green.png';blue=root/'blue.png'
    for p,color in [(red,'red'),(green,'green'),(blue,'blue')]:Image.new('RGBA',(16,16),color).save(p)
    def run(plan,out,source=None,assets=(),expected=0):
@@ -44,6 +47,6 @@ class SmartFirstUse(unittest.TestCase):
    with Image.open(third/'design.png') as img:self.assertEqual(img.convert('RGB').getpixel((32,32)),(0,0,255))
    invalid={'expectedProjectSha256':json.loads((third/'manifest.json').read_text())['files']['project.pcraft'],'operations':[{'command':'layer.smartObjects.replaceContents','params':{'layer':product,'path':'/outside'}}]};bad=root/'bad';run(invalid,bad,third,expected=1);self.assertFalse(bad.exists());self.assertEqual(baseline,hashes(skill))
    if os.environ.get('CRAFT_SMART_EVIDENCE'):
-    proof={'schema':'photocraft-smart-candidate-first-use/v1','result':'PASS','scope':'single copied source skill; empty runtime public downloads; editable embedded smart replacement and relink collection','runtimeSha256':manifest['runtimeSha256'],'smartLayerId':product,'pixelChecks':3,'sourcePreserved':True,'movedPackagePreserved':True,'skillPreserved':True,'invalidPathRejected':True,'driverSha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'excluded':['persistent external linked delivery','all smart filters','external PSD editor','fixed plugin installation','creative acceptance']}
+    proof={'schema':'photocraft-smart-candidate-first-use/v1','result':'PASS','scope':('single copied source skill; locally checksummed candidate archive installed before workflow' if os.environ.get('CRAFT_SMART_CANDIDATE_ARCHIVE') else 'single copied skill; empty runtime public downloads')+'; editable embedded smart replacement and relink collection','runtimeSha256':manifest['runtimeSha256'],'smartLayerId':product,'pixelChecks':3,'sourcePreserved':True,'movedPackagePreserved':True,'skillPreserved':True,'invalidPathRejected':True,'driverSha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'excluded':['persistent external linked delivery','all smart filters','external PSD editor','fixed plugin installation','creative acceptance']}
     with Path(os.environ['CRAFT_SMART_EVIDENCE']).open('x') as stream:json.dump(proof,stream,indent=2)
 if __name__=='__main__':unittest.main()
