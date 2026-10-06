@@ -62,3 +62,5 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 固定已安装矩阵 Film9／Effect8／Photo10／Vector11／Art61 通过登记 PNG／JPEG 的 Vector→Photo 替换复用（1 项）、四领域原生首用／恢复／打包（3 项），以及更新的 Photo／Art 全部 22 技能独立空缓存 CLI 检查（190.051 秒）；58 个安装技能摘要保持不变。SVG 混合输入、动态透明序列与完整创作验收仍开放。[证据](docs/evidence/codex-release61-vector-photo-first-use-20261006.json)。
 
 技能源 `0.1.0-dev.10` 固定维护版 CLI `0.2.0-craft.1`，登记智能对象放置、替换与重新链接收集保持嵌入式可编辑内容、变换和蒙版。单技能公开下载冷首用通过；实际固定插件安装及 Art 混合验收待执行。[证据](docs/evidence/smart-public-source-first-use-20261006.json)。
+
+固定 Photo 插件 dev.11／技能源 dev.10／维护版 CLI 0.2.0-craft.1 已通过安装副本单技能智能对象放置／替换／重新链接收集与移动修订（4.633 秒）、PSD 独立解码及纯图片回归两项、十二项独立冷启动（51.647 秒）、全部 58 安装摘要、公开附件及四项标签 CI。默认维护版安装与旧官方 0.2.0 并存，旧二进制不变。[版本证据](docs/evidence/codex-photocraft11-smart-first-use-20261006.json)。Art 混合升级及完整首版仍开放。
