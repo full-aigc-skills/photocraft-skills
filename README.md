@@ -52,3 +52,5 @@ Source candidate: the PhotoCraft public workflow now supports brush stroke, clon
 Fixed PhotoCraft plugin dev.8 / skills dev.7 and ArtCraft plugin dev.31 / skills dev.27 pass installed native retouch/handoff testing (13.260s and 23.264s). All 58 installed skill hashes remain unchanged. Only scoped retouch tasks are complete; the full goal remains incomplete. [Proof](docs/evidence/codex-release31-retouch-native-20261006.json).
 
 尺寸变体增量 / Layout variants: source-bound crop, padding and resampling records, editable role identities, and final-canvas safe-area gates. See `docs/PhotoCraft-Layout-Variant-Architecture.md` and `docs/PhotoCraft-Layout-Variant-Architecture.zh_CN.md`. Native runtime remains 0.2.0; skills development version is 0.1.0-dev.8.
+
+Installed plugin dev.9 / skill source dev.8 supplementary first-use acceptance verifies a layered masked poster, text revision and cover, with independent Pillow decoding of each opaque PSD merged image against all PNG RGB pixels. This is separate from native layer inspection and does not claim live editing in Photoshop. [Acceptance](docs/PhotoCraft-Independent-PSD-Acceptance.md).
