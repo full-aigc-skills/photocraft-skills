@@ -38,7 +38,7 @@ for line in sys.stdin:
         response["result"] = float("nan")
         print(json.dumps(response), flush=True)
     else:
-        response["result"] = {"accepted":True}
+        response["result"] = {"content":[{"type":"text","text":"accepted"}]}
         print(json.dumps(response), flush=True)
 '''
 
@@ -75,4 +75,4 @@ class McpProtocolFaultTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             log = Path(temporary) / "requests.jsonl"
             with module().Session([sys.executable, "-I", "-B", "-u", "-c", SERVER, "valid", str(log)], timeout=3) as session:
-                self.assertEqual(session.request("tools/call", {}), {"accepted":True})
+                self.assertEqual(session.request("tools/call", {}), {"content":[{"type":"text","text":"accepted"}]})
