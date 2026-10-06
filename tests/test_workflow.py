@@ -32,5 +32,16 @@ class WorkflowTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 self.module.validate({'operations': [], 'exports': [output]})
 
+    def test_nested_text_remains_subject_to_font_check(self):
+        self.assertTrue(self.module.contains_type_layers([
+            {'kind': 'Group', 'children': [{'kind': 'Group', 'children': [{'kind': 'Type'}]}]}]))
+        self.assertFalse(self.module.contains_type_layers([{'kind': 'Pixel'}]))
+
+    def test_unknown_inspection_cannot_bypass_font_check(self):
+        for layers in [None, [{'kind': 'Group'}], [{'id': 1}],
+                       [{'kind': 'Type'}, {'kind': 'Group', 'children': None}]]:
+            with self.assertRaisesRegex(ValueError, 'invalid_native_layer_inspection'):
+                self.module.contains_type_layers(layers)
+
 if __name__ == '__main__':
     unittest.main()

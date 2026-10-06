@@ -54,3 +54,5 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 尺寸变体增量 / Layout variants: source-bound crop, padding and resampling records, editable role identities, and final-canvas safe-area gates. See `docs/PhotoCraft-Layout-Variant-Architecture.md` and `docs/PhotoCraft-Layout-Variant-Architecture.zh_CN.md`. Native runtime remains 0.2.0; skills development version is 0.1.0-dev.8.
 
 固定已安装插件 dev.9／技能源 dev.8 的补充首次使用验收验证分层蒙版海报、改字与封面，并用 Pillow 独立核对三份不透明 PSD 合成图与 PNG 全部 RGB 像素；这与原生图层检查分开，不代表 Photoshop 实际编辑验收。[验收记录](docs/PhotoCraft-Independent-PSD-Acceptance.zh_CN.md)。
+
+纯图片工作流字体前置条件：[架构](docs/PhotoCraft-Font-Preconditions-Architecture.zh_CN.md)。技能源 dev.9 候选通过公开冷启动原生创建／修订与独立 PNG／PSD 检查；固定插件实际安装复验仍待完成。
