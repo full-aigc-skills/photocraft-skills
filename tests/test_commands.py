@@ -16,6 +16,53 @@ def module():
     return value
 
 class CommandsTests(unittest.TestCase):
+    def test_invalid_tool_discovery_returns_unknown_receipt(self):
+        m = module()
+        identifier = m.catalog()["commands"][0]["id"]
+        for invalid in [None, {}, {"tools":None}, {"tools":[None]}, {"tools":[{"name":None}]}]:
+            class Fake:
+                def __enter__(self): return self
+                def __exit__(self,*args): pass
+                def request(self,method,params): return invalid
+            with self.subTest(reply=invalid), tempfile.TemporaryDirectory() as temporary:
+                output = Path(temporary)/"output"
+                receipt = m.execute({"schema":"craft-command-plan/v1","operations":[{"command":identifier,"params":{}}]},output,
+                    installer=lambda *a:{"executable":"native","binarySha256":"a"*64},session_factory=lambda *a:Fake())
+                self.assertEqual(receipt["result"],"unknown")
+                self.assertEqual(receipt["steps"],[])
+                self.assertEqual(json.loads((output/"failure.json").read_text()),receipt)
+
+    def test_malformed_registry_after_edit_preserves_prior_step_and_stops(self):
+        m = module()
+        identifier = m.catalog()["commands"][0]["id"]
+        edits = []
+        class Fake:
+            def __enter__(self): return self
+            def __exit__(self,*args): pass
+            def request(self,method,params):
+                if method=="tools/list":return {"tools":[{"name":name} for name in m.ROUTES[DOMAIN][:2]]}
+                if params["name"]==m.ROUTES[DOMAIN][0]:
+                    rows = [{**r,"enabled":True} for r in m.catalog()["commands"]] if not edits else [None]
+                    return {"content":[{"type":"text","text":json.dumps(rows)}]}
+                edits.append(params)
+                return {"content":[{"type":"text","text":"{}"}]}
+        with tempfile.TemporaryDirectory() as temporary:
+            output=Path(temporary)/"output"
+            receipt=m.execute({"schema":"craft-command-plan/v1","operations":[{"command":identifier,"params":{}},{"command":identifier,"params":{}}]},output,
+                installer=lambda *a:{"executable":"native","binarySha256":"a"*64},session_factory=lambda *a:Fake())
+            self.assertEqual(receipt["result"],"unknown")
+            self.assertEqual(len(edits),1)
+            self.assertEqual([step["state"] for step in receipt["steps"]],["succeeded"])
+
+    def test_malformed_tool_replies_are_unknown_instead_of_unhandled_errors(self):
+        m = module()
+        for reply in [None, [], {"content":None}, {"content":[None]},
+                      {"content":[{"type":"text"}]},
+                      {"content":[{"type":"text","text":False}]},
+                      {"isError":"false", "content":[]}]:
+            with self.subTest(reply=reply), self.assertRaisesRegex(RuntimeError,"outcome_unknown"):
+                m.parse_reply(reply)
+
     def test_every_reflected_command_has_exact_parameters_and_owner(self):
         m = module()
         original = json.loads((SCRIPT.parent.parent / "references/commands.json").read_text())["commands"]
