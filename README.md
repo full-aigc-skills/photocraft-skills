@@ -1,5 +1,13 @@
 # PhotoCraft Skills
 
+## Complete native command entry
+
+Local candidate: skills dev.11 / plugin dev.12; publication and installed-host checks pending.
+
+All 748 commands now have verbatim parameters, skill routing, and same-session invocation through `commands.py list / describe / check / run`. Live enabled state is checked; the existing 32-operation delivery workflow remains bounded. GUI commands require explicit bridge mode. Complete registry coverage does not establish full command acceptance.
+
+[Architecture and usage](docs/PhotoCraft-Complete-Commands-Architecture.md) · [Complete reference](skills/photocraft-use/references/command-reference.md) · [Runnable example](skills/photocraft-use/examples/commands-advanced.json)
+
 Independent PhotoCraft skills. Implementation is in progress; this repository is not a completed plugin release.
 
 The `photocraft-use` skill contains a self-contained Python 3.11+ bootstrap installer for the pinned official macOS arm64 CLI. It verifies the archive and executable, retains license files, atomically installs a new version, and reuses an intact installation without downloading again.

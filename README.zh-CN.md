@@ -1,5 +1,13 @@
 # PhotoCraft 独立技能
 
+## 完整原生命令入口
+
+本地候选：skills dev.11 / plugin dev.12；公开发行及宿主安装验收待完成。
+
+748 条命令现在均有逐项参数说明、技能归属与同会话调用入口。运行 `commands.py list / describe / check / run`；原生状态按实时 enabled 校验。旧工作流的 32 项交付合同保留。GUI 命令需显式 bridge，命令目录覆盖不代表全量验收。
+
+[架构与操作指南](docs/PhotoCraft-Complete-Commands-Architecture.zh_CN.md) · [逐项参考](skills/photocraft-use/references/command-reference.md) · [可运行示例](skills/photocraft-use/examples/commands-advanced.json)
+
 当前正在实现，尚未完成插件发布验收。
 
 `photocraft-use` 自带 Python 3.11+ 安装器，固定官方 macOS arm64 CLI 制品，校验压缩包和二进制，保留许可证，原子安装新版本，复用完整的已有版本。技能目录可独立复制，不依赖兄弟技能或插件私有路径。
