@@ -1,0 +1,95 @@
+--- a/crates/engine/src/smart_cmds.rs
++++ b/crates/engine/src/smart_cmds.rs
+@@ -590,6 +590,24 @@
+         refresh_or_fail(doc, id)?;
+         Ok(json!({"layer": id.0}))
+     })
++}
++
++/// 使用由目录能力读取的字节替换智能对象，保留变换、蒙版和滤镜。
++/// 不访问环境文件系统；重新链接收集策略同样输出嵌入内容。
++pub fn replace_scoped_bytes(s: &mut Session, p: &Value, name: &str, bytes: Vec<u8>) -> Result<Value> {
++    decode_source(name, &bytes)?;
++    let name = base_name(name);
++    set_source(s, p, "Replace Collected Contents", false, |_, _| Ok(SmartSource::Embedded { file_name: name, bytes: Arc::new(bytes) }))
++}
++
++/// 验证收集对象已经嵌入；拒绝读取原工程中的环境链接。
++pub fn verify_scoped_embedded(s: &mut Session, p: &Value) -> Result<Value> {
++    let id = layer_param(s, p)?;
++    let doc = &s.active().ok_or(EngineError::NoDocument)?.doc;
++    if !matches!(smart(doc, id)?.source, SmartSource::Embedded { .. }) {
++        return Err(other("scoped linked content must be replaced with registered bytes before embedding"));
++    }
++    Ok(json!({"layer": id.0, "embedded": true}))
+ }
+ 
+ fn replace_contents(s: &mut Session, p: &Value) -> Result<Value> {
+--- a/crates/automation/src/headless.rs
++++ b/crates/automation/src/headless.rs
+@@ -186,9 +186,50 @@
+ 
+     pub fn command_run(&mut self, id: &str, params: Value) -> Result<Value, AutomationError> {
+         let params = if params.is_null() { json!({}) } else { params };
+-        if !matches!(&self.filesystem, Filesystem::TrustedLocal) {
++        if let Filesystem::Workspace(workspace) = &self.filesystem {
++            if matches!(id, "file.placeEmbedded" | "layer.smartObjects.replaceContents" | "layer.smartObjects.relinkToFile") {
++                let fields: &[&str] = if id == "file.placeEmbedded" { &["path", "center", "scale", "fit"] } else { &["path", "layer"] };
++                let object = params.as_object().ok_or_else(|| AutomationError::BadRequest("smart parameters must be an object".into()))?;
++                if object.keys().any(|key| !fields.contains(&key.as_str())) {
++                    return Err(AutomationError::BadRequest("unknown scoped smart field".into()));
++                }
++                let path = params.get("path").and_then(Value::as_str).ok_or_else(|| AutomationError::BadRequest("registered smart path required".into()))?;
++                let bytes = workspace.read(path)?;
++                return Ok(if id == "file.placeEmbedded" {
++                    photocraft_engine::file_cmds::place_bytes(&mut self.session, path, bytes, None, &params)?
++                } else {
++                    photocraft_engine::smart_cmds::replace_scoped_bytes(&mut self.session, &params, path, bytes)?
++                });
++            }
++            if id == "layer.smartObjects.convertToEmbedded" {
++                return Ok(photocraft_engine::smart_cmds::verify_scoped_embedded(&mut self.session, &params)?);
++            }
+             authorize_engine_command(id, &params)?;
+         }
+         Ok(self.session.execute(id, params)?)
+     }
+ }
++
++#[cfg(test)]
++mod scoped_smart_tests {
++    use super::*;
++    #[test]
++    fn smart_commands_preserve_directory_capability_rejection() {
++        let root = std::env::temp_dir().join(format!("photocraft-scoped-smart-{}", std::process::id()));
++        std::fs::create_dir_all(&root).unwrap();
++        let workspace = AuthorizedWorkspace::new(Some(&root), Some(&root)).unwrap();
++        let mut h = Headless::with_workspace(workspace);
++        for id in ["file.placeEmbedded", "layer.smartObjects.replaceContents", "layer.smartObjects.relinkToFile"] {
++            for path in ["/outside.png", "../outside.png"] {
++                let params = if id == "file.placeEmbedded" { json!({"path":path}) } else { json!({"path":path,"layer":1}) };
++                let error = h.command_run(id, params).unwrap_err().to_string();
++                assert!(error.contains("rejected"), "{error}");
++            }
++        }
++        #[cfg(unix)] {
++            std::os::unix::fs::symlink("/outside.png", root.join("escape.png")).unwrap();
++            assert!(h.command_run("file.placeEmbedded", json!({"path":"escape.png"})).is_err());
++        }
++        std::fs::remove_dir_all(root).unwrap();
++    }
++}
+--- a/crates/engine/src/inspect.rs
++++ b/crates/engine/src/inspect.rs
+@@ -94,6 +94,11 @@
+             v["adjustment"] = serde_json::to_value(a).unwrap_or(Value::Null);
+         }
+         LayerContent::Smart(sm) => {
++            v["smartTransform"] = json!(sm.transform.m);
++            v["smartSourceKind"] = json!(match &sm.source {
++                photocraft_doc::SmartSource::Embedded { .. } => "embedded",
++                photocraft_doc::SmartSource::Linked { .. } => "linked",
++            });
+             v["smartFilters"] = Value::Array(
+                 sm.smart_filters
+                     .iter()
