@@ -50,3 +50,5 @@ Fixed PhotoCraft plugin dev.7 / skills dev.6 and ArtCraft plugin dev.30 / skills
 Source candidate: the PhotoCraft public workflow now supports brush stroke, clone stamp and healing brush with declared protected regions. A fresh single-skill online-native test passed; fixed release, plugin vendoring and installed-plugin revalidation are pending. See [bounded source evidence](docs/evidence/retouch-workflow-first-use.json).
 
 Fixed PhotoCraft plugin dev.8 / skills dev.7 and ArtCraft plugin dev.31 / skills dev.27 pass installed native retouch/handoff testing (13.260s and 23.264s). All 58 installed skill hashes remain unchanged. Only scoped retouch tasks are complete; the full goal remains incomplete. [Proof](docs/evidence/codex-release31-retouch-native-20261006.json).
+
+尺寸变体增量 / Layout variants: source-bound crop, padding and resampling records, editable role identities, and final-canvas safe-area gates. See `docs/PhotoCraft-Layout-Variant-Architecture.md` and `docs/PhotoCraft-Layout-Variant-Architecture.zh_CN.md`. Native runtime remains 0.2.0; skills development version is 0.1.0-dev.8.
