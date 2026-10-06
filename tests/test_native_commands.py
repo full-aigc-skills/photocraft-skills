@@ -15,7 +15,8 @@ DOMAIN = json.loads((ROOT / "skill-suite.json").read_text())["pluginId"]
 class NativeCommandsTests(unittest.TestCase):
     def test_advanced_plan_saved_reopened_from_one_skill(self):
         from PIL import Image
-        source = ROOT / "skills" / (DOMAIN + "-cli")
+        source = ROOT / "skills" / os.environ.get("CRAFT_NATIVE_SKILL", DOMAIN + "-cli")
+        self.assertIn(source.name, [p.name for p in (ROOT / "skills").iterdir() if p.is_dir()])
         before = {str(p.relative_to(source)): hashlib.sha256(p.read_bytes()).hexdigest()
                   for p in source.rglob("*") if p.is_file()}
         with tempfile.TemporaryDirectory() as tmp:
@@ -26,7 +27,11 @@ class NativeCommandsTests(unittest.TestCase):
             spec.loader.exec_module(m)
             plan = json.loads((copied / "examples/commands-advanced.json").read_text())
             out = Path(tmp) / "create"
-            made = m.execute(plan, out)
+            cold = os.environ.get("CRAFT_NATIVE_COLD") == "1"
+            runtime_home = Path(tmp) / "empty-runtime" if cold else None
+            if cold:
+                self.assertFalse(runtime_home.exists())
+            made = m.execute(plan, out, runtime_home=runtime_home)
             self.assertEqual(made["result"], "PASS", made.get("error"))
             suffix = {"filmcraft":"fcproj", "effectcraft":"ecproj", "photocraft":"pcraft", "vectorcraft":"vectorcraft"}[DOMAIN]
             project = out / ("project." + suffix)
@@ -47,7 +52,7 @@ class NativeCommandsTests(unittest.TestCase):
                                 {"command":"document.export","params":{"path":{"$output":"preview.png"},"format":"png"}}),
             }[DOMAIN]
             second = Path(tmp) / "reopen"
-            opened = m.execute({"schema":"craft-command-plan/v1","operations":[reopen, inspect, render]}, second, inputs={"project":project})
+            opened = m.execute({"schema":"craft-command-plan/v1","operations":[reopen, inspect, render]}, second, runtime_home=runtime_home, inputs={"project":project})
             self.assertEqual(opened["result"], "PASS", opened.get("error"))
             state = opened["steps"][1]["result"]
             if DOMAIN == "filmcraft":
@@ -87,5 +92,8 @@ class NativeCommandsTests(unittest.TestCase):
                     "catalogSha256":made["catalogSha256"], "createOperations":len(made["steps"]),
                     "reopenOperations":len(opened["steps"]), "executedCommands":sorted({s["command"] for s in made["steps"]+opened["steps"] if s.get("command")}),
                     "savedProjectSha256":digest, "checks":["isolated single-skill copy", "live command context", "actual return references", "native save and reopen", "persisted domain settings", "96x64 rendered output", "source project and skill unchanged"],
-                    "guiAcceptance":"NOT_RUN", "fullPerCommandAcceptance":"NOT_RUN", "coldInstall":"NOT_RUN"
+                    "guiAcceptance":"NOT_RUN", "fullPerCommandAcceptance":"NOT_RUN", "coldInstall":"PASS" if cold else "NOT_RUN",
+                    "skill":source.name, "skillSha256":hashlib.sha256(json.dumps(before, sort_keys=True).encode()).hexdigest(),
+                    "archiveUrl":json.loads((copied/"scripts/runtime.lock.json").read_text())["artifacts"]["darwin-arm64"]["url"] if cold else None,
+                    "installationMode":"one empty independent runtime per skill; public locked download" if cold else "existing runtime reuse"
                 },indent=2)+"\n")
