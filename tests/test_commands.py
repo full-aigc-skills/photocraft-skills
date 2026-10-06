@@ -202,3 +202,30 @@ class CommandsTests(unittest.TestCase):
             self.assertEqual(result["steps"][0]["state"],"blocked")
             self.assertEqual(result["steps"][0]["reason"],"selection required")
             self.assertEqual(mutations,[])
+
+    def test_unsafe_inner_json_is_unknown_in_command_and_tool_replies(self):
+        m = module()
+        payloads=['{"value":NaN}','{"value":Infinity}','{"value":-Infinity}', '{"value":1e999}', '{"id":"old","id":"new"}', '{"nested":{"value":1,"value":2}}']
+        for text in payloads:
+            for attachments in (False,True):
+                with self.subTest(text=text,attachments=attachments),tempfile.TemporaryDirectory() as temporary:
+                    with self.assertRaisesRegex(RuntimeError,'outcome_unknown'):
+                        m.parse_reply({'content':[{'type':'text','text':text}]},Path(temporary) if attachments else None)
+
+    def test_unsafe_edit_result_preserves_unknown_attempt_without_replay(self):
+        m=module();identifier=m.catalog()['commands'][0]['id'];calls=[]
+        class Fake:
+            def __enter__(self):return self
+            def __exit__(self,*args):pass
+            def request(self,method,params):
+                if method=='tools/list':return {'tools':[{'name':name} for name in m.ROUTES[DOMAIN][:2]]}
+                if params['name']==m.ROUTES[DOMAIN][0]:return {'content':[{'type':'text','text':json.dumps([{**row,'enabled':True} for row in m.catalog()['commands']])}]}
+                calls.append(params);return {'content':[{'type':'text','text':'{"saved":true,"value":NaN}'}]}
+        with tempfile.TemporaryDirectory() as temporary:
+            output=Path(temporary)/'output';plan={'schema':'craft-command-plan/v1','operations':[{'command':identifier,'params':{}},{'command':identifier,'params':{}}]}
+            kwargs={'installer':lambda *a:{'executable':'native','binarySha256':'a'*64},'session_factory':lambda *a:Fake()}
+            result=m.execute(plan,output,**kwargs)
+            self.assertEqual(result['result'],'unknown');self.assertEqual(result['steps'][0]['state'],'unknown');self.assertEqual(len(calls),1)
+            self.assertEqual(json.loads((output/'failure.json').read_text()),result);self.assertFalse((output/'success.json').exists())
+            with self.assertRaisesRegex(ValueError,'output_exists'):m.execute(plan,output,**kwargs)
+            self.assertEqual(len(calls),1)

@@ -51,6 +51,10 @@ try:
             elif fault == "nonfinite":
                 reply["result"] = float("nan")
                 print(json.dumps(reply), flush=True)
+            elif fault.startswith("inner-"):
+                text = {"inner-nonfinite": '{"saved":true,"value":NaN}', "inner-overflow": '{"saved":true,"value":1e999}', "inner-duplicate": '{"saved":true,"saved":false}'}[fault]
+                reply["result"] = {"content":[{"type":"text","text":text}]}
+                print(json.dumps(reply), flush=True)
             else:
                 reply["result"] = {"content":[None]}
                 print(json.dumps(reply), flush=True)
@@ -106,7 +110,7 @@ class NativeProtocolFaultTests(unittest.TestCase):
             plan["operations"].append(inspection)
             runtime = root / "empty-runtime"
             self.assertFalse(runtime.exists())
-            for fault in ["malformed", "scalar", "missing", "ambiguous", "nonfinite", "tool-content"]:
+            for fault in ["malformed", "scalar", "missing", "ambiguous", "nonfinite", "tool-content", "inner-nonfinite", "inner-overflow", "inner-duplicate"]:
                 with self.subTest(fault=fault):
                     output = root / fault
                     log = root / (fault + ".jsonl")
@@ -154,5 +158,5 @@ class NativeProtocolFaultTests(unittest.TestCase):
                     "transportSha256":hashlib.sha256((skill / "scripts/mcp_session.py").read_bytes()).hexdigest(),
                     "testSha256":hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                     "checks":["single skill copy", "fresh public locked runtime", "native save before injected response fault", "one save request", "unknown journal and failure receipt", "no later operations", "saved native project reopened", "original delivery and skills unchanged"],
-                    "scope":"six injected response faults after real native save; not exhaustive commands or GUI acceptance"
+                    "scope":"nine injected response faults after real native save; not exhaustive commands or GUI acceptance"
                 }, indent=2) + "\n")
