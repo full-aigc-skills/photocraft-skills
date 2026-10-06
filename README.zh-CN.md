@@ -42,3 +42,5 @@
 dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及画笔/克隆/修复数值范围。九类场景均只复制当前技能并冷安装，完成真实原生编辑、结构和像素核验；完整回归 36 项、零跳过。[证据](docs/evidence/task-skill-first-use.json)。此证据不覆盖全部 748 命令、复杂纹理修复质量或 GUI/模型派发。
 
 固定插件 dev.6／技能 dev.5 的实际安装单文字技能中文海报冷启动与标题修订通过（1 项，5.927 秒）。源文件和保护区域不变，PSD 保留文字且解码像素与 PNG 一致；未知图层和缺失字体被拒绝。人工接受仍为 NOT_RUN。[架构](docs/PhotoCraft-Chinese-Text-Architecture.zh_CN.md)、[证据](docs/evidence/chinese-text-first-use.json)。
+
+源候选 dev.6 为源工程局部修改增加 protectedRegions。真实失败测试复现旧流程把保护区改动发布为成功；修复后发布前拒绝并保留源文件。全量 44 项通过、0 跳过，系统 Python 单技能在线验收通过；固定插件验收尚待完成。[架构](docs/PhotoCraft-Protected-Region-Architecture.zh_CN.md)、[证据](docs/evidence/protected-regions-first-use.json)。
