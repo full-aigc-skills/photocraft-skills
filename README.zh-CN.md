@@ -6,7 +6,7 @@ Source candidate: complete native workflow gateway; immutable installed acceptan
 
 固定发布前的候选记录：原生下载恢复候选：最多三次只读重试并丢弃半包；此前固定版本冷安装遇到SSL EOF失败，修复后的固定安装验收仍开放。
 
-当前独立技能源 `0.1.0-dev.16` 修复完整命令的内层JSON处理。固定插件与实际安装复验进行中；下方历史证据保持其原版本范围。
+当前独立技能源：`0.1.0-dev.18`；包含原生命令网关，固定安装副本验收待执行，完整 V1 仍未验收。
 
 当前固定失败暂存验收：插件 dev.17、独立技能源 dev.15。全部58项独立CLI冷启动、24个原暂存原生故障案例及37原生场景＋6合同检查通过；Art77领域包升级仍开放。[证据](docs/evidence/codex-failed-stage-first-use-20261007.json)。
 
