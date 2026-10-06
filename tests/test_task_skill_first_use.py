@@ -82,7 +82,7 @@ class TaskSkillFirstUseTests(unittest.TestCase):
                                 env=self.environment, capture_output=True, text=True, timeout=240)
         if success:
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-            self.assertTrue((self.runtime / 'photocraft/0.2.0/photocraft-cli').is_file())
+            self.assertTrue((self.runtime / 'photocraft' / json.loads((self.skill / 'scripts/runtime.lock.json').read_text())['resolvedVersion'] / 'photocraft-cli').is_file())
         else:
             self.assertNotEqual(result.returncode, 0)
         self.assertFalse(any(self.skill.rglob('*.pyc')))
