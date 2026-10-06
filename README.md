@@ -48,3 +48,5 @@ Source candidate dev.6 adds explicit protectedRegions for source revisions. Real
 Fixed PhotoCraft plugin dev.7 / skills dev.6 and ArtCraft plugin dev.30 / skills dev.26 pass installed native protection/handoff proof; all 58 installed skill hashes remain unchanged. Only the scoped protection tasks are complete; overall implementation and creative acceptance remain incomplete. [Proof](docs/evidence/codex-release30-protected-native-20261006.json).
 
 Source candidate: the PhotoCraft public workflow now supports brush stroke, clone stamp and healing brush with declared protected regions. A fresh single-skill online-native test passed; fixed release, plugin vendoring and installed-plugin revalidation are pending. See [bounded source evidence](docs/evidence/retouch-workflow-first-use.json).
+
+Fixed PhotoCraft plugin dev.8 / skills dev.7 and ArtCraft plugin dev.31 / skills dev.27 pass installed native retouch/handoff testing (13.260s and 23.264s). All 58 installed skill hashes remain unchanged. Only scoped retouch tasks are complete; the full goal remains incomplete. [Proof](docs/evidence/codex-release31-retouch-native-20261006.json).
