@@ -154,5 +154,59 @@ class BootstrapTests(unittest.TestCase):
         self.assertEqual(Path(results[0]['executable']).read_bytes(), self.binary)
 
 
+
+    def test_ssl_eof_download_retries_and_discards_partial_bytes(self):
+        import ssl
+        from urllib.error import URLError
+        class Response:
+            url='https://objects.githubusercontent.com/release'
+            headers={}
+            def __init__(self,broken):self.broken=broken;self.reads=0
+            def __enter__(self):return self
+            def __exit__(self,*args):return False
+            def read(self,size):
+                self.reads+=1
+                if self.broken and self.reads==2:raise ssl.SSLEOFError('unexpected EOF')
+                return b'partial' if self.broken and self.reads==1 else b'complete' if self.reads==1 else b''
+        url=json.loads(SOURCE.with_name('runtime.lock.json').read_text())['artifacts']['darwin-arm64']['url'];target=self.root/'download.zip'
+        for first in [Response(True),URLError(ssl.SSLEOFError('unexpected EOF'))]:
+            with self.subTest(first=type(first).__name__),patch.object(self.module.urllib.request,'urlopen',side_effect=[first,Response(False)]) as fetch,patch.object(self.module.time,'sleep'):
+                self.module.download(url,target);self.assertEqual(fetch.call_count,2);self.assertEqual(target.read_bytes(),b'complete')
+    def test_native_download_retry_bound_and_nonnetwork_errors(self):
+        import ssl
+        from urllib.error import URLError,HTTPError
+        url=json.loads(SOURCE.with_name('runtime.lock.json').read_text())['artifacts']['darwin-arm64']['url'];target=self.root/'download.zip'
+        with patch.object(self.module.urllib.request,'urlopen',side_effect=URLError(ssl.SSLEOFError('unexpected EOF'))) as fetch,patch.object(self.module.time,'sleep'):
+            with self.assertRaisesRegex(ValueError,'artifact_download_failed'):self.module.download(url,target)
+            self.assertEqual(fetch.call_count,3);self.assertFalse(target.exists())
+        for error in [HTTPError(url,403,'denied',{},None),URLError(ssl.SSLCertVerificationError('certificate')),PermissionError('permission')]:
+            with self.subTest(error=type(error).__name__),patch.object(self.module.urllib.request,'urlopen',side_effect=error) as fetch:
+                with self.assertRaises(type(error)):self.module.download(url,target)
+                self.assertEqual(fetch.call_count,1)
+
+    def test_short_download_retries_but_size_limit_is_final(self):
+        from urllib.error import HTTPError
+        class Response:
+            url = 'https://objects.githubusercontent.com/release'
+            def __init__(self, data, length):
+                self.data = data
+                self.headers = {'Content-Length': str(length)}
+            def __enter__(self): return self
+            def __exit__(self, *args): return False
+            def read(self, size):
+                data, self.data = self.data, b''
+                return data
+        url = json.loads(SOURCE.with_name('runtime.lock.json').read_text())['artifacts']['darwin-arm64']['url']
+        target = self.root / 'download.zip'
+        for first in (Response(b'half', 8), HTTPError(url, 503, 'temporary', {}, None)):
+            with self.subTest(first=type(first).__name__), patch.object(self.module.urllib.request, 'urlopen', side_effect=[first, Response(b'complete', 8)]) as fetch, patch.object(self.module.time, 'sleep'):
+                self.module.download(url, target)
+                self.assertEqual(fetch.call_count, 2)
+                self.assertEqual(target.read_bytes(), b'complete')
+        with patch.object(self.module, 'MAX_BYTES', 3), patch.object(self.module.urllib.request, 'urlopen', return_value=Response(b'oversized', 9)) as fetch:
+            with self.assertRaisesRegex(ValueError, 'archive_too_large'):
+                self.module.download(url, target)
+            self.assertEqual(fetch.call_count, 1)
+
 if __name__ == '__main__':
     unittest.main()
