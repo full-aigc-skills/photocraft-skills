@@ -87,7 +87,13 @@ class NativeWorkflowTests(unittest.TestCase):
             missing_font = dict(revision, operations=[{'command': 'type.setStyle', 'params': {'layer': {'$ref': 'headline.layer'}, 'font': 'CraftFixtureMissingFont-779c34'}}])
             with self.assertRaisesRegex(ValueError, 'missing_fonts'):
                 module.execute(missing_font, root / 'missing-font', source=masked)
-            self.assertFalse((root / 'missing-font').exists())
+            failure = json.loads((root / 'missing-font/failure.json').read_text())
+            self.assertEqual(failure['status'], 'failed')
+            self.assertIn('missing_fonts', failure['error'])
+            self.assertFalse(failure['replayAllowed'])
+            self.assertTrue((root / 'missing-font' / failure['stage']).is_dir())
+            self.assertFalse((root / 'missing-font/manifest.json').exists())
+            self.assertEqual(module.sha(masked / 'project.pcraft'), manifest['files']['project.pcraft'])
             revision['expectedProjectSha256'] = '0' * 64
             with self.assertRaisesRegex(ValueError, 'revision_conflict'):
                 module.execute(revision, root / 'invalid', source=masked)
