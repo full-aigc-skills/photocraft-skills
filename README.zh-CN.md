@@ -46,3 +46,5 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 源候选 dev.6 为源工程局部修改增加 protectedRegions。真实失败测试复现旧流程把保护区改动发布为成功；修复后发布前拒绝并保留源文件。全量 44 项通过、0 跳过，系统 Python 单技能在线验收通过；固定插件验收尚待完成。[架构](docs/PhotoCraft-Protected-Region-Architecture.zh_CN.md)、[证据](docs/evidence/protected-regions-first-use.json)。
 
 固定 PhotoCraft 插件 dev.7／技能 dev.6 与 ArtCraft 插件 dev.30／技能 dev.26 的实际安装原生保护／交接复验通过；五插件全部 58 个技能摘要不变。只完成对应保护任务，整体实现和创作接受仍未完成。[证据](docs/evidence/codex-release30-protected-native-20261006.json)。
+
+源码候选：PhotoCraft 公开工作流已接通笔刷、仿制图章和修复笔刷，并支持显式保护区域。单技能全新在线原生安装测试通过；固定发布、插件快照更新和安装后复验尚待完成。参见[有界源码证据](docs/evidence/retouch-workflow-first-use.json)。
