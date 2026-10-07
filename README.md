@@ -155,3 +155,5 @@ Six scenario directory examples were corrected across the four domains; this pac
 Fixed installed own-directory acceptance passes for the updated scenario skills; 64 host identities match. Complete V1 remains open. [Evidence / 证据](https://github.com/full-aigc-plugins/photocraft-plugin/blob/main/docs/evidence/craft-scenario-paths-fixed-first-use-20261008.json).
 
 Fixed PhotoCraft plugin dev.35 / source dev.33 passes 64 installed skill identities/discovery, and 13 fresh standalone Photo public cold native save/reopen/targeted revision/error cases plus CLI command/parameter queries. The other 51 cold records are retained byte-identical historical runs. Full V1 remains open. [Fixed saved-selection evidence](docs/evidence/photocraft-saved-selection-fixed-first-use-20261008.json).
+
+Independent-install dependency boundary: current byte-identical cold-install records and 128 new fixed-copy bootstrap/CLI failure checks qualify four domain SK-002 requirements. Art and generic Skills CLI installation stay open. [Design and evidence](docs/Craft-Independent-Setup-Boundary-Architecture.md).
