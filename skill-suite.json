@@ -1,7 +1,7 @@
 {
   "schema": "craft-skill-suite/v1",
   "pluginId": "photocraft",
-  "version": "0.1.0-dev.19",
+  "version": "0.1.0-dev.20",
   "source": {
     "repository": "https://github.com/storytold/photocraft",
     "commit": "f114f621799a96dc9f28ffb8faa01da680b64947",

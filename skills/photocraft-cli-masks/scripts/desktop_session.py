@@ -43,6 +43,10 @@ class OwnedSession:
    if self.log:self.log.close()
  def __exit__(self,*args):self.close()
 
+def read_plan(path):
+ """计划与原生回复使用相同的严格 JSON 规则，拒绝重复键和非有限值。"""
+ return load("commands").reply_json(Path(path).read_text())
+
 def run(plan,output,runtime_home=None,inputs=None):
  commands=load('commands');inputs=inputs or {};commands.validate(plan,inputs)
  if any(not isinstance(k,str) or not re.fullmatch(r'[a-zA-Z][\w-]*',k) or k=='output' for k in inputs):raise ValueError('invalid_input_name')
@@ -63,7 +67,18 @@ def run(plan,output,runtime_home=None,inputs=None):
   with socket.socket() as probe:probe.bind(('127.0.0.1',0));port=probe.getsockname()[1]
   def factory(argv):
    session=OwnedSession(argv,desktop,commands.DOMAIN,output,port,token);sessions.append(session);return session
-  receipt=commands.execute(plan,output,home,'bridge','127.0.0.1:'+str(port),str(token) if token else None,installer=install,session_factory=factory,inputs=inputs)
+  interrupted=False
+  try:
+   receipt=commands.execute(plan,output,home,'bridge','127.0.0.1:'+str(port),str(token) if token else None,installer=install,session_factory=factory,inputs=inputs)
+  except KeyboardInterrupt:
+   if not output.is_dir():raise
+   interrupted=True
+   try:receipt=commands.reply_json((output/'journal.json').read_text())
+   except (OSError,ValueError):receipt={'schema':'craft-command-receipt/v1','steps':[]}
+   receipt['result']='unknown';receipt['error']='interrupted: request not replayed'
+   if receipt.get('steps') and receipt['steps'][-1].get('state')=='started':receipt['steps'][-1]['state']='unknown'
+   commands.write(output/'failure.json',receipt);commands.write(output/'journal.json',receipt)
   proof={'schema':'craft-owned-desktop-session/v1','result':receipt['result'],'domain':commands.DOMAIN,'desktop':desktop,'ownedProcessesStopped':all(s.stopped for s in sessions),'listenerOwnedByPID':bool(sessions) and all(s.listener_verified for s in sessions),'sessionsStarted':len(sessions),'control':'127.0.0.1:'+str(port),'scope':'owned signed desktop and fixed CLI command workflow; no automatic replay','fullCommandAcceptance':'NOT_RUN'}
   commands.write(output/'desktop-session.json',proof)
+  if interrupted:raise KeyboardInterrupt()
   return receipt

@@ -89,9 +89,10 @@ def main():
     name,separator,value=item.partition('=')
     if not separator or name in inputs:raise ValueError('invalid_or_duplicate_input')
     inputs[name]=value
-   plan=json.loads(args.plan.read_text(),parse_constant=lambda v: (_ for _ in ()).throw(ValueError('invalid_json_number')))
+   plan=module.read_plan(args.plan)
    result=module.run(plan,args.output,args.runtime_home,inputs)
   print(json.dumps(result,allow_nan=False))
   if result.get('result','PASS')!='PASS':raise SystemExit(1)
+ except KeyboardInterrupt:parser.exit(130,'desktop_workflow_interrupted: outcome receipt preserved; request not replayed\n')
  except (ValueError,OSError,subprocess.SubprocessError) as error:parser.exit(1,'desktop_install_failed: '+type(error).__name__+': '+str(error)+'\n')
 if __name__=='__main__':main()
