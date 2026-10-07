@@ -40,3 +40,9 @@ python3 -I -B "$SKILL_DIR/scripts/commands.py" describe filter.sharpen.smartShar
 交付原生工程、依赖素材、参数记录与平面导出。核验文字仍可编辑，产品与背景保持独立，目标区域发生预期像素变化，非目标区域按任务约束保持不变。技术检查与视觉审核分别记录；本手册不代表 122 个滤镜命令已逐一执行验收。
 
 Deliver the native project, dependencies, parameter records and raster exports. Verify editable text, independent product/background layers and requested pixel changes. Full per-filter native execution acceptance remains open.
+
+## 已执行代表实例 / Executed representative example
+
+本技能 `examples/filter-smart-create.json` 建立 96×64 测试工程，转换图形为智能对象并应用 radius=2 的高斯模糊，保存工程与 PNG。使用 `commands.py run`；输出目录必须是新目录。`examples/filter-smart-reopen.json` 通过 `--input project=/absolute/project.pcraft` 重开并再次导出。该例已核验智能滤镜参数保留与两次导出像素一致；不是用户海报规格，也不证明全部滤镜已验收。
+
+Use the create fixture through the public command gateway and the reopen fixture with an explicit project input. This bounded example preserves the smart-filter contract and exported pixels; adapt it to the real design before use.

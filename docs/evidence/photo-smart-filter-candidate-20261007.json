@@ -1,0 +1,23 @@
+{
+  "result": "PASS",
+  "scope": "source candidate filters skill: public cold runtime execution, smart conversion, gaussian radius2, native save/reopen with filter preserved, exact exported pixel identity; not all filters or full poster acceptance",
+  "runtimeSha256": "3b59686b288c399078e51a631ca9133cdb075ba9fe8f2ae705db4a6f76e464bf",
+  "smartLayerId": 5,
+  "filters": [
+    {
+      "blend": "Normal",
+      "command": "filter.blur.gaussianBlur",
+      "opacity": 1.0,
+      "params": {
+        "radius": 2
+      },
+      "visible": true
+    }
+  ],
+  "pixelSha256": "3118f9f0a6b8a25125e604ce36f2bf72abba8faa1d6f13ab9435538d3d541158",
+  "size": [
+    96,
+    64
+  ],
+  "projectSha256": "f2e3622d9644109d1ec1316f35251e0f63bd6f13525795233ccf7a5b95f047a7"
+}

@@ -1,0 +1,26 @@
+{
+  "scope": "source candidate version guidance; not fixed-release acceptance",
+  "result": "PASS",
+  "skillCount": 13,
+  "versionSource": "each skill scripts/runtime.lock.json; skill package release tag",
+  "skills": {
+    "skills/photocraft-cli/SKILL.md": "4a38f4591dd302d40de9a5693689a54235c0aa01eef96f10615f4c8285867108",
+    "skills/photocraft-cli-adjustments/SKILL.md": "083926ff6990cb2c6d8149764c3f777950d1b316eacf53212e443542ab7b136d",
+    "skills/photocraft-cli-export/SKILL.md": "be43f2450735636037cf13fc59ce6db7033867771aa8ee0baf64dedca86800fa",
+    "skills/photocraft-cli-filters/SKILL.md": "2480553d27273130297f292e12e1aa20274b13cbe19d8b30e40480244bbc1ed8",
+    "skills/photocraft-cli-layers/SKILL.md": "2bcc67476b453ea0181d9fe77882b69202b9606511a631f6e4d059db20d75d51",
+    "skills/photocraft-cli-masks/SKILL.md": "7ec489a3ffa1826d120302ad537928939be87d2ebf245e7430ed7344e777c717",
+    "skills/photocraft-cli-project/SKILL.md": "c42b79704f206a4b5411b4b5e0f82a4f6a48edf3a9e313c5e1d2df292c7c9485",
+    "skills/photocraft-cli-resize/SKILL.md": "ee32dfdf4e804f2c1a2d27c6b14ff039bc22a58b7046ce155eef8ee840b673b0",
+    "skills/photocraft-cli-retouch/SKILL.md": "32fffbd9b2b2840e391543c0bb715fbedf325e5ed811ba8d7304830896dc8f4d",
+    "skills/photocraft-cli-selection/SKILL.md": "e5a4511e6b492d7f74ca83a14d2244599c51b4007740295c567b0fa7ca79cae1",
+    "skills/photocraft-cli-setup/SKILL.md": "7d4a5c92e1842a5a11438344c42680e6f7d7088c2049f477d0be8162a8e8c040",
+    "skills/photocraft-cli-text/SKILL.md": "58cb84b5938a69a856ad454c73b01a6282b2d575739f1880d9bc2e9f0463410a",
+    "skills/photocraft-use/SKILL.md": "d6ee043c82adbd2634dd61fa65cba4b1bdcf0ae685f31445dcf843f56ce0b728"
+  },
+  "regression": {
+    "tests": 126,
+    "skipped": 28,
+    "exitCode": 0
+  }
+}

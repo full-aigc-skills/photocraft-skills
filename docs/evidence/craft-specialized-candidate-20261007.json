@@ -1,0 +1,137 @@
+{
+  "schema": "craft-specialized-skill-candidate/v1",
+  "scope": "source candidates, not fixed plugin installation acceptance",
+  "commands": 2639,
+  "specialized": 1843,
+  "general": 796,
+  "records": [
+    {
+      "domain": "filmcraft",
+      "commands": 666,
+      "specialized": 531,
+      "general": 135,
+      "coverageSha256": "9e0e99dc3858ed7a0f9193132a0081ded822fa0c0061e7f8fe6ab561bf0a35da",
+      "owners": {
+        "filmcraft-cli-project": 119,
+        "filmcraft-cli-export": 33,
+        "filmcraft-cli": 135,
+        "filmcraft-cli-timeline": 135,
+        "filmcraft-cli-audio": 38,
+        "filmcraft-cli-media": 31,
+        "filmcraft-cli-motion": 105,
+        "filmcraft-cli-subtitles": 22,
+        "filmcraft-cli-multicam": 35,
+        "filmcraft-cli-color": 13
+      }
+    },
+    {
+      "domain": "effectcraft",
+      "commands": 640,
+      "specialized": 439,
+      "general": 201,
+      "coverageSha256": "e872c5af08184ef0dca8ebc1672a99691f56f68f5def6a74753eb3f77c9e43ef",
+      "owners": {
+        "effectcraft-cli-project": 66,
+        "effectcraft-cli-export": 26,
+        "effectcraft-cli": 201,
+        "effectcraft-cli-composition": 38,
+        "effectcraft-cli-layers": 117,
+        "effectcraft-cli-camera": 47,
+        "effectcraft-cli-animation": 55,
+        "effectcraft-cli-expressions": 4,
+        "effectcraft-cli-masks": 32,
+        "effectcraft-cli-effects": 16,
+        "effectcraft-cli-footage": 16,
+        "effectcraft-cli-tracking": 22
+      }
+    },
+    {
+      "domain": "photocraft",
+      "commands": 748,
+      "specialized": 535,
+      "general": 213,
+      "coverageSha256": "f4cf5cfa9823074cee318b41deb3df36373abf04a8ef1d4721f6ad2aac75630a",
+      "owners": {
+        "photocraft-cli-project": 39,
+        "photocraft-cli": 213,
+        "photocraft-cli-selection": 49,
+        "photocraft-cli-adjustments": 44,
+        "photocraft-cli-layers": 152,
+        "photocraft-cli-retouch": 32,
+        "photocraft-cli-masks": 20,
+        "photocraft-cli-resize": 8,
+        "photocraft-cli-filters": 122,
+        "photocraft-cli-text": 56,
+        "photocraft-cli-export": 13
+      }
+    },
+    {
+      "domain": "vectorcraft",
+      "commands": 585,
+      "specialized": 338,
+      "general": 247,
+      "coverageSha256": "70040cb9fd65aed9b640f8e93693e25941871917897b1bb51efd0d58af463dcf",
+      "owners": {
+        "vectorcraft-cli-project": 42,
+        "vectorcraft-cli": 247,
+        "vectorcraft-cli-appearance": 91,
+        "vectorcraft-cli-export": 14,
+        "vectorcraft-cli-shapes": 18,
+        "vectorcraft-cli-paths": 28,
+        "vectorcraft-cli-text": 44,
+        "vectorcraft-cli-boolean": 14,
+        "vectorcraft-cli-selection": 47,
+        "vectorcraft-cli-artboards": 10,
+        "vectorcraft-cli-assets": 30
+      }
+    }
+  ],
+  "coldInstall": {
+    "result": "PASS",
+    "skills": 4,
+    "records": [
+      {
+        "domain": "filmcraft",
+        "skill": "filmcraft-cli-multicam",
+        "result": "PASS",
+        "version": "filmcraft-cli 0.2.0-craft.2",
+        "commands": 666,
+        "skillSha256": "f27e6fc2af143b0fd7cf77682f6a00be1843d069e725a5969baf96e4739bf263",
+        "scope": "single source candidate skill copy; initially absent runtime; public download/bootstrap/version/query; no native creative claim"
+      },
+      {
+        "domain": "effectcraft",
+        "skill": "effectcraft-cli-tracking",
+        "result": "PASS",
+        "version": "effectcraft-cli 0.2.0",
+        "commands": 640,
+        "skillSha256": "1dd57223df8ee3c6b685bc2427a798082eaefe2be617e6f5a02378eff885e14e",
+        "scope": "single source candidate skill copy; initially absent runtime; public download/bootstrap/version/query; no native creative claim"
+      },
+      {
+        "domain": "photocraft",
+        "skill": "photocraft-cli-filters",
+        "result": "PASS",
+        "version": "photocraft-cli 0.2.0-craft.1 (dev build)",
+        "commands": 748,
+        "skillSha256": "ac3535192d3aa40a3309ceb7d5e63be2716463d32bfd216f3563cf77f1594294",
+        "scope": "single source candidate skill copy; initially absent runtime; public download/bootstrap/version/query; no native creative claim"
+      },
+      {
+        "domain": "vectorcraft",
+        "skill": "vectorcraft-cli-selection",
+        "result": "PASS",
+        "version": "vectorcraft-cli 0.2.0-craft.2",
+        "commands": 585,
+        "skillSha256": "dc2531ce72d26f05236ae3a63df2caa04011fab6e47cce519ad12c5acca6b397",
+        "scope": "single source candidate skill copy; initially absent runtime; public download/bootstrap/version/query; no native creative claim"
+      }
+    ]
+  },
+  "remaining": [
+    "fixed release/install verification of four new skills",
+    "native multicamera and tracking creative acceptance",
+    "remaining generic command scene coverage",
+    "full per-command native acceptance"
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "schema": "craft-skill-suite/v1",
   "pluginId": "photocraft",
-  "version": "0.1.0-dev.25",
+  "version": "0.1.0-dev.26",
   "source": {
     "repository": "https://github.com/storytold/photocraft",
     "commit": "f114f621799a96dc9f28ffb8faa01da680b64947",
@@ -19,7 +19,7 @@
     {
       "name": "photocraft-cli",
       "title": "CLI 公共操作",
-      "description": "查询实际命令参数和能力，调用公开 CLI、MCP 与诊断",
+      "description": "查询 PhotoCraft 原生命令和参数，或处理局部滤镜、背景虚化与输出锐化；首次使用安装固定 CLI。",
       "kind": "cli",
       "commandCount": 748,
       "commandPrefixes": []
@@ -140,6 +140,16 @@
         "file.export",
         "layer.exportAs",
         "layer.quickExportAsPng"
+      ]
+    },
+    {
+      "name": "photocraft-cli-filters",
+      "title": "滤镜与局部处理",
+      "description": "使用 PhotoCraft 处理局部滤镜、背景虚化、颗粒与输出锐化，保留可编辑设计；首次使用安装固定 CLI。",
+      "kind": "scenario",
+      "commandCount": 122,
+      "commandPrefixes": [
+        "filter."
       ]
     }
   ],
