@@ -145,7 +145,7 @@ class TaskSkillFirstUseTests(unittest.TestCase):
         with Image.open(self.preview) as before, Image.open(self.render(target)) as after:
             self.assertEqual(after.getpixel((125, 165))[:3], (0, 51, 255))
             self.assertEqual(before.crop((0, 180, 320, 400)).tobytes(), after.crop((0, 180, 320, 400)).tobytes())
-        # 活动选区不由原生 pcraft 保存；不能把当前会话选区当成工程永久对象。
+        # 原生 pcraft 可保存活动选区；命名通道的独立备份与恢复另由场景测试核验。
 
     def test_mask_hides_only_requested_half_and_preserves_text(self):
         from PIL import Image

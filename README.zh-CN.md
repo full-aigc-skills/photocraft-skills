@@ -2,7 +2,7 @@
 
 图像、文字与图层设计需求进入，交付 `.pcraft`，适用时附 PSD 与平面导出。
 
-当前技能源：`0.1.0-dev.31`；目标插件：`0.1.0-dev.33`；13 个独立技能。
+当前技能源：`0.1.0-dev.33`；目标插件：`0.1.0-dev.35`；13 个独立技能。
 
 已验证首次使用平台：macOS arm64、Python 3.11+。固定运行时安装在用户数据目录，技能文件保留在宿主加载目录。当前为开发版本；完整首版验收及通用 Skills CLI 实际安装仍未完成。
 
@@ -25,6 +25,8 @@ python3 -I -B "$SKILL_DIR/scripts/cli.py" -- commands --json
 固定安装路径验收：独立技能及 Art 混合工作流在含中文和空格的路径下，通过原生创建与重开、定点返工及导出；Art 另验证移动交付包。技能与运行时身份保持不变。该结果仅覆盖 macOS arm64 的本次首次使用场景。 [路径验收证据](docs/evidence/craft-fixed-unicode-path-first-use-20261007.json).
 
 固定发行前的历史源码候选：结构损坏的 runtime／Node 锁在写运行时目录或下载前返回本地恢复诊断。五项候选原生首次使用通过；发布插件快照保持不变，新不可变发行安装需另行验收。 [锁诊断候选](docs/PhotoCraft-Lock-Shape-Architecture.zh_CN.md).
+
+持久选区源码候选：独立技能补齐全部 49 个归属选区／通道命令分类及创建／重开／返工计划。原生检查验证活动选区持久化、命名 alpha 覆盖、受保护 tile 和局部蒙版修订。固定发行及实际安装副本验收仍开放。[技术方案](docs/PhotoCraft-Saved-Selection-Architecture.zh_CN.md)。
 
 ---
 

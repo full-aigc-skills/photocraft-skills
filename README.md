@@ -2,7 +2,7 @@
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.31`; target plugin: `0.1.0-dev.33`; 13 independent skills.
+Current source: `0.1.0-dev.33`; target plugin: `0.1.0-dev.35`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 
@@ -25,6 +25,8 @@ Read the [editable workflow](skills/photocraft-use/references/workflow.md) for i
 Fixed installed path acceptance: standalone skills and Art mixed work pass native creation/reopen, targeted revision and export under Chinese-and-space paths; Art also verifies moved delivery. Skills/runtime identities stay unchanged. This is bounded macOS arm64 first-use evidence. [Path acceptance evidence](docs/evidence/craft-fixed-unicode-path-first-use-20261007.json).
 
 Historical source candidate before the fixed release: structurally invalid runtime/Node locks now return local setup diagnostics before runtime writes/downloads. Five candidate native first-use checks pass; published plugin snapshots remain unchanged until separate immutable release acceptance. [Lock diagnostics candidate](docs/PhotoCraft-Lock-Shape-Architecture.md).
+
+Saved-selection source candidate: the independent skill classifies all 49 owned selection/channel commands and carries create/reopen/revision plans. Native checks verify active-selection persistence, named alpha coverage, protected tiles and targeted mask revision. Immutable release and actual installed acceptance remain open. [Technical design](docs/PhotoCraft-Saved-Selection-Architecture.md).
 
 ---
 
