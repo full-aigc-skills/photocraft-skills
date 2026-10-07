@@ -66,3 +66,11 @@ class DesktopPlanAndInterruptTests(unittest.TestCase):
    with self.assertRaises(KeyboardInterrupt):m.run({'schema':'craft-command-plan/v1','operations':[{'command':identifier,'params':{}}]},out)
    import json
    receipt=json.loads((out/'failure.json').read_text());self.assertEqual(receipt['result'],'unknown');self.assertEqual([s['state'] for s in receipt['steps']],['succeeded','unknown']);proof=json.loads((out/'desktop-session.json').read_text());self.assertTrue(proof['ownedProcessesStopped']);self.assertEqual(proof['result'],'unknown')
+
+class ReservedDesktopOutputTests(unittest.TestCase):
+ def test_desktop_metadata_cannot_be_named_as_deliverable(self):
+  commands=load().load('commands')
+  for name in ['desktop-session.json','desktop.log','.desktop-data/preferences.json','artcraft-domain-command.json']:
+   with self.subTest(name=name):
+    with self.assertRaisesRegex(ValueError,'invalid_output_path'):commands.output_path(name)
+  self.assertEqual(commands.output_path('assets/desktop.log'),'assets/desktop.log')
