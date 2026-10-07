@@ -147,3 +147,5 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 四域共六个场景目录示例已修正；本包运行时身份与每个随附运行时锁一致。原生CLI制品保持原摘要。
 
 新场景自身目录已通过固定安装复验；64项宿主身份匹配。完整V1仍开放。 [Evidence / 证据](https://github.com/full-aigc-plugins/photocraft-plugin/blob/main/docs/evidence/craft-scenario-paths-fixed-first-use-20261008.json).
+
+固定 PhotoCraft 插件 dev.35／技能源 dev.33 通过 64 项安装身份与发现，以及 13 项独立 Photo 公开空缓存原生保存／重开／局部返工／错误保护及 CLI 命令参数查询。其余 51 项冷安装记录仅复用摘要一致的历史运行。完整首版仍开放。[固定持久选区证据](docs/evidence/photocraft-saved-selection-fixed-first-use-20261008.json)。

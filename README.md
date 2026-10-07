@@ -153,3 +153,5 @@ Fixed strict-plan installed verification passes: 64 CLI probes, 324 duplicate-ke
 Six scenario directory examples were corrected across the four domains; this package’s runtime identity matches every bundled runtime lock. Native CLI archives are unchanged.
 
 Fixed installed own-directory acceptance passes for the updated scenario skills; 64 host identities match. Complete V1 remains open. [Evidence / 证据](https://github.com/full-aigc-plugins/photocraft-plugin/blob/main/docs/evidence/craft-scenario-paths-fixed-first-use-20261008.json).
+
+Fixed PhotoCraft plugin dev.35 / source dev.33 passes 64 installed skill identities/discovery, and 13 fresh standalone Photo public cold native save/reopen/targeted revision/error cases plus CLI command/parameter queries. The other 51 cold records are retained byte-identical historical runs. Full V1 remains open. [Fixed saved-selection evidence](docs/evidence/photocraft-saved-selection-fixed-first-use-20261008.json).
