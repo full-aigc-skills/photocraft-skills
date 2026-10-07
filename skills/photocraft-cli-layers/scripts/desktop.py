@@ -76,7 +76,22 @@ def install(lock,runtime_home,archive=None,platform_key=None):
   return {k:v for k,v in actual.items() if k!='files'}|{'reused':False,'scope':'signed app installation only; launch/GUI acceptance separate'}
 
 def main():
- parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('command',choices=['install']);parser.add_argument('--runtime-home',type=Path,default=Path.home()/'.local/share/craft-runtimes');parser.add_argument('--archive',type=Path,help='可选固定本地DMG；仍执行全部摘要校验');args=parser.parse_args();lock=json.loads(Path(__file__).with_name('desktop.lock.json').read_text())
- try:print(json.dumps(install(lock,args.runtime_home,args.archive)))
+ parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('command',choices=['install','run']);parser.add_argument('plan',nargs='?',type=Path);parser.add_argument('--output',type=Path);parser.add_argument('--input',action='append',default=[]);parser.add_argument('--runtime-home',type=Path,default=Path.home()/'.local/share/craft-runtimes');parser.add_argument('--archive',type=Path,help='可选固定本地DMG；仍执行全部摘要校验');args=parser.parse_args();lock=json.loads(Path(__file__).with_name('desktop.lock.json').read_text())
+ try:
+  if args.command=='install':
+   if args.plan or args.output or args.input:raise ValueError('unexpected_install_arguments')
+   result=install(lock,args.runtime_home,args.archive)
+  else:
+   if not args.plan or not args.output or args.archive:raise ValueError('run_requires_plan_output_and_pinned_public_install')
+   import importlib.util
+   spec=importlib.util.spec_from_file_location('craft_owned_desktop',Path(__file__).with_name('desktop_session.py'));module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);inputs={}
+   for item in args.input:
+    name,separator,value=item.partition('=')
+    if not separator or name in inputs:raise ValueError('invalid_or_duplicate_input')
+    inputs[name]=value
+   plan=json.loads(args.plan.read_text(),parse_constant=lambda v: (_ for _ in ()).throw(ValueError('invalid_json_number')))
+   result=module.run(plan,args.output,args.runtime_home,inputs)
+  print(json.dumps(result,allow_nan=False))
+  if result.get('result','PASS')!='PASS':raise SystemExit(1)
  except (ValueError,OSError,subprocess.SubprocessError) as error:parser.exit(1,'desktop_install_failed: '+type(error).__name__+': '+str(error)+'\n')
 if __name__=='__main__':main()

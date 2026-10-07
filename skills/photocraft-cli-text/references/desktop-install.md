@@ -11,3 +11,15 @@ python3 -I -B "$SKILL_DIR/scripts/desktop.py" install
 桌面启动、真实GUI编辑及保存重开仍须独立验收。Film的live bridge读取已有候选证据；其他领域不能据此声称通过。commands.py --mode bridge仅连接明确的本地活动会话，不能自动回退headless。UI工具与领域命令接口不同：Film ui_inspect/ui_elements是MCP工具，不能使用exec ui.inspect替代。完整命令执行与GUI首用门禁仍开放。
 
 English: install only when GUI is required. This standalone installer pins official DMG/archive/app/binary identities, architecture, signature and the complete installed tree. It uses a separate versioned user-data cache, never overwrites user Applications or modifies PATH, and does not launch the app. Corrupt existing installs fail. Local --archive inputs still require exact identity. Verify launch, selected live bridge and native GUI editing separately; do not treat installation as acceptance of all commands.
+
+## 自动启动并运行 / Owned desktop workflow
+
+设置 SKILL_DIR 为当前技能真实目录，PLAN 为完整 command-plan/v1 文件，OUTPUT 为尚不存在的输出目录。
+
+```bash
+python3 -I -B "$SKILL_DIR/scripts/desktop.py" run "$PLAN" --output "$OUTPUT"
+```
+
+可用 `--runtime-home` 指定独立缓存；`--input NAME=PATH` 显式导入素材。有效计划会安装已固定的桌面与 CLI，启动隔离应用，在同一桌面会话执行 `commands.py` 工作流，并保留原生工程、导出、journal、desktop.log 与 desktop-session.json。后者记录应用身份、监听端口归属及本次进程已退出。Photo 的 token 文件在退出时删除，GUI 与 CLI 使用同一输出根。只关闭本次拥有的进程，不连接其他用户会话。失败或未知编辑结果保留回执，不自动重放。安装平台仍为 macOS arm64。
+
+English: `run` validates the full command plan, installs both pinned runtimes, starts an isolated owned desktop, verifies that its PID owns the loopback listener, executes the existing bridge gateway, and closes its own processes. Receipts/logs/creative outputs persist; private Photo authentication is removed. Invalid plans do not install or launch. Unknown edits are never retried. Complete per-command acceptance remains separate.
