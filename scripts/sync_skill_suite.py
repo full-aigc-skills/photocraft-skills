@@ -7,6 +7,9 @@ import shutil
 import sys
 ROOT=Path(__file__).resolve().parents[1]
 def sync(check=False):
+ # 完整归属清单独立于共享参考，同步前先验证，避免发布过期的场景列表。
+ import subprocess
+ subprocess.run([sys.executable,'-I','-B',str(ROOT/'scripts/build_scenario_catalog.py'),'--check'],check=True)
  suite=json.loads((ROOT/'skill-suite.json').read_text());base=ROOT/'skills'/(suite['pluginId']+'-use');errors=[]
  for entry in suite['skills']:
   if entry['name']==base.name:continue
