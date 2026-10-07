@@ -39,3 +39,24 @@ class DesktopPublicFirstUse(unittest.TestCase):
    first=run();self.assertFalse(first['reused']);self.assertEqual(first['version'],'0.2.0');self.assertEqual(hashlib.sha256(Path(first['executable']).read_bytes()).hexdigest(),first['binarySha256']);app=Path(first['app']);snapshot=hashes(app);second=run();self.assertTrue(second['reused']);self.assertEqual(first['binarySha256'],second['binarySha256']);self.assertEqual(snapshot,hashes(app));receipt=app.parent/'receipt.json';stored=json.loads(receipt.read_text());stored['files']['FAKE']={'sha256':'0'*64};receipt.write_text(json.dumps(stored));run(False);self.assertEqual(snapshot,hashes(app));self.assertEqual(before,hashes(original));self.assertEqual(identity,hashes(skill));self.assertFalse(list(skill.rglob('*.pyc')))
    if os.environ.get('CRAFT_DESKTOP_REPORT'):
     Path(os.environ['CRAFT_DESKTOP_REPORT']).write_text(json.dumps({'schema':'craft-desktop-public-install-first-use/v1','result':'PASS','skill':original.name,'version':first['version'],'binarySha256':first['binarySha256'],'emptyPublicRuntime':True,'reusedWithoutChanges':True,'receiptMutationRejected':True,'appPreservedAfterRejection':True,'skillIdentityUnchanged':True,'applicationLaunched':False,'scope':'public fixed DMG independent single-skill installer; not GUI launch, bridge/editing or fullV1'},indent=2)+'\n')
+
+class DesktopTransportRetryTests(unittest.TestCase):
+ def module(self):return load(next(s for s in (ROOT/'skills').iterdir() if s.name.endswith('-use')))
+ def test_transient_tls_failure_retries_before_install_with_clean_download(self):
+  from unittest.mock import patch
+  m=self.module();calls=[]
+  with tempfile.TemporaryDirectory() as td:
+   target=Path(td)/'archive.dmg'
+   def fetch(argv,**kwargs):
+    calls.append(argv)
+    if len(calls)==1:target.write_bytes(b'partial');raise subprocess.CalledProcessError(35,argv)
+    self.assertFalse(target.exists());target.write_bytes(b'verified later by installer');return subprocess.CompletedProcess(argv,0)
+   with patch.object(m.subprocess,'run',side_effect=fetch),patch('time.sleep'):m.download_archive('https://github.com/storytold/example',target,100)
+   self.assertEqual(len(calls),2);self.assertEqual(target.read_bytes(),b'verified later by installer')
+ def test_tls_retries_are_bounded_and_other_failures_not_retried(self):
+  from unittest.mock import patch
+  m=self.module()
+  for code,expected in [(35,3),(22,1)]:
+   with self.subTest(code=code),tempfile.TemporaryDirectory() as td,patch.object(m.subprocess,'run',side_effect=subprocess.CalledProcessError(code,['curl'])) as call,patch('time.sleep'):
+    with self.assertRaises(subprocess.CalledProcessError):m.download_archive('https://github.com/storytold/example',Path(td)/'archive.dmg',100)
+    self.assertEqual(call.call_count,expected)
