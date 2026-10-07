@@ -67,4 +67,37 @@ class SetupFailureTests(unittest.TestCase):
    self.assertNotEqual(result.returncode,0)
    reply=json.loads(result.stdout);self.assertIn('bootstrap.py',reply['error']);self.assertEqual(reply['dependencySetup']['bootstrapScript'],str((scripts/'bootstrap.py').resolve()));self.assertFalse(reply['dependencySetup']['automaticRetry']);self.assertFalse(runtime.exists());self.assertNotIn('Traceback',result.stderr)
 
+
+ def test_malformed_lock_shapes_return_json_before_runtime_changes(self):
+  import copy
+  import shutil
+  import subprocess
+  domain=json.loads((ROOT/'skill-suite.json').read_text())['pluginId']
+  source=ROOT/'skills'/f'{domain}-use/scripts'
+  filename='node.lock.json' if domain=='artcraft' else 'runtime.lock.json'
+  original=json.loads((source/filename).read_text())
+  cases=[None, [], {}, 'not an object']
+  if domain=='artcraft':
+   for field,value in [('version',None),('version',24),('archiveSha256',None),('binarySha256',[]),('url',{})]:
+    changed=copy.deepcopy(original);changed[field]=value;cases.append(changed)
+  else:
+   for field,value in [('artifacts',None),('artifacts',[]),('artifact',None),('resolvedVersion',7)]:
+    changed=copy.deepcopy(original);changed[field]=value;cases.append(changed)
+   for entry in [None,[],{},dict(original['artifacts']['darwin-arm64'],url=None),dict(original['artifacts']['darwin-arm64'],binarySha256=[])]:
+    changed=copy.deepcopy(original);changed['artifacts']['darwin-arm64']=entry;cases.append(changed)
+  for payload in cases:
+   with self.subTest(domain=domain,payload=payload),tempfile.TemporaryDirectory(prefix='craft malformed lock ') as temporary:
+    scripts=Path(temporary)/'only skill/scripts';scripts.mkdir(parents=True)
+    for name in ['bootstrap.py','cli.py']:shutil.copyfile(source/name,scripts/name)
+    (scripts/filename).write_text(json.dumps(payload));runtime=Path(temporary)/'runtime'
+    for entry in ['bootstrap.py','cli.py']:
+     argv=[sys.executable,'-I','-B',str(scripts/entry),'--runtime-home',str(runtime)]
+     if entry=='cli.py':argv+=['--','--version']
+     result=subprocess.run(argv,capture_output=True,text=True,timeout=20)
+     self.assertEqual(result.returncode,1,result.stdout+result.stderr)
+     self.assertNotIn('Traceback',result.stderr,result.stderr)
+     reply=json.loads(result.stdout);self.assertIn('lock_invalid',reply['error'])
+     self.assertEqual(reply['dependencySetup']['bootstrapScript'],str((scripts/'bootstrap.py').resolve()))
+     self.assertFalse(reply['dependencySetup']['automaticRetry']);self.assertFalse(runtime.exists())
+
 if __name__=='__main__':unittest.main()

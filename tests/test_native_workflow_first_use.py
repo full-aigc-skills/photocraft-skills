@@ -11,7 +11,7 @@ class NativeFirstUse(unittest.TestCase):
    root=Path(temporary)
    path_case=os.environ.get('CRAFT_UNICODE_PATH_FIRST_USE')=='1'
    if path_case:root=root/'首次 使用 中文路径';root.mkdir()
-   skill=root/'single-skill';shutil.copytree(SOURCE,skill);runtime=root/'empty-runtime'
+   skill=root/'single-skill';shutil.copytree(SOURCE,skill,ignore=shutil.ignore_patterns('__pycache__'));runtime=root/'empty-runtime'
    self.assertFalse(runtime.exists())
    if path_case:self.assertIn(' ',str(skill));self.assertIn('中文',str(skill))
    environment=dict(os.environ,PATH='/usr/bin:/bin')
