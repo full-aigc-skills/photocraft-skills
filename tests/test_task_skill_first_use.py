@@ -197,6 +197,22 @@ class TaskSkillFirstUseTests(unittest.TestCase):
                 self.assertEqual(after.crop((0, 240, 320, 400)).tobytes(), before.crop((0, 240, 320, 400)).tobytes())
             self.assertEqual(self.layer(target, self.headline), self.layer(self.project, self.headline))
 
+    def test_filters_blur_product_edge_and_preserve_type_and_background(self):
+        from PIL import Image
+        self.install_only('filters')
+        target = self.root / 'filtered.pcraft'
+        title = self.layer(self.project, self.headline)
+        self.execute([('layer.select', {'layer': self.product}),
+                      ('filter.blur.gaussianBlur', {'radius': 5})], target)
+        self.assertEqual(self.layer(target, self.headline), title)
+        self.assertEqual(self.layer(target, self.product)['kind'], 'Pixel')
+        with Image.open(self.preview) as before, Image.open(self.render(target)) as after:
+            self.assertNotEqual(before.tobytes(), after.tobytes())
+            self.assertEqual(before.crop((0, 0, 320, 100)).tobytes(),
+                             after.crop((0, 0, 320, 100)).tobytes())
+            self.assertEqual(before.crop((0, 330, 320, 400)).tobytes(),
+                             after.crop((0, 330, 320, 400)).tobytes())
+
     def test_text_revision_keeps_type_editable_and_product_pixels_unchanged(self):
         from PIL import Image
         self.install_only('text'); target = self.root / 'text.pcraft'
