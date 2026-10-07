@@ -16,6 +16,8 @@ class InstalledPathTests(unittest.TestCase):
     if path.name == 'SKILL.md':
      self.assertIn('SKILL_DIR', content)
      self.assertIn('实际加载', content)
+     locations = re.findall(r'(?:~/.agents/skills/|`\.agents/skills/|其 `skills/)('+re.escape(path.parent.name.split('-')[0])+r'-[a-z-]+)', content)
+     self.assertEqual(set(locations), {path.parent.name}, '安装位置示例必须只引用当前技能自身')
  def test_documented_script_paths_run_in_installation_layouts(self):
   for skill in sorted((ROOT / 'skills').iterdir()):
    content = (skill / 'SKILL.md').read_text()

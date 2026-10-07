@@ -14,6 +14,9 @@ class SkillSuiteTests(unittest.TestCase):
   suite=json.loads((ROOT/'skill-suite.json').read_text())
   names={entry['name'] for entry in suite['skills']}
   domain=suite['pluginId']
+  for entry in suite['skills']:
+   lock=json.loads((ROOT/'skills'/entry['name']/'scripts/runtime.lock.json').read_text())
+   self.assertEqual(suite['runtimeVersion'],lock['resolvedVersion'])
   self.assertTrue({domain+'-use',domain+'-cli',domain+'-cli-setup'}.issubset(names))
   self.assertGreater(len(names),3)
   for name in names:
