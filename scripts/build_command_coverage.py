@@ -40,6 +40,11 @@ def build(check=False):
     reflection = json.loads((BASE / "references/commands.json").read_text())
     snapshot = json.loads((BASE / "references/native-command-snapshot.json").read_text())
     current = {r["id"]:r for r in snapshot["commands"]}
+    reflected = {r["id"] for r in reflection["commands"]}
+    if reflected != set(current):
+        raise ValueError("native_registry_inventory_drift: missing=" +
+                         ",".join(sorted(set(current) - reflected)) + "; stale=" +
+                         ",".join(sorted(reflected - set(current))))
     node = ast.parse((BASE / "scripts/workflow.py").read_text())
     mapped = set()
     for entry in node.body:
@@ -113,4 +118,3 @@ if __name__ == "__main__":
             parser.error("--check is read-only")
         capture()
     build(args.check)
-

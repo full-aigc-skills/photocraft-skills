@@ -13,7 +13,7 @@
       "title": "完整任务路由",
       "description": "组合多个本工具能力并保留可编辑原生交付",
       "kind": "router",
-      "commandCount": 748,
+      "commandCount": 755,
       "commandPrefixes": []
     },
     {
@@ -21,7 +21,7 @@
       "title": "CLI 公共操作",
       "description": "查询 PhotoCraft 原生命令和参数，或处理局部滤镜、背景虚化与输出锐化；首次使用安装固定 CLI。",
       "kind": "cli",
-      "commandCount": 748,
+      "commandCount": 755,
       "commandPrefixes": []
     },
     {
@@ -29,7 +29,7 @@
       "title": "CLI 安装诊断",
       "description": "首次安装、摘要校验、版本检查与缺失运行时排障",
       "kind": "setup",
-      "commandCount": 748,
+      "commandCount": 755,
       "commandPrefixes": []
     },
     {
@@ -50,7 +50,7 @@
       "title": "图层合成",
       "description": "组织产品、背景、文本与图层组，调整混合和层级",
       "kind": "scenario",
-      "commandCount": 194,
+      "commandCount": 196,
       "commandPrefixes": [
         "layer.",
         "layerComp."
@@ -104,7 +104,7 @@
       "title": "修图与绘画",
       "description": "对已授权图像做修复、克隆、画笔和局部修饰",
       "kind": "scenario",
-      "commandCount": 32,
+      "commandCount": 37,
       "commandPrefixes": [
         "paint.",
         "cloneSource.",
