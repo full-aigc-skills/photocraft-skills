@@ -1,0 +1,65 @@
+{
+  "result": "PASS",
+  "scope": "source candidate transparent trim and16-bit conversion; native layered variant and original reopen, exact exported pixels; not all19 commands or color quality acceptance",
+  "runtimeSha256": "3b59686b288c399078e51a631ca9133cdb075ba9fe8f2ae705db4a6f76e464bf",
+  "original": {
+    "width": 96,
+    "height": 64,
+    "depth": 8,
+    "layerCount": 3
+  },
+  "variant": {
+    "width": 32,
+    "height": 16,
+    "depth": 16,
+    "layerCount": 3
+  },
+  "preservedLayerIdentities": true,
+  "originalReopenedUnchanged": true,
+  "reopenedRgbaSha256": "c66aca6997c9f25b51a1d329c378c379f292824663cca3ec74ae11982daa4119",
+  "coldInstall": {
+    "result": "PASS",
+    "skills": 3,
+    "records": [
+      {
+        "domain": "photocraft",
+        "skill": "photocraft-cli-project",
+        "result": "PASS",
+        "version": "photocraft-cli 0.2.0-craft.1 (dev build)",
+        "commands": 748,
+        "skillSha256": "89df8eb1ec4b185f518c90c978b452decddb4ce13b9d067a4ff2e0c8df79a21d",
+        "scope": "single source candidate skill copy; initially absent runtime; public download/bootstrap/version/query; no native creative claim"
+      },
+      {
+        "domain": "photocraft",
+        "skill": "photocraft-cli-resize",
+        "result": "PASS",
+        "version": "photocraft-cli 0.2.0-craft.1 (dev build)",
+        "commands": 748,
+        "skillSha256": "4c61a527c3efd96cd25d9ac8faf1be83ce64001ec78e2d3578ed01bf621eddee",
+        "scope": "single source candidate skill copy; initially absent runtime; public download/bootstrap/version/query; no native creative claim"
+      },
+      {
+        "domain": "photocraft",
+        "skill": "photocraft-cli-adjustments",
+        "result": "PASS",
+        "version": "photocraft-cli 0.2.0-craft.1 (dev build)",
+        "commands": 748,
+        "skillSha256": "224597e902bf06cebcfd83acc5de5bf959f561d7eb3f891628ab051ea878f8db",
+        "scope": "single source candidate skill copy; initially absent runtime; public download/bootstrap/version/query; no native creative claim"
+      }
+    ]
+  },
+  "regression": {
+    "tests": 127,
+    "passed": 99,
+    "skipped": 28,
+    "exitCode": 0
+  },
+  "newScenarioAssignments": 19,
+  "skillValidation": "PASS",
+  "examples": {
+    "image-trim-depth-create.json": "5b607957649a7ff57efc843a124b1f89bdeb8d8e88927256f9bb05c2a2a55267",
+    "image-trim-depth-reopen.json": "1b728fcb8c53ceaae10cd154f4857bd1f7ef7528941b411dc3ea3e21a6d7be78"
+  }
+}

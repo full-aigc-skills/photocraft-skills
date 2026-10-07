@@ -35,12 +35,14 @@
     {
       "name": "photocraft-cli-project",
       "title": "图像工程与色彩模式",
-      "description": "创建、打开和保存 pcraft，检查尺寸、深度和色彩模式",
+      "description": "创建、打开、保存或复制 pcraft 工程，转换色彩模式及位深；首次使用安装固定 PhotoCraft CLI。",
       "kind": "scenario",
-      "commandCount": 50,
+      "commandCount": 63,
       "commandPrefixes": [
         "file.",
-        "document."
+        "document.",
+        "image.mode.",
+        "image.duplicate"
       ]
     },
     {
@@ -80,10 +82,10 @@
     },
     {
       "name": "photocraft-cli-adjustments",
-      "title": "非破坏调整",
-      "description": "使用调整图层或指定局部颜色调整",
+      "title": "调整图层与像素色彩",
+      "description": "建立调整图层、修改局部颜色，或执行授权的自动色调、对比度及颜色像素调整；首次使用安装固定 PhotoCraft CLI。",
       "kind": "scenario",
-      "commandCount": 46,
+      "commandCount": 49,
       "commandPrefixes": [
         "layer.newAdjustmentLayer.",
         "layer.setAdjustment",
@@ -91,7 +93,10 @@
         "layer.select",
         "select.rect",
         "select.deselect",
-        "layer.layerMask.revealSelection"
+        "layer.layerMask.revealSelection",
+        "image.autoTone",
+        "image.autoContrast",
+        "image.autoColor"
       ]
     },
     {
@@ -120,14 +125,17 @@
     {
       "name": "photocraft-cli-resize",
       "title": "尺寸适配",
-      "description": "调整画布和图像尺寸，制作海报封面变体",
+      "description": "调整图像或画布尺寸，裁透明边、展开画布、旋转和制作封面变体；首次使用安装固定 PhotoCraft CLI。",
       "kind": "scenario",
-      "commandCount": 8,
+      "commandCount": 11,
       "commandPrefixes": [
         "image.imageSize",
         "image.canvasSize",
         "image.crop",
-        "image.imageRotation."
+        "image.imageRotation.",
+        "image.trim",
+        "image.revealAll",
+        "image.rotation.arbitrary"
       ]
     },
     {
