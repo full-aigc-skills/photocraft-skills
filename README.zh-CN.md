@@ -1,3 +1,5 @@
+固定PhotoCraft插件dev.32／源dev.30通过本领域每个技能的独立冷安装、7项安装保护和1项冷原生创建／重开／返工／导出。三个更新领域合计41个独立空缓存、21项保护和3项原生验收通过，全部64安装摘要保持不变。Art捆绑升级与完整V1另行验收。[证据](docs/evidence/craft-three-domain-output-guards-fixed-first-use-20261007.json)。
+
 PhotoCraft 技能源dev.30候选在原生会话前保护公开工作流目标：7项保护测试、111项源回归（29项需显式环境的测试跳过）及1项实际冷原生创建／返工／重开／导出通过。完成记录绑定实际计划、原工程与运行时摘要。固定安装与Art捆绑升级分别验收。[证据](docs/evidence/photocraft-output-execution-candidate-20261007.json) · [架构](docs/PhotoCraft-Output-Execution-Architecture.zh_CN.md)。
 
 领域场景验收现为 **43项原生测试通过／全部42个不同场景技能**。固定安装跟踪用例使用受支持H.264 High通过；此前无损输入不受原生解码器支持，失败证据保留。Art角色专项、实际Skills CLI及完整V1仍开放。 [Evidence / 证据](docs/evidence/craft-fixed-tracking-supported-input-20261007.json).
