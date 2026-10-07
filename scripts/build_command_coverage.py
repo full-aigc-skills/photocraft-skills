@@ -45,6 +45,12 @@ def build(check=False):
     for entry in node.body:
         if isinstance(entry, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "ALLOWED" for t in entry.targets):
             mapped = ast.literal_eval(entry.value)
+    recipes = {}
+    for filename in ('adjustment-mask-create.json', 'adjustment-mask-revise.json'):
+        plan = json.loads((BASE / 'examples' / filename).read_text())
+        for operation in plan['operations']:
+            identifier = operation['params']['command'] if operation['command'] == 'native.command' else operation['command']
+            recipes.setdefault(identifier, set()).add('examples/' + filename)
     rows = []
     for original in reflection["commands"]:
         identifier = original["id"]
@@ -58,7 +64,7 @@ def build(check=False):
         rows.append({**original, "ownerSkill":owner,
                      "ownerInstall":"npx skills add full-aigc-skills/" + DOMAIN + "-skills --skill " + owner,
                      "nativeUsage":"commands.py describe " + identifier + "; commands.py run PLAN.json --output NEW_DIRECTORY",
-                     "workflowMapped":identifier in mapped,
+                     "workflowMapped":identifier in mapped, "usageRecipes":sorted(recipes.get(identifier, [])),
                      "observedEmptySession":native,
                      "executionAcceptance":"NOT_RUN",
                      "acceptanceScope":"full per-command contexts and outputs in this coverage audit"})
@@ -84,6 +90,8 @@ def build(check=False):
                   "- 调用 / Invocation: `python3 -I -B \"$SKILL_DIR/scripts/commands.py\" describe " + row["id"] + "`；按原生参数构造计划后执行 run。",
                   "- 完整逐命令验收 / Full command acceptance: NOT_RUN。", "",
                   "原生参数原文 / Verbatim native parameters:", "", "```text", row["params"] or "{} (no parameter documentation in snapshot)", "```", ""]
+        if row['usageRecipes']:
+            parts += ['场景 / Recipes: ' + ', '.join('[' + p + '](../' + p + ')' for p in row['usageRecipes']) + '；前置条件见 [调整蒙版](adjustment-mask.md)。', '']
     outputs["command-reference.md"] = "\n".join(parts)
     for name, content in outputs.items():
         path = BASE / "references" / name
