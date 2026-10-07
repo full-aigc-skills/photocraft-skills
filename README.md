@@ -149,3 +149,5 @@ Command-plan JSON source candidate: duplicate keys are rejected before installat
 Fixed strict-plan installed verification passes: 64 CLI probes, 324 duplicate-key rejections across54 independently copied installed domain skills, 54 unique-plan structure checks and four cold native save/reopen/render samples. All64 installed skill hashes remain unchanged. Only the bounded strict-plan publication gate closes; generic Skills CLI, Art domain-bundle upgrade, exhaustive contexts and fullV1 remain open. [Evidence](docs/evidence/command-plan-json-fixed-first-use-20261007.json).
 
 Six scenario directory examples were corrected across the four domains; this package’s runtime identity matches every bundled runtime lock. Native CLI archives are unchanged.
+
+Fixed installed own-directory acceptance passes for the updated scenario skills; 64 host identities match. Complete V1 remains open. [Evidence / 证据](https://github.com/full-aigc-plugins/photocraft-plugin/blob/main/docs/evidence/craft-scenario-paths-fixed-first-use-20261008.json).

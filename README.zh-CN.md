@@ -143,3 +143,5 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 严格计划解析的固定安装复验通过：64 个 CLI 探测、54 个独立安装领域技能的 324 次重复键拒绝、54 次有效计划结构检查，以及四领域空缓存原生保存／重开／渲染实例通过；执行后全部 64 个安装技能摘要不变。仅关闭本次修复的发布门禁；通用 Skills CLI、Art 领域包升级、全部命令上下文和完整首版仍开放。[证据](docs/evidence/command-plan-json-fixed-first-use-20261007.json)。
 
 四域共六个场景目录示例已修正；本包运行时身份与每个随附运行时锁一致。原生CLI制品保持原摘要。
+
+新场景自身目录已通过固定安装复验；64项宿主身份匹配。完整V1仍开放。 [Evidence / 证据](https://github.com/full-aigc-plugins/photocraft-plugin/blob/main/docs/evidence/craft-scenario-paths-fixed-first-use-20261008.json).
