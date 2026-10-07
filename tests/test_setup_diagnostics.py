@@ -55,4 +55,16 @@ class SetupFailureTests(unittest.TestCase):
    self.assertEqual(result.returncode,1,result.stdout+result.stderr)
    reply=json.loads(result.stdout);self.assertEqual(reply['dependencySetup']['bootstrapScript'],str(path.resolve()));self.assertFalse(reply['dependencySetup']['automaticRetry']);self.assertFalse(runtime.exists());self.assertNotIn('Traceback',result.stderr)
 
+
+ def test_missing_bootstrap_in_single_skill_preserves_original_failure(self):
+  import shutil
+  import subprocess
+  domain=json.loads((ROOT/'skill-suite.json').read_text())['pluginId']
+  source=ROOT/'skills'/f'{domain}-use'/'scripts/cli.py'
+  with tempfile.TemporaryDirectory(prefix='craft missing bootstrap ') as temporary:
+   scripts=Path(temporary)/'one skill/scripts';scripts.mkdir(parents=True);path=scripts/'cli.py';shutil.copyfile(source,path);runtime=Path(temporary)/'runtime'
+   result=subprocess.run([sys.executable,'-I','-B',str(path),'--runtime-home',str(runtime),'--','--version'],capture_output=True,text=True)
+   self.assertNotEqual(result.returncode,0)
+   reply=json.loads(result.stdout);self.assertIn('bootstrap.py',reply['error']);self.assertEqual(reply['dependencySetup']['bootstrapScript'],str((scripts/'bootstrap.py').resolve()));self.assertFalse(reply['dependencySetup']['automaticRetry']);self.assertFalse(runtime.exists());self.assertNotIn('Traceback',result.stderr)
+
 if __name__=='__main__':unittest.main()
