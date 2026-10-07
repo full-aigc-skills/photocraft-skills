@@ -14,7 +14,7 @@ Fixed native first-use and complete-command recovery acceptance passed:58 standa
 
 Historical candidate observation before fixed acceptance: Native download recovery candidate: up to three read-only attempts discard partial archives. Earlier fixed cold installs failed on SSL EOF; new fixed installed acceptance remains open.
 
-Current standalone source: `0.1.0-dev.18`; bounded fixed native gateway first use passes; full V1 remains open.
+Current standalone source: `0.1.0-dev.19`; native adjustment/mask recipes included; fixed installed acceptance pending; full V1 remains open.
 
 Previous version-bound failed-stage acceptance: plugin dev.17, standalone source dev.15. All58 independent CLI cold starts,24 original-stage native fault cases and37 native scene tests plus6 contracts pass. Art77 bundle upgrade remains open. [Evidence](docs/evidence/codex-failed-stage-first-use-20261007.json).
 
