@@ -94,7 +94,7 @@ class NativeConvert(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);original=self.source(root);output=root/'never.unknown'
             with self.assertRaises(Exception) as caught:s.execute(BINARY,['convert',str(original),str(output)],io.StringIO())
-            self.assertEqual(caught.exception.outcome,'failed');self.assertEqual(caught.exception.phase,'submitted')
+            self.assertEqual(caught.exception.outcome,'failed');self.assertEqual(caught.exception.phase,'reply_received')
             self.assertEqual(len(caught.exception.receipts),1);self.assertFalse(output.exists())
 
 if __name__=='__main__':unittest.main()

@@ -21,6 +21,12 @@ class GateContracts(unittest.TestCase):
             with self.assertRaises(ValueError):s.execute('unused',['run','--new={"width":NaN}','--out=x.pcraft'],io.StringIO())
             query.assert_not_called();launch.assert_not_called()
 
+    def test_public_locked_version_mismatch_never_launches_edit(self):
+        metadata={'schema':'photocraft-supervision-info/v1','protocol':s.SCHEMA,'runtimeVersion':'0.2.0-craft.5','subcommands':['run'],'acknowledgment':'continue <sequence>\n'}
+        with mock.patch.object(s.subprocess,'run',return_value=subprocess.CompletedProcess([],0,json.dumps(metadata),'')),mock.patch.object(s.subprocess,'Popen') as launch:
+            with self.assertRaises(Exception) as caught:s.execute('unused',['run','--new={"width":32}','--out=x.pcraft'],io.StringIO(),runtime_version='0.2.0-craft.6')
+            self.assertEqual(caught.exception.outcome,'not_executed');self.assertEqual(caught.exception.phase,'capabilities');launch.assert_not_called()
+
     def test_malformed_missing_or_failed_capabilities_never_launch_edit(self):
         good={'schema':'photocraft-supervision-info/v1','protocol':s.SCHEMA,'runtimeVersion':'0.2.0-craft.4',
               'subcommands':['run','batch','convert'],'acknowledgment':'continue <sequence>\n'}
