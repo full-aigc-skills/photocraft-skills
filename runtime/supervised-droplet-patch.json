@@ -1,0 +1,8 @@
+{
+  "schema": "craft-maintained-runtime-patch/v1",
+  "upstreamRepository": "https://github.com/storytold/photocraft",
+  "upstreamCommit": "f114f621799a96dc9f28ffb8faa01da680b64947",
+  "patch": "runtime/patches/supervised-droplet.patch",
+  "patchSha256": "d8b1dff6d3e49147fec96e0a69345bce154dd939ab1bb719152fe8b2b6af5aa6",
+  "scope": "Scoped smart content, run/batch/convert supervision and original-engine droplet per-file/command/save acknowledgment; ordinary CLI preserved; streaming and public integration incomplete"
+}

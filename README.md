@@ -1,5 +1,9 @@
 # PhotoCraft Skills
 
+Source dev.43 rejects integer literals outside the native finite-number range before installation, retaining exact field paths even beyond Python integer-length limits. All13 independent public entries are covered. Internal droplet supervision is packaged as a candidate; public runtime remains craft.1. [Contract](docs/PhotoCraft-Integer-Overflow-Contract.md). Fixed publication acceptance is tracked separately; full V1 remains open.
+
+Source dev.43 packages original-engine droplet supervision as an unactivated runtime candidate, preserving native scratch sessions and JPEG quality semantics. Public runtime remains craft.1. [Design and reproduction](docs/PhotoCraft-Supervised-Droplet-Candidate.md). Streaming, public integration and fixed candidate acceptance remain open.
+
 Source dev.42 packages supervised run/batch/convert candidates and a read-only capability gate. Public runtime craft.1 and public entry behavior remain unchanged; candidate craft.4 is not activated. [Scope and reproduction](docs/PhotoCraft-Supervised-Convert-Candidate.md). Fixed candidate installation and full V1 remain open.
 
 Source dev.41 validates native delivery/checkpoint read-only tool semantics and reports stable recovery fields; parseable JSON alone cannot confirm reopening. Fourteen actual native faults and two healthy paths pass; full candidate and fixed publication validation are recorded separately. [Contract](docs/PhotoCraft-Readonly-Reply-Contract.md). Complete9.6 and V1 remain open.
@@ -22,7 +26,7 @@ The complete PC-DM-004 size-variant contract passes fixed installed first use: p
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.42`; target plugin: `0.1.0-dev.48`; 13 independent skills.
+Current source: `0.1.0-dev.43`; target plugin: `0.1.0-dev.49`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 

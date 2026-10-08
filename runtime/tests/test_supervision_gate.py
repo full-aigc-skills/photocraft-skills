@@ -53,8 +53,8 @@ class NativeGate(unittest.TestCase):
         self.assertEqual(result.returncode,0,result.stderr)
         info=json.loads(result.stdout)
         self.assertEqual(info['schema'],'photocraft-supervision-info/v1');self.assertEqual(info['protocol'],s.SCHEMA)
-        self.assertEqual(info['subcommands'],['run','batch','convert'])
+        self.assertEqual(info['subcommands'],['run','batch','convert','droplet'])
         self.assertEqual(info['acknowledgment'],'continue <sequence>\n')
-        self.assertEqual(info['runtimeVersion'],'0.2.0-craft.4')
+        self.assertEqual(info['runtimeVersion'],os.environ.get('CRAFT_SUPERVISED_VERSION','0.2.0-craft.4'))
 
 if __name__=='__main__':unittest.main()

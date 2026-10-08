@@ -1,0 +1,464 @@
+--- a/crates/engine/src/smart_cmds.rs
++++ b/crates/engine/src/smart_cmds.rs
+@@ -590,6 +590,24 @@
+         refresh_or_fail(doc, id)?;
+         Ok(json!({"layer": id.0}))
+     })
++}
++
++/// 使用由目录能力读取的字节替换智能对象，保留变换、蒙版和滤镜。
++/// 不访问环境文件系统；重新链接收集策略同样输出嵌入内容。
++pub fn replace_scoped_bytes(s: &mut Session, p: &Value, name: &str, bytes: Vec<u8>) -> Result<Value> {
++    decode_source(name, &bytes)?;
++    let name = base_name(name);
++    set_source(s, p, "Replace Collected Contents", false, |_, _| Ok(SmartSource::Embedded { file_name: name, bytes: Arc::new(bytes) }))
++}
++
++/// 验证收集对象已经嵌入；拒绝读取原工程中的环境链接。
++pub fn verify_scoped_embedded(s: &mut Session, p: &Value) -> Result<Value> {
++    let id = layer_param(s, p)?;
++    let doc = &s.active().ok_or(EngineError::NoDocument)?.doc;
++    if !matches!(smart(doc, id)?.source, SmartSource::Embedded { .. }) {
++        return Err(other("scoped linked content must be replaced with registered bytes before embedding"));
++    }
++    Ok(json!({"layer": id.0, "embedded": true}))
+ }
+ 
+ fn replace_contents(s: &mut Session, p: &Value) -> Result<Value> {
+--- a/crates/automation/src/headless.rs
++++ b/crates/automation/src/headless.rs
+@@ -186,9 +186,50 @@
+ 
+     pub fn command_run(&mut self, id: &str, params: Value) -> Result<Value, AutomationError> {
+         let params = if params.is_null() { json!({}) } else { params };
+-        if !matches!(&self.filesystem, Filesystem::TrustedLocal) {
++        if let Filesystem::Workspace(workspace) = &self.filesystem {
++            if matches!(id, "file.placeEmbedded" | "layer.smartObjects.replaceContents" | "layer.smartObjects.relinkToFile") {
++                let fields: &[&str] = if id == "file.placeEmbedded" { &["path", "center", "scale", "fit"] } else { &["path", "layer"] };
++                let object = params.as_object().ok_or_else(|| AutomationError::BadRequest("smart parameters must be an object".into()))?;
++                if object.keys().any(|key| !fields.contains(&key.as_str())) {
++                    return Err(AutomationError::BadRequest("unknown scoped smart field".into()));
++                }
++                let path = params.get("path").and_then(Value::as_str).ok_or_else(|| AutomationError::BadRequest("registered smart path required".into()))?;
++                let bytes = workspace.read(path)?;
++                return Ok(if id == "file.placeEmbedded" {
++                    photocraft_engine::file_cmds::place_bytes(&mut self.session, path, bytes, None, &params)?
++                } else {
++                    photocraft_engine::smart_cmds::replace_scoped_bytes(&mut self.session, &params, path, bytes)?
++                });
++            }
++            if id == "layer.smartObjects.convertToEmbedded" {
++                return Ok(photocraft_engine::smart_cmds::verify_scoped_embedded(&mut self.session, &params)?);
++            }
+             authorize_engine_command(id, &params)?;
+         }
+         Ok(self.session.execute(id, params)?)
+     }
+ }
++
++#[cfg(test)]
++mod scoped_smart_tests {
++    use super::*;
++    #[test]
++    fn smart_commands_preserve_directory_capability_rejection() {
++        let root = std::env::temp_dir().join(format!("photocraft-scoped-smart-{}", std::process::id()));
++        std::fs::create_dir_all(&root).unwrap();
++        let workspace = AuthorizedWorkspace::new(Some(&root), Some(&root)).unwrap();
++        let mut h = Headless::with_workspace(workspace);
++        for id in ["file.placeEmbedded", "layer.smartObjects.replaceContents", "layer.smartObjects.relinkToFile"] {
++            for path in ["/outside.png", "../outside.png"] {
++                let params = if id == "file.placeEmbedded" { json!({"path":path}) } else { json!({"path":path,"layer":1}) };
++                let error = h.command_run(id, params).unwrap_err().to_string();
++                assert!(error.contains("rejected"), "{error}");
++            }
++        }
++        #[cfg(unix)] {
++            std::os::unix::fs::symlink("/outside.png", root.join("escape.png")).unwrap();
++            assert!(h.command_run("file.placeEmbedded", json!({"path":"escape.png"})).is_err());
++        }
++        std::fs::remove_dir_all(root).unwrap();
++    }
++}
+--- a/crates/engine/src/inspect.rs
++++ b/crates/engine/src/inspect.rs
+@@ -94,6 +94,11 @@
+             v["adjustment"] = serde_json::to_value(a).unwrap_or(Value::Null);
+         }
+         LayerContent::Smart(sm) => {
++            v["smartTransform"] = json!(sm.transform.m);
++            v["smartSourceKind"] = json!(match &sm.source {
++                photocraft_doc::SmartSource::Embedded { .. } => "embedded",
++                photocraft_doc::SmartSource::Linked { .. } => "linked",
++            });
+             v["smartFilters"] = Value::Array(
+                 sm.smart_filters
+                     .iter()
+
+--- a/apps/photocraft-cli/src/lib.rs
++++ b/apps/photocraft-cli/src/lib.rs
+@@ -3,7 +3,7 @@
+ 
+ #![deny(clippy::unwrap_used, clippy::expect_used, clippy::panic, clippy::unimplemented, clippy::todo, clippy::unreachable)]
+ 
+-use std::io::Write;
++use std::io::{BufRead, Read, Write};
+ use std::path::{Path, PathBuf};
+ 
+ use photocraft_automation::{AuthorizedWorkspace, Headless, PhotocraftMcp, files, security};
+@@ -106,6 +106,7 @@
+         }
+     };
+     let r = match cmd.as_str() {
++        "--supervision-info" => supervision_info(out),
+         "convert" => convert(&parsed, out, err),
+         "info" => info(&parsed, out),
+         "run" => run_cmds(&parsed, out, err),
+@@ -156,7 +157,10 @@
+         .map_err(|error| error.to_string())
+ }
+ 
+-fn convert(a: &Args, _out: &mut dyn Write, err: &mut dyn Write) -> R {
++fn convert(a: &Args, out: &mut dyn Write, err: &mut dyn Write) -> R {
++    if a.has("--supervised") {
++        return convert_supervised(a, out, err);
++    }
+     let [input, output] = a.positional.as_slice() else {
+         return Err("convert needs <in> <out>".into());
+     };
+@@ -164,6 +168,46 @@
+     warn_all(err, &o.warnings);
+     let ws = files::save(&o.document, Path::new(output), a.get("--format"), &export_opts(a)?, None).map_err(|e| e.to_string())?;
+     warn_all(err, &ws);
++    Ok(())
++}
++
++/// 仅返回编译时监督能力；不构造文档、会话或目录，不执行输入动作。
++/// 参数为输出通道；返回元数据输出是否成功。
++fn supervision_info(out: &mut dyn Write) -> R {
++    print_json(out, &json!({"schema": "photocraft-supervision-info/v1",
++        "protocol": "photocraft-supervised-run/v1", "runtimeVersion": env!("CARGO_PKG_VERSION"),
++        "subcommands": ["run", "batch", "convert", "droplet"], "acknowledgment": "continue <sequence>\n"}), true)
++}
++
++/// 保留原 convert 的直接 files 保存及 None writer；只增加回复确认边界。
++/// 参数为原生 argv 标志与通道；返回已确认的转换或当前错误，不重试。
++fn convert_supervised(a: &Args, out: &mut dyn Write, err: &mut dyn Write) -> R {
++    let [source, target] = a.positional.as_slice() else {
++        return Err("convert needs <in> <out>".into());
++    };
++    let stdin = std::io::stdin();
++    let mut input = stdin.lock();
++    let mut sequence = 0;
++    let opened = files::open(Path::new(source)).map_err(|error| error.to_string());
++    let reply = match &opened {
++        Ok(opened) => Ok(json!({"path": source, "warnings": opened.warnings})),
++        Err(error) => Err(error.clone()),
++    };
++    supervised_result(a, &mut input, out, &mut sequence, "doc_open", json!({"path": source}), reply, false)?;
++    let opened = opened?;
++    warn_all(err, &opened.warnings);
++    let opts = export_opts(a)?;
++    let saved = files::save(&opened.document, Path::new(target), a.get("--format"), &opts, None)
++        .map_err(|error| error.to_string());
++    let reply = match &saved {
++        Ok(warnings) => Ok(json!({"path": target, "warnings": warnings})),
++        Err(error) => Err(error.clone()),
++    };
++    let mut arguments = json!({"path": target});
++    if let Some(format) = a.get("--format") { arguments["format"] = json!(format); }
++    if a.get("--quality").is_some() { arguments["quality"] = json!(opts.encode.jpeg_quality); }
++    supervised_result(a, &mut input, out, &mut sequence, "doc_save", arguments, reply, false)?;
++    warn_all(err, &saved?);
+     Ok(())
+ }
+ 
+@@ -206,17 +250,55 @@
+     Ok(cmds)
+ }
+ 
++/// 将当前原生结果交给监督者；明确确认之前不运行下一项命令。
++/// 参数包含工具身份、原请求和当前结果；返回已确认结果或停止错误。
++fn supervised_result(
++    a: &Args, input: &mut dyn BufRead, out: &mut dyn Write, sequence: &mut u64,
++    tool: &str, arguments: Value, result: Result<Value, String>, visible: bool,
++) -> Result<Value, String> {
++    if !a.has("--supervised") {
++        return result;
++    }
++    *sequence += 1;
++    let mut event = json!({"schema": "photocraft-supervised-run/v1", "sequence": *sequence,
++        "tool": tool, "arguments": arguments, "visible": visible});
++    match &result {
++        Ok(value) => event["result"] = value.clone(),
++        Err(error) => event["error"] = json!(error),
++    }
++    print_json(out, &event, true)?;
++    out.flush().map_err(|error| error.to_string())?;
++    let value = result?;
++    // 固定 ASCII 确认帧不依赖 JSON 宽松解析；序号不符、EOF及超长输入均停止。
++    let mut confirmation = Vec::new();
++    input.take(4097).read_until(b'\n', &mut confirmation).map_err(|error| error.to_string())?;
++    if confirmation != format!("continue {}\n", *sequence).as_bytes() {
++        return Err("supervised result not acknowledged; operation may have completed; do not replay".into());
++    }
++    Ok(value)
++}
++
+ fn run_cmds(a: &Args, out: &mut dyn Write, err: &mut dyn Write) -> R {
++    let stdin = std::io::stdin();
++    let mut input = stdin.lock();
++    run_cmds_with_input(a, out, err, &mut input)
++}
++
++/// 在同一受信本地会话中执行；监督模式只增加每条回复后的确认边界。
++fn run_cmds_with_input(a: &Args, out: &mut dyn Write, err: &mut dyn Write, input: &mut dyn BufRead) -> R {
+     let mut h = Headless::trusted_local();
++    let mut sequence = 0;
+     match (a.positional.as_slice(), a.get("--new")) {
+         ([file], None) => {
+-            let o = h.open(Path::new(file)).map_err(|e| e.to_string())?;
++            let result = h.open(Path::new(file)).map_err(|e| e.to_string());
++            let o = supervised_result(a, input, out, &mut sequence, "doc_open", json!({"path": file}), result, false)?;
+             let ws: Vec<String> = serde_json::from_value(o["warnings"].clone()).unwrap_or_default();
+             warn_all(err, &ws);
+         }
+         ([], Some(new)) => {
+             let p: Value = serde_json::from_str(new).map_err(|e| format!("bad --new JSON: {e}"))?;
+-            h.command_run("file.new", p).map_err(|e| e.to_string())?;
++            let result = h.command_run("file.new", p.clone()).map_err(|e| e.to_string());
++            supervised_result(a, input, out, &mut sequence, "doc_new", p, result, false)?;
+         }
+         _ => return Err("run needs exactly one of <file> or --new <json>".into()),
+     }
+@@ -225,11 +307,19 @@
+         return Err("run needs at least one --cmd (or --out)".into());
+     }
+     for (id, params) in cmds {
+-        let r = h.command_run(&id, params).map_err(|e| format!("`{id}`: {e}"))?;
+-        print_json(out, &json!({"command": id, "result": r}), true)?;
++        let result = h.command_run(&id, params.clone()).map_err(|e| format!("`{id}`: {e}"));
++        let r = supervised_result(a, input, out, &mut sequence, "command_run", json!({"id": id, "params": params}), result, true)?;
++        if !a.has("--supervised") {
++            print_json(out, &json!({"command": id, "result": r}), true)?;
++        }
+     }
+     if let Some(o) = a.get("--out") {
+-        let r = h.save(None, Some(Path::new(o)), a.get("--format"), &export_opts(a)?).map_err(|e| e.to_string())?;
++        let opts = export_opts(a)?;
++        let result = h.save(None, Some(Path::new(o)), a.get("--format"), &opts).map_err(|e| e.to_string());
++        let mut arguments = json!({"path": o});
++        if let Some(format) = a.get("--format") { arguments["format"] = json!(format); }
++        if a.get("--quality").is_some() { arguments["quality"] = json!(opts.encode.jpeg_quality); }
++        let r = supervised_result(a, input, out, &mut sequence, "doc_save", arguments, result, false)?;
+         let ws: Vec<String> = serde_json::from_value(r["warnings"].clone()).unwrap_or_default();
+         warn_all(err, &ws);
+     }
+@@ -260,6 +350,9 @@
+ }
+ 
+ fn batch(a: &Args, out: &mut dyn Write, err: &mut dyn Write) -> R {
++    if a.has("--supervised") {
++        return batch_supervised(a, out, err);
++    }
+     let actions_path = a.get("--actions").ok_or("batch needs --actions <file>")?;
+     let in_dir = PathBuf::from(a.get("--in").ok_or("batch needs --in <dir>")?);
+     let out_dir = PathBuf::from(a.get("--out").ok_or("batch needs --out <dir>")?);
+@@ -300,7 +393,62 @@
+     if failed > 0 { Err(format!("{failed} file(s) failed")) } else { Ok(()) }
+ }
+ 
++/// 在批处理写目录或打开文件前确认完整清单；每个文件仍使用独立原生会话。
++/// 参数为原始标志及输出通道；返回整批已确认或当前失败，不继续其他文件。
++fn batch_supervised(a: &Args, out: &mut dyn Write, err: &mut dyn Write) -> R {
++    let actions_path = a.get("--actions").ok_or("batch needs --actions <file>")?;
++    let in_raw = a.get("--in").ok_or("batch needs --in <dir>")?;
++    let out_raw = a.get("--out").ok_or("batch needs --out <dir>")?;
++    let in_dir = PathBuf::from(in_raw);
++    let out_dir = PathBuf::from(out_raw);
++    let text = std::fs::read_to_string(actions_path).map_err(|e| format!("{actions_path}: {e}"))?;
++    let actions = parse_actions(&text)?;
++    let opts = export_opts(a)?;
++    let mut inputs: Vec<PathBuf> = std::fs::read_dir(&in_dir)
++        .map_err(|e| format!("{}: {e}", in_dir.display()))?
++        .flatten().map(|entry| entry.path()).filter(|path| is_input(path)).collect();
++    inputs.sort();
++    let planned: Vec<(PathBuf, PathBuf, String)> = inputs.into_iter().map(|input| {
++        let ext = a.get("--format").map(str::to_owned)
++            .or_else(|| input.extension().map(|e| e.to_string_lossy().into_owned())).unwrap_or_else(|| "png".into());
++        let stem = input.file_stem().map(|s| s.to_string_lossy().into_owned()).unwrap_or_default();
++        let target = out_dir.join(format!("{stem}.{ext}"));
++        (input, target, ext)
++    }).collect();
++    let files: Vec<Value> = planned.iter().map(|(input, target, _)| json!({"input": input, "target": target})).collect();
++    let steps: Vec<Value> = actions.iter().map(|(id, params)| json!({"id": id, "params": params})).collect();
++    let mut config = json!({"actions": actions_path, "in": in_raw, "out": out_raw});
++    if let Some(format) = a.get("--format") { config["format"] = json!(format); }
++    if a.get("--quality").is_some() { config["quality"] = json!(opts.encode.jpeg_quality); }
++    let stdin = std::io::stdin();
++    let mut input = stdin.lock();
++    let mut sequence = 0;
++    supervised_result(a, &mut input, out, &mut sequence, "batch_plan", config,
++        Ok(json!({"files": files, "steps": steps})), false)?;
++    std::fs::create_dir_all(&out_dir).map_err(|error| error.to_string())?;
++    for (source, target, ext) in &planned {
++        let mut h = Headless::trusted_local();
++        let result = h.open(source).map_err(|error| error.to_string());
++        supervised_result(a, &mut input, out, &mut sequence, "doc_open", json!({"path": source}), result, false)?;
++        for (id, params) in &actions {
++            let result = h.command_run(id, params.clone()).map_err(|error| format!("`{id}`: {error}"));
++            supervised_result(a, &mut input, out, &mut sequence, "command_run",
++                json!({"id": id, "params": params}), result, false)?;
++        }
++        let result = h.save(None, Some(target), Some(ext), &opts).map_err(|error| error.to_string());
++        let mut arguments = json!({"path": target, "format": ext});
++        if a.get("--quality").is_some() { arguments["quality"] = json!(opts.encode.jpeg_quality); }
++        let result = supervised_result(a, &mut input, out, &mut sequence, "doc_save", arguments, result, false)?;
++        let warnings: Vec<String> = serde_json::from_value(result["warnings"].clone()).unwrap_or_default();
++        warn_all(err, &warnings);
++    }
++    supervised_result(a, &mut input, out, &mut sequence, "batch_complete", json!({}),
++        Ok(json!({"succeeded": planned.len(), "failed": 0})), false)?;
++    Ok(())
++}
++
+ fn droplet(a: &Args, out: &mut dyn Write, err: &mut dyn Write) -> R {
++    if a.has("--supervised") { return droplet_supervised(a, out); }
+     let (file, inputs) = a.positional.split_first().ok_or("droplet needs <file.pcdroplet> and inputs")?;
+     if inputs.is_empty() {
+         return Err("droplet needs at least one input file or folder".into());
+@@ -319,6 +467,24 @@
+         let _ = writeln!(err, "FAIL  {}: {}", e["file"].as_str().unwrap_or_default(), e["error"].as_str().unwrap_or_default());
+     }
+     if errors.is_empty() { Ok(()) } else { Err(format!("{} file(s) failed", errors.len())) }
++}
++
++/// 使用原引擎 droplet 的解析、导入、临时会话及保存，只在每项之后等待确认。
++/// 参数为原生参数和输出通道；返回完整确认或停止错误，不重放。
++fn droplet_supervised(a: &Args, out: &mut dyn Write) -> R {
++    let (file, inputs) = a.positional.split_first().ok_or("droplet needs <file.pcdroplet> and inputs")?;
++    if inputs.is_empty() { return Err("droplet needs at least one input file or folder".into()); }
++    let mut params = json!({"droplet": file, "input": inputs});
++    if let Some(output) = a.get("--out") { params["output"] = json!(output); }
++    let stdin = std::io::stdin();
++    let mut input = stdin.lock();
++    let mut sequence = 0;
++    photocraft_engine::automate_cmds::run_droplet_supervised(&params, &mut |tool, arguments, result| {
++        supervised_result(a, &mut input, out, &mut sequence, tool, arguments,
++            result.map_err(|error| error.to_string()), false)
++            .map(|_| ()).map_err(photocraft_engine::EngineError::Other)
++    }).map_err(|error| error.to_string())?;
++    Ok(())
+ }
+ 
+ fn commands(a: &Args, out: &mut dyn Write) -> R {
+--- a/crates/engine/src/automate_cmds.rs
++++ b/crates/engine/src/automate_cmds.rs
+@@ -322,6 +322,13 @@
+ 
+ /// Runs a droplet file on inputs (files and/or folders).
+ fn run_droplet(s: &mut Session, p: &Value) -> Result<Value> {
++    let (path, output, bp) = droplet_batch_plan(p)?;
++    let r = s.execute("file.automate.batch", bp)?;
++    Ok(json!({"droplet": path, "output": output, "files": r["files"], "errors": r["errors"]}))
++}
++
++/// 只读解析原生 droplet，供普通执行和监督执行共用；不创建输出或会话。
++fn droplet_batch_plan(p: &Value) -> Result<(String, String, Value)> {
+     let cmd = "file.automate.runDroplet";
+     let path = p.get("droplet").or_else(|| p.get("path")).and_then(Value::as_str).ok_or_else(|| bad(cmd, "missing \"droplet\""))?;
+     let v: Value = serde_json::from_slice(&read_file(path)?).map_err(|e| bad(cmd, format!("{path}: {e}")))?;
+@@ -350,7 +357,17 @@
+     if let Some(q) = opts.get("quality") {
+         bp["quality"] = q.clone();
+     }
+-    let r = s.execute("file.automate.batch", bp)?;
++    Ok((path.to_string(), output, bp))
++}
++
++/// 在原生逐文件操作之后调用观察器，确认失败立刻停止整个 droplet。
++/// 参数为原 droplet 请求及确认回调；返回完整结果或已停止的错误。
++pub fn run_droplet_supervised(
++    p: &Value,
++    observer: &mut dyn FnMut(&str, Value, Result<Value>) -> Result<()>,
++) -> Result<Value> {
++    let (path, output, bp) = droplet_batch_plan(p)?;
++    let r = crate::file_cmds::supervised_droplet_batch(&bp, p, observer)?;
+     Ok(json!({"droplet": path, "output": output, "files": r["files"], "errors": r["errors"]}))
+ }
+ 
+--- a/crates/engine/src/file_cmds.rs
++++ b/crates/engine/src/file_cmds.rs
+@@ -650,6 +650,73 @@
+     Ok(r)
+ }
+ 
++/// 每次真实操作完成后先确认；即使观察器忽略原生错误，也不得继续。
++fn observed_droplet_step(
++    observer: &mut dyn FnMut(&str, Value, Result<Value>) -> Result<()>,
++    tool: &str,
++    arguments: Value,
++    result: Result<Value>,
++) -> Result<Value> {
++    let reply = match &result {
++        Ok(value) => Ok(value.clone()),
++        Err(error) => Err(EngineError::Other(error.to_string())),
++    };
++    observer(tool, arguments, reply)?;
++    result
++}
++
++/// 复用普通 droplet 的私有解析、导入及0–12质量保存函数；每文件新会话。
++/// 参数为规范化批次、原请求和确认器；返回已确认全部文件或停止错误。
++pub(crate) fn supervised_droplet_batch(
++    p: &Value,
++    request: &Value,
++    observer: &mut dyn FnMut(&str, Value, Result<Value>) -> Result<()>,
++) -> Result<Value> {
++    let cmd = "file.automate.batch";
++    let steps = parse_steps(p.get("steps").ok_or_else(|| EngineError::Other("missing steps".into()))?)?;
++    if let Some((id, _)) = steps.iter().find(|(id, _)| crate::commands::find(id).is_none()) {
++        return Err(EngineError::BadParams { cmd: cmd.into(), msg: format!("unknown command `{id}` in the action") });
++    }
++    let inputs = batch_inputs(p, cmd)?;
++    let output = str_param(p, "output", cmd)?;
++    let format = p.get("format").and_then(Value::as_str).unwrap_or("same");
++    let quality = f64_param(p, "quality");
++    let targets: Vec<String> = inputs.iter().map(|path| {
++        let ext = if format == "same" { path.rsplit('.').next().unwrap_or("png").to_ascii_lowercase() }
++            else { format.trim_start_matches('.').to_ascii_lowercase() };
++        join(output, &format!("{}.{ext}", stem(path)))
++    }).collect();
++    let planned: Vec<Value> = inputs.iter().zip(&targets).map(|(path, target)| json!({"input": path, "target": target})).collect();
++    let actions: Vec<Value> = steps.iter().map(|(id, params)| json!({"id": id, "params": params})).collect();
++    observed_droplet_step(observer, "droplet_plan", request.clone(), Ok(json!({"files": planned, "steps": actions, "quality": quality})))?;
++    let mut files = Vec::new();
++    for (path, target) in inputs.iter().zip(&targets) {
++        let opened = (|| -> Result<Session> {
++            let bytes = read_file(path)?;
++            let mut scratch = Session::new();
++            let doc = import(&file_name(path), &bytes)?;
++            scratch.add_document(doc, Some(path.clone()));
++            Ok(scratch)
++        })();
++        let reply = opened.as_ref().map(|_| json!({"document": 0})).map_err(|error| EngineError::Other(error.to_string()));
++        observed_droplet_step(observer, "doc_open", json!({"path": path}), reply)?;
++        let mut scratch = opened?;
++        for (id, params) in &steps {
++            let result = scratch.execute(id, params.clone());
++            observed_droplet_step(observer, "command_run", json!({"id": id, "params": params}), result)?;
++        }
++        let saved = scratch.active().ok_or(EngineError::NoDocument).and_then(|d| save_doc(&d.doc, target, quality))
++            .map(|warnings| json!({"path": target, "warnings": warnings}));
++        let mut arguments = json!({"path": target});
++        if let Some(quality) = quality { arguments["quality"] = json!(quality); }
++        observed_droplet_step(observer, "doc_save", arguments, saved)?;
++        files.push(target.clone());
++    }
++    let result = json!({"files": files, "errors": []});
++    observed_droplet_step(observer, "droplet_complete", json!({}), Ok(result.clone()))?;
++    Ok(result)
++}
++
+ fn image_processor(_s: &mut Session, p: &Value) -> Result<Value> {
+     let cmd = "file.scripts.imageProcessor";
+     let inputs = batch_inputs(p, cmd)?;
