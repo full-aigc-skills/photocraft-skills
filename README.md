@@ -28,7 +28,7 @@ The complete PC-DM-004 size-variant contract passes fixed installed first use: p
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.47`; target plugin: `0.1.0-dev.59`; 13 independent skills.
+Current source: `0.1.0-dev.48`; target plugin: `0.1.0-dev.60`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 

@@ -1,5 +1,5 @@
 """单技能公开工作流完整命令网关：冷安装、实际原生保存与重开、返工及原交付保全。"""
-import hashlib,json,os,shutil,subprocess,sys,tempfile,unittest
+import hashlib,importlib.util,json,os,shutil,subprocess,sys,tempfile,unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];DOMAIN=ROOT.name.removesuffix('-skills')
 SOURCE=Path(os.environ.get('CRAFT_INSTALLED_NATIVE_WORKFLOW_SKILL',ROOT/'skills'/(DOMAIN+'-use')))
@@ -45,6 +45,8 @@ class NativeFirstUse(unittest.TestCase):
     record=next(r for r in records if r['targetHash']==target_hash)
     self.assertEqual(record['identity']['projectRevision'],expected_revision)
     effective=json.loads((target/'plan.json').read_text())
-    plan_sha=hashlib.sha256(json.dumps(effective,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+    identity_spec=importlib.util.spec_from_file_location('installed_plan_identity',skill/'scripts/plan_identity.py');identity=importlib.util.module_from_spec(identity_spec);identity_spec.loader.exec_module(identity)
+    self.assertEqual(record['identity']['planHashAlgorithm'],'photocraft-json-f64/v2')
+    plan_sha=identity.sha(effective,identity.ALGORITHM)
     self.assertEqual(record['identity']['planHash'],plan_sha)
    if os.environ.get('CRAFT_NATIVE_WORKFLOW_REPORT'):Path(os.environ['CRAFT_NATIVE_WORKFLOW_REPORT']).write_text(json.dumps({'domain':DOMAIN,'result':'PASS','pathCase':{'unicodeAndSpaces':path_case,'skillName':skill.name,'parentName':root.name,'runtimeInitiallyAbsent':True,'offlineOverridesExcluded':True},'guardRecords':records,'workflowSha256':hashlib.sha256((skill/'scripts/workflow.py').read_bytes()).hexdigest(),'guardSha256':hashlib.sha256((skill/'scripts/output_guard.py').read_bytes()).hexdigest(),'entrySha256':hashlib.sha256((skill/'scripts/native_workflow.py').read_bytes()).hexdigest(),'projectSha256':manifest['files'][project],'revisionSha256':revised['files'][project],'scope':('fixed installed' if os.environ.get('CRAFT_INSTALLED_NATIVE_WORKFLOW_SKILL') else 'source candidate')+' single-skill cold native workflow delivery/revision; no full DAG acceptance'},indent=2)+'\n')
