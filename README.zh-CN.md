@@ -1,5 +1,7 @@
 # PhotoCraft 独立技能
 
+技能源 dev.51 增加 MCP 流式回复监督及延迟预检；serve／TCP和聚合内部逐项确认继续开放。[合同](docs/PhotoCraft-MCP-Stream-Supervision.zh_CN.md)。
+
 技能源 dev.50 在固定 craft.5 上启用公开 `run / batch / convert / droplet` 逐步监督。每步回复验证后才允许下一操作，未知结果不重放。流式与嵌套聚合验收继续开放。[合同](docs/PhotoCraft-Public-CLI-Supervision.zh_CN.md)。
 
 技能源dev.49锁定维护版CLI craft.5。真实craft.1 → craft.5 → craft.1及独立自有桌面探测通过；源回归按全量305项通过加唯一失败项在发行可下载后、源码不变的复验通过核验，初始下载404记录保留。插件固定安装待完成，raw／流式监督接入与完整首版仍开放。[版本证据](docs/evidence/runtime-version/source-validation.json)。[合同](docs/PhotoCraft-Runtime-Version-Transition.zh_CN.md)。
@@ -32,7 +34,7 @@ PC-DM-004尺寸变体完整合同已通过固定安装首用：留白、裁切�
 
 图像、文字与图层设计需求进入，交付 `.pcraft`，适用时附 PSD 与平面导出。
 
-当前技能源：`0.1.0-dev.50`；目标插件：`0.1.0-dev.65`；13 个独立技能。
+当前技能源：`0.1.0-dev.51`；目标插件：`0.1.0-dev.66`；13 个独立技能。
 
 已验证首次使用平台：macOS arm64、Python 3.11+。固定运行时安装在用户数据目录，技能文件保留在宿主加载目录。当前为开发版本；完整首版验收及通用 Skills CLI 实际安装仍未完成。
 
