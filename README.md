@@ -28,7 +28,7 @@ The complete PC-DM-004 size-variant contract passes fixed installed first use: p
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.44`; target plugin: `0.1.0-dev.52`; 13 independent skills.
+Current source: `0.1.0-dev.45`; target plugin: `0.1.0-dev.56`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 
@@ -191,3 +191,5 @@ Current fixed protocol-reference release matrix (Film/Effect dev.37, Photo dev.3
 Historical supervised-run runtime candidate (internal modules packaged in dev.42; public runtime unchanged): an explicit acknowledgment boundary in the maintained native CLI stops later commands after invalid replies while retaining the original trusted-local session. Public `cli.py` and runtime `0.2.0-craft.1` remain unchanged; fixed installation, batch/droplet and streaming acceptance are open. [Candidate design and reproduction](docs/PhotoCraft-Supervised-Run-Candidate.md).
 
 The historical batch runtime candidate (modules packaged in dev.42; public runtime unchanged) binds native input/action plans and acknowledges each file operation, with legacy stdout preserved for healthy batches. Public runtime integration and fixed-install acceptance remain open. [Batch candidate](docs/PhotoCraft-Supervised-Batch-Candidate.md).
+
+Checkpoint recovery candidate: hash-bound saved-project forks and explicit Harness recovery revisions; full recovery acceptance remains open. [Contract](docs/PhotoCraft-Checkpoint-Recovery.md).
