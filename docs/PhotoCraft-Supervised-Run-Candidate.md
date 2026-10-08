@@ -1,5 +1,7 @@
 # Supervised native run candidate
 
+This page records the craft.2 run candidate. The subsequent craft.3 increment is documented in the [batch candidate](PhotoCraft-Supervised-Batch-Candidate.md); the historical open items below do not supersede that later evidence.
+
 This candidate advances PC-TX-005 / task 9.6 in `establish-v1-plugin`. Public skills dev.41, plugin dev.47 and runtime `0.2.0-craft.1` remain unchanged. Public `cli.py` does not yet dispatch through the candidate supervisor.
 
 The original CLI executes all run commands inside one process. Inspecting stdout afterward cannot reliably stop its next edit. Routing through current MCP would change trusted-local paths, capability permissions and file-bearing commands. The maintained patch therefore adds an explicit `--supervised` mode to the original `Headless::trusted_local` session, preserving ordinary run behavior.

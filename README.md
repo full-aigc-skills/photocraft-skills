@@ -181,3 +181,5 @@ Current fixed protocol-reference release matrix (Film/Effect dev.37, Photo dev.3
 [Read-only delivery verification](docs/PhotoCraft-Delivery-Integrity-Architecture.md) checks every manifest file before revisions; same-name replacement invalidates the prior integrity result. Fixed plugin38 qualification remains separate.
 
 Unreleased supervised-run candidate: an explicit acknowledgment boundary in the maintained native CLI stops later commands after invalid replies while retaining the original trusted-local session. Public `cli.py` and runtime `0.2.0-craft.1` remain unchanged; fixed installation, batch/droplet and streaming acceptance are open. [Candidate design and reproduction](docs/PhotoCraft-Supervised-Run-Candidate.md).
+
+The unreleased batch candidate now binds native input/action plans and acknowledges each file operation, with legacy stdout preserved for healthy batches. Public runtime integration and fixed-install acceptance remain open. [Batch candidate](docs/PhotoCraft-Supervised-Batch-Candidate.md).

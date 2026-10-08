@@ -39,6 +39,12 @@ try:
                 event['arguments'] = {'id':'layer.new.layer','params':{'name':'Different'}}; line = (json.dumps(event)+'\n').encode()
             elif fault == 'save-array':
                 event['result'] = []; line = (json.dumps(event)+'\n').encode()
+            elif fault == 'wrong-save-path':
+                event['result']['path'] += '.wrong'; line = (json.dumps(event)+'\n').encode()
+            elif fault == 'wrong-plan':
+                event['result']['files'] = event['result']['files'][:-1]; line = (json.dumps(event)+'\n').encode()
+            elif fault == 'extra-frame':
+                line += b'{}\n'
         sys.stdout.buffer.write(line); sys.stdout.buffer.flush()
     raise SystemExit(child.wait(timeout=5))
 finally:

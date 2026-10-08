@@ -45,7 +45,7 @@ class NativeSupervision(unittest.TestCase):
             self.assertEqual(len(output.getvalue().splitlines()), 1)
 
     def test_actual_native_reply_fault_stops_before_next_command_and_save(self):
-        for fault in ['duplicate','nonfinite','semantic','wrong-request']:
+        for fault in ['duplicate','nonfinite','semantic','wrong-request','extra-frame']:
             with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary); log = root/'events.jsonl'; target = root/'never.pcraft'; output = io.StringIO()
                 with mock.patch.dict(os.environ, CRAFT_SUPERVISED_LOG=str(log), CRAFT_SUPERVISED_FAULT=fault, CRAFT_SUPERVISED_AT='2'):

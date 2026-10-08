@@ -1,5 +1,7 @@
 # 原生 run 逐条确认候选
 
+本页记录 craft.2 的 run 候选；后续 craft.3 的 batch 增量见[批处理候选](PhotoCraft-Supervised-Batch-Candidate.zh_CN.md)。以下未完成项描述当时的范围，不代替后续候选证据。
+
 本候选推进 OpenSpec `establish-v1-plugin` 的 PC-TX-005／任务 9.6。它不是新的公开运行时或完整入口验收。当前公开技能源 dev.41、插件 dev.47 和运行时 `0.2.0-craft.1` 不变；公开 `cli.py` 尚未接入候选监督器。
 
 ## 执行边界

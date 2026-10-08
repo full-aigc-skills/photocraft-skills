@@ -175,3 +175,5 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 [只读交付校验](docs/PhotoCraft-Delivery-Integrity-Architecture.zh_CN.md) 在源返工前核对清单全部文件，同名替换使此前完整性结果失效；固定插件38验收另行记录。
 
 未发行的逐条确认候选：维护版原生 CLI 增加显式确认边界，回复无效时停止后续命令并保留原受信本地会话。公开 `cli.py` 与运行时 `0.2.0-craft.1` 保持不变，固定安装、batch／droplet 与流式验收仍开放。[候选设计与复验](docs/PhotoCraft-Supervised-Run-Candidate.zh_CN.md)。
+
+未发行的 batch 候选现已绑定原生输入／动作清单，并逐条确认每个文件的操作，健康批处理保留原 stdout。公开运行时接入与固定安装验收仍开放。[批处理候选](docs/PhotoCraft-Supervised-Batch-Candidate.zh_CN.md)。
