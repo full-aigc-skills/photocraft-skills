@@ -1,4 +1,4 @@
-"""维护版 run／batch 的逐回复监督器；确认前停止，不重放已发送命令。
+"""维护版 run／batch／convert 的逐回复监督器；确认前停止，不重放命令。
 
 候选内部接口：仅匹配显式 supervised-run 协议的维护运行时。
 公开 cli.py 仍绑定原发行，待候选及固定安装验收后切换。
@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import select
+import re
 import subprocess
 import time
 
@@ -26,10 +27,17 @@ def load(name):
 def expected_events(argv):
     """由预检后的原生 argv 生成身份序列，不启动进程或写输出。"""
     contract = load('cli_contract')
-    if not argv or argv[0] != 'run':
+    if not argv or argv[0] not in {'run','convert'}:
         raise ValueError('unsupported_supervised_subcommand: $argv')
     contract.preflight(argv)
     positional, flags, last = contract.parse_argv(argv)
+    if argv[0] == 'convert':
+        arguments = {'path':positional[1][0]}
+        if '--format' in last:
+            arguments['format'] = last['--format'][0]
+        if '--quality' in last:
+            arguments['quality'] = int(last['--quality'][0])
+        return [('doc_open',{'path':positional[0][0]},False),('doc_save',arguments,False)]
     events = []
     if '--new' in last:
         value, path = last['--new']
@@ -51,6 +59,36 @@ def expected_events(argv):
             arguments['quality'] = int(last['--quality'][0])
         events.append(('doc_save', arguments, False))
     return events
+
+
+def capability_error(reason):
+    """固定原生的只读元数据查询失败，尚未发送任何编辑。"""
+    return load('operation_errors').OperationError('supervision unavailable: '+reason,
+        'supervision_unavailable',phase='capabilities',outcome='not_executed',recovery_action='prepare_supported_runtime')
+
+
+def supervision_info(executable, subcommand, timeout):
+    """编辑前检查显式监督能力；二进制来源锁仍由调用方验证。"""
+    if timeout <= 0:
+        raise capability_error('deadline_expired')
+    try:
+        reply = subprocess.run([str(executable),'--supervision-info'],capture_output=True,text=True,timeout=min(30,timeout))
+        if reply.returncode != 0:
+            raise ValueError('metadata_query_failed')
+        value = load('strict_json').loads(reply.stdout)
+        fields = {'schema','protocol','runtimeVersion','subcommands','acknowledgment'}
+        if (not isinstance(value,dict) or set(value) != fields
+                or value['schema'] != 'photocraft-supervision-info/v1' or value['protocol'] != SCHEMA
+                or not isinstance(value['runtimeVersion'],str)
+                or re.fullmatch(r'\d+\.\d+\.\d+(?:-craft\.[1-9]\d*)?',value['runtimeVersion']) is None
+                or not isinstance(value['subcommands'],list)
+                or any(not isinstance(item,str) or item not in {'run','batch','convert'} for item in value['subcommands'])
+                or len(set(value['subcommands'])) != len(value['subcommands'])
+                or subcommand not in value['subcommands'] or value['acknowledgment'] != 'continue <sequence>\n'):
+            raise ValueError('metadata_contract_mismatch')
+        return value
+    except (ValueError,OSError,UnicodeError,subprocess.SubprocessError):
+        raise capability_error('metadata_invalid_or_unsupported') from None
 
 
 def batch_plan(argv):
@@ -111,9 +149,12 @@ def execute(executable, argv, output, timeout=600, stderr=None):
     expected, checks, lines = batch_plan(argv) if argv and argv[0] == 'batch' else (expected_events(argv), {}, {})
     errors = load('operation_errors'); commands = load('commands')
     receipts = []; last_attempt = None
+    deadline = time.monotonic() + timeout
+    supervision = supervision_info(executable,argv[0],timeout)
+    if time.monotonic() >= deadline:
+        raise capability_error('deadline_expired')
     process = subprocess.Popen([str(executable), argv[0], '--supervised', *argv[1:]],
                                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=stderr)
-    deadline = time.monotonic() + timeout
     buffer = b''
     def unknown(reason):
         return errors.error('outcome_unknown: ' + reason + '; request not retried')
@@ -157,6 +198,8 @@ def execute(executable, argv, output, timeout=600, stderr=None):
             result = commands.validate_tool_reply(tool, result, arguments)
             if tool == 'doc_save' and result['path'] != arguments['path']:
                 raise unknown('supervised_save_path_mismatch')
+            if tool == 'doc_open' and 'path' in result and result['path'] != arguments['path']:
+                raise unknown('supervised_open_path_mismatch')
             if sequence in checks and json.dumps(result,sort_keys=True) != json.dumps(checks[sequence],sort_keys=True):
                 raise unknown('invalid_supervised_batch_result')
             last_attempt['phase'] = 'reply_validated'
@@ -187,7 +230,7 @@ def execute(executable, argv, output, timeout=600, stderr=None):
             raise unknown('supervised_exit_timeout') from error
         if code != 0:
             raise unknown('supervised_exit_nonzero')
-        return {'result':'PASS', 'receipts':receipts, 'lastAttempt':last_attempt, 'replay':False}
+        return {'result':'PASS', 'receipts':receipts, 'lastAttempt':last_attempt, 'replay':False, 'supervision':supervision}
     except BaseException as error:
         error.receipts = receipts
         error.lastAttempt = last_attempt

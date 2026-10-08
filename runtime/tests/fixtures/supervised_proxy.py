@@ -7,6 +7,10 @@ import subprocess
 import sys
 import threading
 
+if sys.argv[1:] == ['--supervision-info']:
+    # 元数据查询不伪装成编辑事件；已有故障记录仅统计真实编辑与确认。
+    raise SystemExit(subprocess.run([os.environ['CRAFT_SUPERVISED_BINARY'], '--supervision-info']).returncode)
+
 child = subprocess.Popen([os.environ['CRAFT_SUPERVISED_BINARY'], *sys.argv[1:]], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 log = Path(os.environ['CRAFT_SUPERVISED_LOG'])
 lock = threading.Lock()

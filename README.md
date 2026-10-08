@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+Source dev.42 packages supervised run/batch/convert candidates and a read-only capability gate. Public runtime craft.1 and public entry behavior remain unchanged; candidate craft.4 is not activated. [Scope and reproduction](docs/PhotoCraft-Supervised-Convert-Candidate.md). Fixed candidate installation and full V1 remain open.
+
 Source dev.41 validates native delivery/checkpoint read-only tool semantics and reports stable recovery fields; parseable JSON alone cannot confirm reopening. Fourteen actual native faults and two healthy paths pass; full candidate and fixed publication validation are recorded separately. [Contract](docs/PhotoCraft-Readonly-Reply-Contract.md). Complete9.6 and V1 remain open.
 
 Source dev.40 adds pre-install argv and strict JSON validation for native run/batch/droplet/convert, preserving valid pinned-runtime formats. Complete entry reply contracts, Harness create/revise and full V1 acceptance remain open.
@@ -20,7 +22,7 @@ The complete PC-DM-004 size-variant contract passes fixed installed first use: p
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.41`; target plugin: `0.1.0-dev.47`; 13 independent skills.
+Current source: `0.1.0-dev.42`; target plugin: `0.1.0-dev.48`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 
@@ -180,6 +182,6 @@ Current fixed protocol-reference release matrix (Film/Effect dev.37, Photo dev.3
 
 [Read-only delivery verification](docs/PhotoCraft-Delivery-Integrity-Architecture.md) checks every manifest file before revisions; same-name replacement invalidates the prior integrity result. Fixed plugin38 qualification remains separate.
 
-Unreleased supervised-run candidate: an explicit acknowledgment boundary in the maintained native CLI stops later commands after invalid replies while retaining the original trusted-local session. Public `cli.py` and runtime `0.2.0-craft.1` remain unchanged; fixed installation, batch/droplet and streaming acceptance are open. [Candidate design and reproduction](docs/PhotoCraft-Supervised-Run-Candidate.md).
+Historical supervised-run runtime candidate (internal modules packaged in dev.42; public runtime unchanged): an explicit acknowledgment boundary in the maintained native CLI stops later commands after invalid replies while retaining the original trusted-local session. Public `cli.py` and runtime `0.2.0-craft.1` remain unchanged; fixed installation, batch/droplet and streaming acceptance are open. [Candidate design and reproduction](docs/PhotoCraft-Supervised-Run-Candidate.md).
 
-The unreleased batch candidate now binds native input/action plans and acknowledges each file operation, with legacy stdout preserved for healthy batches. Public runtime integration and fixed-install acceptance remain open. [Batch candidate](docs/PhotoCraft-Supervised-Batch-Candidate.md).
+The historical batch runtime candidate (modules packaged in dev.42; public runtime unchanged) binds native input/action plans and acknowledges each file operation, with legacy stdout preserved for healthy batches. Public runtime integration and fixed-install acceptance remain open. [Batch candidate](docs/PhotoCraft-Supervised-Batch-Candidate.md).
