@@ -27,3 +27,7 @@ The standalone workflow accepts `--checkpoint <failed-output> --write-root <auth
 A checkpoint is not a technically accepted parent artifact. New craft-artifact/v1 sourceRefs identify `photocraft-checkpoint:<original-id>` and the saved project digest; evidenceRefs include the checkpoint origin. No successful parent manifest/artifact is fabricated. Creative and acceptance states remain NOT_RUN after technical success and require independent review and acceptance.
 
 Candidate tests: `test_checkpoint_source.py` and `checkpoint-revision.test.ts`, including actual native save-reply loss, retained original files, explicit title repair, process proof, authority, budget, proposal idempotency and lineage. Native plugin tests require PHOTOCRAFT_NATIVE_TEST=1, PHOTOCRAFT_SKILL_ROOT, PHOTOCRAFT_SOURCE_ROOT (an immutable source snapshot containing injection fixtures) and PHOTOCRAFT_PYTHON. Fixed installation, full restart coverage, host model, GUI and full V1 require separate evidence.
+
+## Successful delivery producer identity
+
+Supervised success writes all five task identity fields into hash-covered task-binding.json and the manifest. Read-only validation checks structure and consistency; Harness compares the persisted original identity. Legacy unbound deliveries remain readable without gaining acceptance as a current supervised task.

@@ -15,6 +15,27 @@ class DeliveryIntegrityTests(unittest.TestCase):
   (root/'exchange-loss.json').write_text(json.dumps(loss));hashes['exchange-loss.json']=hashlib.sha256((root/'exchange-loss.json').read_bytes()).hexdigest()
   manifest={'schema':'photocraft-delivery/v1','files':hashes,'bindings':{},'assets':{},'outputs':[{'path':'design.png'}],'lossReport':{'path':'exchange-loss.json','sha256':hashes['exchange-loss.json']}}
   (root/'manifest.json').write_text(json.dumps(manifest));return manifest
+ def test_task_binding_requires_hash_covered_exact_producer_identity(self):
+  binding={'taskId':'task-one','taskIdentity':'a'*64,'epoch':1,'workerToken':'owned-token','sourceSha256':'b'*64}
+  for case in ('missing-file','changed-binding','invalid-epoch','extra-field','valid'):
+   with self.subTest(case=case),tempfile.TemporaryDirectory() as tmp:
+    root=Path(tmp)/'package';m=self.fixture(root);m['taskBinding']=dict(binding)
+    if case=='invalid-epoch':m['taskBinding']['epoch']=True
+    if case=='extra-field':m['taskBinding']['untrusted']='yes'
+    if case!='missing-file':
+     (root/'task-binding.json').write_text(json.dumps(binding));m['files']['task-binding.json']=hashlib.sha256((root/'task-binding.json').read_bytes()).hexdigest()
+    if case=='changed-binding':m['taskBinding']['workerToken']='foreign-token'
+    (root/'manifest.json').write_text(json.dumps(m))
+    if case=='valid':self.assertEqual(module('delivery').validate_delivery(root)['taskBinding'],binding)
+    else:
+     with self.assertRaisesRegex(ValueError,'delivery_task_binding'):module('delivery').validate_delivery(root)
+ def test_invalid_supervisor_binding_is_refused_before_preflight_or_install(self):
+  workflow=module('workflow')
+  for raw in ('', 'null', '{}', '{"taskId":"one","taskId":"two"}'):
+   with self.subTest(raw=raw),tempfile.TemporaryDirectory() as tmp:
+    with patch.dict('os.environ',{'PHOTOCRAFT_TASK_BINDING':raw}),patch.object(workflow,'preflight',side_effect=AssertionError('preflight reached')),self.assertRaises(ValueError):
+     workflow.execute({'operations':[]},Path(tmp)/'output')
+    self.assertFalse((Path(tmp)/'output').exists())
  def test_changed_preview_is_rejected_before_runtime_install(self):
   workflow=module('workflow')
   with tempfile.TemporaryDirectory() as tmp:
