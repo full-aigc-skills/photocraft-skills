@@ -2,7 +2,7 @@
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.33`; target plugin: `0.1.0-dev.35`; 13 independent skills.
+Current source: `0.1.0-dev.34`; target plugin: `0.1.0-dev.38`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 
@@ -159,3 +159,5 @@ Fixed PhotoCraft plugin dev.35 / source dev.33 passes 64 installed skill identit
 Independent-install dependency boundary: current byte-identical cold-install records and 128 new fixed-copy bootstrap/CLI failure checks qualify four domain SK-002 requirements. Art and generic Skills CLI installation stay open. [Design and evidence](docs/Craft-Independent-Setup-Boundary-Architecture.md).
 
 Current fixed protocol-reference release matrix (Film/Effect dev.37, Photo dev.36, Vector dev.34, Art dev.107) passes actual isolated Codex installation/discovery of 64 skills, 16 installed authority-file digest checks, and 64 independent public CLI probes using five fresh domain caches. Historical native scene proof is reused only for byte-identical skills; full V1 remains open. [Fixed release evidence](docs/evidence/craft-protocol-authority-fixed-first-use-20261008.json).
+
+[Read-only delivery verification](docs/PhotoCraft-Delivery-Integrity-Architecture.md) checks every manifest file before revisions; same-name replacement invalidates the prior integrity result. Fixed plugin38 qualification remains separate.

@@ -2,7 +2,7 @@
 
 图像、文字与图层设计需求进入，交付 `.pcraft`，适用时附 PSD 与平面导出。
 
-当前技能源：`0.1.0-dev.33`；目标插件：`0.1.0-dev.35`；13 个独立技能。
+当前技能源：`0.1.0-dev.34`；目标插件：`0.1.0-dev.38`；13 个独立技能。
 
 已验证首次使用平台：macOS arm64、Python 3.11+。固定运行时安装在用户数据目录，技能文件保留在宿主加载目录。当前为开发版本；完整首版验收及通用 Skills CLI 实际安装仍未完成。
 
@@ -153,3 +153,5 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 独立安装依赖边界：当前摘要一致的冷安装记录与 128 项新固定副本安装器／CLI 失败检查验收四领域 SK-002。Art 与通用 Skills CLI 安装继续开放。[设计与证据](docs/Craft-Independent-Setup-Boundary-Architecture.zh_CN.md)。
 
 当前固定协议引用发行矩阵（Film／Effect dev.37、Photo dev.36、Vector dev.34、Art dev.107）已通过隔离 Codex 安装／发现 64 项技能、16 项实际安装所有者文件摘要核对，以及五个全新领域缓存下的 64 项独立公开 CLI 探测。原生场景证据仅对字节一致的技能复用，完整首版仍开放。[固定发行证据](docs/evidence/craft-protocol-authority-fixed-first-use-20261008.json)。
+
+[只读交付校验](docs/PhotoCraft-Delivery-Integrity-Architecture.zh_CN.md) 在源返工前核对清单全部文件，同名替换使此前完整性结果失效；固定插件38验收另行记录。
