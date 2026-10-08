@@ -151,7 +151,7 @@ class PsdPolicyFirstUseTests(unittest.TestCase):
         psd_output['sha256'] = workflow.sha(tampered / 'design.psd')
         accepted_gate = workflow.load_module('psd_policy').assess(loss, approved_plan['psdPolicy'], workflow.sha(tampered / 'plan.json'), approved_plan['expectedProjectSha256'])
         (tampered / 'psd-acceptance.json').write_text(json.dumps(accepted_gate, ensure_ascii=False, indent=2) + '\n')
-        loss['psdGate']['sha256'] = workflow.sha(tampered / 'psd-acceptance.json')
+        next(output for output in loss['outputs'] if output['format']=='psd')['observations']['psdGate']['sha256'] = workflow.sha(tampered / 'psd-acceptance.json')
         (tampered / 'exchange-loss.json').write_text(json.dumps(loss, ensure_ascii=False, indent=2) + '\n')
         tampered_manifest = json.loads((tampered / 'manifest.json').read_text())
         for name in ('design.psd', 'psd-acceptance.json', 'exchange-loss.json'):

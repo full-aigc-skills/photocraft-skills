@@ -1,5 +1,7 @@
 # PhotoCraft 独立技能
 
+技能源dev.44将PSD门禁引用写入公共schema允许的输出观察，保留必要特性拒绝及旧顶层引用只读兼容。[合同](docs/PhotoCraft-Exchange-Protocol-Contract.zh_CN.md)。
+
 技能源dev.43在安装前拒绝超出原生有限数值范围的整数字面量，超过Python整数长度限制仍保留准确字段路径；覆盖全部13个独立公开入口。内部droplet监督作为候选打包，公开运行时仍为craft.1。[合同](docs/PhotoCraft-Integer-Overflow-Contract.zh_CN.md)。固定发行验收另记，完整首版仍开放。
 
 源dev.43打包未启用的原引擎droplet逐步监督运行时候选，保留原生临时会话与JPEG质量语义。公开运行时仍为craft.1。[设计与复现](docs/PhotoCraft-Supervised-Droplet-Candidate.zh_CN.md)。流式、公开接入及候选固定验收仍开放。
@@ -26,7 +28,7 @@ PC-DM-004尺寸变体完整合同已通过固定安装首用：留白、裁切�
 
 图像、文字与图层设计需求进入，交付 `.pcraft`，适用时附 PSD 与平面导出。
 
-当前技能源：`0.1.0-dev.43`；目标插件：`0.1.0-dev.49`；13 个独立技能。
+当前技能源：`0.1.0-dev.44`；目标插件：`0.1.0-dev.52`；13 个独立技能。
 
 已验证首次使用平台：macOS arm64、Python 3.11+。固定运行时安装在用户数据目录，技能文件保留在宿主加载目录。当前为开发版本；完整首版验收及通用 Skills CLI 实际安装仍未完成。
 

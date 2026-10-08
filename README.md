@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+Source dev.44 places PSD gate references inside public-schema output observations, preserving required-feature refusal and readonly legacy root-gate compatibility. [Contract](docs/PhotoCraft-Exchange-Protocol-Contract.md).
+
 Source dev.43 rejects integer literals outside the native finite-number range before installation, retaining exact field paths even beyond Python integer-length limits. All13 independent public entries are covered. Internal droplet supervision is packaged as a candidate; public runtime remains craft.1. [Contract](docs/PhotoCraft-Integer-Overflow-Contract.md). Fixed publication acceptance is tracked separately; full V1 remains open.
 
 Source dev.43 packages original-engine droplet supervision as an unactivated runtime candidate, preserving native scratch sessions and JPEG quality semantics. Public runtime remains craft.1. [Design and reproduction](docs/PhotoCraft-Supervised-Droplet-Candidate.md). Streaming, public integration and fixed candidate acceptance remain open.
@@ -26,7 +28,7 @@ The complete PC-DM-004 size-variant contract passes fixed installed first use: p
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.43`; target plugin: `0.1.0-dev.49`; 13 independent skills.
+Current source: `0.1.0-dev.44`; target plugin: `0.1.0-dev.52`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 

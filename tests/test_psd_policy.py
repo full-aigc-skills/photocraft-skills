@@ -140,6 +140,7 @@ class PsdPolicyTests(unittest.TestCase):
             load('exchange_loss').write_report(root, ['design.psd'], {})
             loss = json.loads((root / 'exchange-loss.json').read_text())
             loss.pop('psdGate', None)
+            for output in loss['outputs']:output.get('observations',{}).pop('psdGate',None)
             (root / 'exchange-loss.json').write_text(json.dumps(loss))
             (root / 'psd-acceptance.json').unlink(missing_ok=True)
             files = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in root.iterdir()}

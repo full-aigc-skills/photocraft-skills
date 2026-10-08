@@ -1,0 +1,5 @@
+# PhotoCraft 公共交换协议合同
+
+固定ArtCraft109消费者拒绝未声明的顶层psdGate。技能源dev.44将相同psd-acceptance.json摘要引用写入PSD输出observations，沿用未修改公共craft-exchange-loss/v1 schema允许的字段。门禁仍绑定计划、原生工程、检查及实际特性矩阵；必要损失和必要未知特性仍阻止交付。
+
+只读校验兼容此前顶层引用和新观察引用；冲突、缺少策略证据或摘要错误均拒绝，不改写旧文件。不创建或弱化公共schema。候选及固定安装消费者证据分别记录于插件；创作接受和来源真实性保持独立。
