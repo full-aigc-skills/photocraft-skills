@@ -1,0 +1,188 @@
+--- a/crates/engine/src/smart_cmds.rs
++++ b/crates/engine/src/smart_cmds.rs
+@@ -590,6 +590,24 @@
+         refresh_or_fail(doc, id)?;
+         Ok(json!({"layer": id.0}))
+     })
++}
++
++/// 使用由目录能力读取的字节替换智能对象，保留变换、蒙版和滤镜。
++/// 不访问环境文件系统；重新链接收集策略同样输出嵌入内容。
++pub fn replace_scoped_bytes(s: &mut Session, p: &Value, name: &str, bytes: Vec<u8>) -> Result<Value> {
++    decode_source(name, &bytes)?;
++    let name = base_name(name);
++    set_source(s, p, "Replace Collected Contents", false, |_, _| Ok(SmartSource::Embedded { file_name: name, bytes: Arc::new(bytes) }))
++}
++
++/// 验证收集对象已经嵌入；拒绝读取原工程中的环境链接。
++pub fn verify_scoped_embedded(s: &mut Session, p: &Value) -> Result<Value> {
++    let id = layer_param(s, p)?;
++    let doc = &s.active().ok_or(EngineError::NoDocument)?.doc;
++    if !matches!(smart(doc, id)?.source, SmartSource::Embedded { .. }) {
++        return Err(other("scoped linked content must be replaced with registered bytes before embedding"));
++    }
++    Ok(json!({"layer": id.0, "embedded": true}))
+ }
+ 
+ fn replace_contents(s: &mut Session, p: &Value) -> Result<Value> {
+--- a/crates/automation/src/headless.rs
++++ b/crates/automation/src/headless.rs
+@@ -186,9 +186,50 @@
+ 
+     pub fn command_run(&mut self, id: &str, params: Value) -> Result<Value, AutomationError> {
+         let params = if params.is_null() { json!({}) } else { params };
+-        if !matches!(&self.filesystem, Filesystem::TrustedLocal) {
++        if let Filesystem::Workspace(workspace) = &self.filesystem {
++            if matches!(id, "file.placeEmbedded" | "layer.smartObjects.replaceContents" | "layer.smartObjects.relinkToFile") {
++                let fields: &[&str] = if id == "file.placeEmbedded" { &["path", "center", "scale", "fit"] } else { &["path", "layer"] };
++                let object = params.as_object().ok_or_else(|| AutomationError::BadRequest("smart parameters must be an object".into()))?;
++                if object.keys().any(|key| !fields.contains(&key.as_str())) {
++                    return Err(AutomationError::BadRequest("unknown scoped smart field".into()));
++                }
++                let path = params.get("path").and_then(Value::as_str).ok_or_else(|| AutomationError::BadRequest("registered smart path required".into()))?;
++                let bytes = workspace.read(path)?;
++                return Ok(if id == "file.placeEmbedded" {
++                    photocraft_engine::file_cmds::place_bytes(&mut self.session, path, bytes, None, &params)?
++                } else {
++                    photocraft_engine::smart_cmds::replace_scoped_bytes(&mut self.session, &params, path, bytes)?
++                });
++            }
++            if id == "layer.smartObjects.convertToEmbedded" {
++                return Ok(photocraft_engine::smart_cmds::verify_scoped_embedded(&mut self.session, &params)?);
++            }
+             authorize_engine_command(id, &params)?;
+         }
+         Ok(self.session.execute(id, params)?)
+     }
+ }
++
++#[cfg(test)]
++mod scoped_smart_tests {
++    use super::*;
++    #[test]
++    fn smart_commands_preserve_directory_capability_rejection() {
++        let root = std::env::temp_dir().join(format!("photocraft-scoped-smart-{}", std::process::id()));
++        std::fs::create_dir_all(&root).unwrap();
++        let workspace = AuthorizedWorkspace::new(Some(&root), Some(&root)).unwrap();
++        let mut h = Headless::with_workspace(workspace);
++        for id in ["file.placeEmbedded", "layer.smartObjects.replaceContents", "layer.smartObjects.relinkToFile"] {
++            for path in ["/outside.png", "../outside.png"] {
++                let params = if id == "file.placeEmbedded" { json!({"path":path}) } else { json!({"path":path,"layer":1}) };
++                let error = h.command_run(id, params).unwrap_err().to_string();
++                assert!(error.contains("rejected"), "{error}");
++            }
++        }
++        #[cfg(unix)] {
++            std::os::unix::fs::symlink("/outside.png", root.join("escape.png")).unwrap();
++            assert!(h.command_run("file.placeEmbedded", json!({"path":"escape.png"})).is_err());
++        }
++        std::fs::remove_dir_all(root).unwrap();
++    }
++}
+--- a/crates/engine/src/inspect.rs
++++ b/crates/engine/src/inspect.rs
+@@ -94,6 +94,11 @@
+             v["adjustment"] = serde_json::to_value(a).unwrap_or(Value::Null);
+         }
+         LayerContent::Smart(sm) => {
++            v["smartTransform"] = json!(sm.transform.m);
++            v["smartSourceKind"] = json!(match &sm.source {
++                photocraft_doc::SmartSource::Embedded { .. } => "embedded",
++                photocraft_doc::SmartSource::Linked { .. } => "linked",
++            });
+             v["smartFilters"] = Value::Array(
+                 sm.smart_filters
+                     .iter()
+
+--- a/apps/photocraft-cli/src/lib.rs
++++ b/apps/photocraft-cli/src/lib.rs
+@@ -3,7 +3,7 @@
+ 
+ #![deny(clippy::unwrap_used, clippy::expect_used, clippy::panic, clippy::unimplemented, clippy::todo, clippy::unreachable)]
+ 
+-use std::io::Write;
++use std::io::{BufRead, Read, Write};
+ use std::path::{Path, PathBuf};
+ 
+ use photocraft_automation::{AuthorizedWorkspace, Headless, PhotocraftMcp, files, security};
+@@ -206,17 +206,55 @@
+     Ok(cmds)
+ }
+ 
++/// 将当前原生结果交给监督者；明确确认之前不运行下一项命令。
++/// 参数包含工具身份、原请求和当前结果；返回已确认结果或停止错误。
++fn supervised_result(
++    a: &Args, input: &mut dyn BufRead, out: &mut dyn Write, sequence: &mut u64,
++    tool: &str, arguments: Value, result: Result<Value, String>, visible: bool,
++) -> Result<Value, String> {
++    if !a.has("--supervised") {
++        return result;
++    }
++    *sequence += 1;
++    let mut event = json!({"schema": "photocraft-supervised-run/v1", "sequence": *sequence,
++        "tool": tool, "arguments": arguments, "visible": visible});
++    match &result {
++        Ok(value) => event["result"] = value.clone(),
++        Err(error) => event["error"] = json!(error),
++    }
++    print_json(out, &event, true)?;
++    out.flush().map_err(|error| error.to_string())?;
++    let value = result?;
++    // 固定 ASCII 确认帧不依赖 JSON 宽松解析；序号不符、EOF及超长输入均停止。
++    let mut confirmation = Vec::new();
++    input.take(4097).read_until(b'\n', &mut confirmation).map_err(|error| error.to_string())?;
++    if confirmation != format!("continue {}\n", *sequence).as_bytes() {
++        return Err("supervised result not acknowledged; operation may have completed; do not replay".into());
++    }
++    Ok(value)
++}
++
+ fn run_cmds(a: &Args, out: &mut dyn Write, err: &mut dyn Write) -> R {
++    let stdin = std::io::stdin();
++    let mut input = stdin.lock();
++    run_cmds_with_input(a, out, err, &mut input)
++}
++
++/// 在同一受信本地会话中执行；监督模式只增加每条回复后的确认边界。
++fn run_cmds_with_input(a: &Args, out: &mut dyn Write, err: &mut dyn Write, input: &mut dyn BufRead) -> R {
+     let mut h = Headless::trusted_local();
++    let mut sequence = 0;
+     match (a.positional.as_slice(), a.get("--new")) {
+         ([file], None) => {
+-            let o = h.open(Path::new(file)).map_err(|e| e.to_string())?;
++            let result = h.open(Path::new(file)).map_err(|e| e.to_string());
++            let o = supervised_result(a, input, out, &mut sequence, "doc_open", json!({"path": file}), result, false)?;
+             let ws: Vec<String> = serde_json::from_value(o["warnings"].clone()).unwrap_or_default();
+             warn_all(err, &ws);
+         }
+         ([], Some(new)) => {
+             let p: Value = serde_json::from_str(new).map_err(|e| format!("bad --new JSON: {e}"))?;
+-            h.command_run("file.new", p).map_err(|e| e.to_string())?;
++            let result = h.command_run("file.new", p.clone()).map_err(|e| e.to_string());
++            supervised_result(a, input, out, &mut sequence, "doc_new", p, result, false)?;
+         }
+         _ => return Err("run needs exactly one of <file> or --new <json>".into()),
+     }
+@@ -225,11 +263,19 @@
+         return Err("run needs at least one --cmd (or --out)".into());
+     }
+     for (id, params) in cmds {
+-        let r = h.command_run(&id, params).map_err(|e| format!("`{id}`: {e}"))?;
+-        print_json(out, &json!({"command": id, "result": r}), true)?;
++        let result = h.command_run(&id, params.clone()).map_err(|e| format!("`{id}`: {e}"));
++        let r = supervised_result(a, input, out, &mut sequence, "command_run", json!({"id": id, "params": params}), result, true)?;
++        if !a.has("--supervised") {
++            print_json(out, &json!({"command": id, "result": r}), true)?;
++        }
+     }
+     if let Some(o) = a.get("--out") {
+-        let r = h.save(None, Some(Path::new(o)), a.get("--format"), &export_opts(a)?).map_err(|e| e.to_string())?;
++        let opts = export_opts(a)?;
++        let result = h.save(None, Some(Path::new(o)), a.get("--format"), &opts).map_err(|e| e.to_string());
++        let mut arguments = json!({"path": o});
++        if let Some(format) = a.get("--format") { arguments["format"] = json!(format); }
++        if a.get("--quality").is_some() { arguments["quality"] = json!(opts.encode.jpeg_quality); }
++        let r = supervised_result(a, input, out, &mut sequence, "doc_save", arguments, result, false)?;
+         let ws: Vec<String> = serde_json::from_value(r["warnings"].clone()).unwrap_or_default();
+         warn_all(err, &ws);
+     }

@@ -19,7 +19,7 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def build(repository, output, manifest_name="scoped-smart-content-patch.json", version=VERSION):
+def build(repository, output, manifest_name="scoped-smart-content-patch.json", version=VERSION, offline=True):
     manifest = json.loads((ROOT / 'runtime' / manifest_name).read_text())
     patch = ROOT / manifest['patch']
     if sha(patch) != manifest['patchSha256']:
@@ -48,8 +48,9 @@ def build(repository, output, manifest_name="scoped-smart-content-patch.json", v
             raise ValueError('workspace_version_mismatch')
         cargo.write_text(text.replace(original, 'version = "' + version + '"'))
         env = dict(os.environ, RUSTFLAGS='--remap-path-prefix=' + str(source) + '=/craft-source')
-        subprocess.run(['cargo', 'test', '--offline', '-p', 'photocraft-automation'], cwd=source, env=env, check=True)
-        subprocess.run(['cargo', 'build', '--offline', '--release', '-p', 'photocraft-cli'], cwd=source, env=env, check=True)
+        dependency_mode = ['--offline'] if offline else []
+        subprocess.run(['cargo', 'test', *dependency_mode, '-p', 'photocraft-automation', '-p', 'photocraft-cli'], cwd=source, env=env, check=True)
+        subprocess.run(['cargo', 'build', *dependency_mode, '--release', '-p', 'photocraft-cli'], cwd=source, env=env, check=True)
         binary = source / 'target/release/photocraft-cli'
         version_output = subprocess.check_output([str(binary), '--version'], text=True).strip()
         if version_output.split()[:2] != ['photocraft-cli', version]:
@@ -76,5 +77,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--repository', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--manifest', default='scoped-smart-content-patch.json')
+    parser.add_argument('--version', default=VERSION)
+    parser.add_argument('--online', action='store_true', help='允许 Cargo 获取构建依赖；默认仅使用本地缓存')
     args = parser.parse_args()
-    print(json.dumps(build(args.repository.absolute(), args.output.absolute()), ensure_ascii=False))
+    print(json.dumps(build(args.repository.absolute(), args.output.absolute(), args.manifest, args.version, not args.online), ensure_ascii=False))

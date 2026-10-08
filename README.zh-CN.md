@@ -173,3 +173,5 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 当前固定协议引用发行矩阵（Film／Effect dev.37、Photo dev.36、Vector dev.34、Art dev.107）已通过隔离 Codex 安装／发现 64 项技能、16 项实际安装所有者文件摘要核对，以及五个全新领域缓存下的 64 项独立公开 CLI 探测。原生场景证据仅对字节一致的技能复用，完整首版仍开放。[固定发行证据](docs/evidence/craft-protocol-authority-fixed-first-use-20261008.json)。
 
 [只读交付校验](docs/PhotoCraft-Delivery-Integrity-Architecture.zh_CN.md) 在源返工前核对清单全部文件，同名替换使此前完整性结果失效；固定插件38验收另行记录。
+
+未发行的逐条确认候选：维护版原生 CLI 增加显式确认边界，回复无效时停止后续命令并保留原受信本地会话。公开 `cli.py` 与运行时 `0.2.0-craft.1` 保持不变，固定安装、batch／droplet 与流式验收仍开放。[候选设计与复验](docs/PhotoCraft-Supervised-Run-Candidate.zh_CN.md)。
