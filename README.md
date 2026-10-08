@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+The complete PC-DM-004 size-variant contract passes fixed installed first use: padding, crop, resample, editable native/PSD layers, safe-area/size refusal, preserved source and failed stages. [Acceptance architecture](docs/PhotoCraft-Complete-Variant-Contract-Architecture.md). FullV1 remains open.
+
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
 Current source: `0.1.0-dev.34`; target plugin: `0.1.0-dev.38`; 13 independent skills.

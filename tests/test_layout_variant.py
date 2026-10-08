@@ -33,4 +33,11 @@ class LayoutVariantTests(unittest.TestCase):
  def test_rejects_invalid_schema(self):
   for config in [dict(self.config,extra=1),dict(self.config,width=True),dict(self.config,safeArea=[0,0,121,80])]:
    with self.assertRaises(ValueError):self.m.validate(config)
+
+class VariantWorkflowPreflightTests(unittest.TestCase):
+ def test_invalid_variant_is_rejected_before_runtime_or_source_access(self):
+  spec=importlib.util.spec_from_file_location('variant_workflow',ROOT/'skills/photocraft-use/scripts/workflow.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+  plan={'operations':[],'variant':{'width':120,'height':80,'safeArea':[0,0,121,80],'roles':{'background':1,'product':2,'text':3}}}
+  with self.assertRaisesRegex(ValueError,'invalid_variant_safe_area'):module.validate(plan)
+
 if __name__=='__main__':unittest.main()

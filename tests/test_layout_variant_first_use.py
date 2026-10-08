@@ -1,5 +1,6 @@
 """独立尺寸技能冷安装、真实图层重开和安全区拒绝。"""
 import hashlib
+import contextlib
 import json
 import os
 from pathlib import Path
@@ -14,7 +15,13 @@ ROOT=Path(__file__).resolve().parents[1]
 @unittest.skipUnless(os.environ.get('CRAFT_LAYOUT_FIRST_USE')=='1','requires native online first use')
 class LayoutFirstUse(unittest.TestCase):
  def test_canvas_and_resample_variants(self):
-  with tempfile.TemporaryDirectory(prefix='photo-layout-first-use-') as temp:
+  retained=os.environ.get('CRAFT_LAYOUT_RETAINED_OUTPUT')
+  if retained:
+   target=Path(retained)
+   if not target.is_absolute():raise ValueError('retained_output_absolute_required')
+   target.mkdir(exist_ok=False);workspace=contextlib.nullcontext(str(target))
+  else:workspace=tempfile.TemporaryDirectory(prefix='photo-layout-first-use-')
+  with workspace as temp:
    root=Path(temp);skill=root/'only-resize'
    shutil.copytree(Path(os.environ.get('CRAFT_INSTALLED_RESIZE_SKILL_ROOT',ROOT/'skills/photocraft-cli-resize')),skill,ignore=shutil.ignore_patterns('__pycache__'))
    def chunk(kind,data):return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
@@ -26,6 +33,13 @@ class LayoutFirstUse(unittest.TestCase):
     else:args.extend(['--asset','product='+str(image)])
     return subprocess.run(args,env=env,text=True,capture_output=True,timeout=180)
    def hashes(folder):return {p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in folder.iterdir() if p.is_file()}
+   failures={}
+   def failed_delivery(name,code):
+    target=root/name;self.assertFalse((target/'manifest.json').exists());self.assertFalse((target/'project.pcraft').exists())
+    record=json.loads((target/'failure.json').read_text());self.assertEqual(record['schema'],'craft-failed-stage/v1');self.assertIn(code,record['error']);self.assertEqual(record['acceptance'],'not-a-successful-delivery');self.assertFalse(record['replayAllowed'])
+    stage=(target/record['stage']).resolve();self.assertTrue(stage.is_relative_to(root));self.assertTrue((stage/'project.pcraft').is_file())
+    for name,item in record['files'].items():self.assertEqual(hashlib.sha256((stage/name).read_bytes()).hexdigest(),item['sha256'])
+    failures[target.name]=record
    source=root/'source';first=run(json.loads((skill/'examples/poster-plan.json').read_text()),'source');self.assertEqual(first.returncode,0,first.stdout+first.stderr)
    manifest=json.loads(first.stdout);original=hashes(source);native=json.loads((source/'native.json').read_text());bg=next(v['id'] for v in native['layers'] if v['name']=='Background')
    roles={'background':bg,'product':{'$ref':'product.layer'},'text':{'$ref':'headline.layer'}};observations={}
@@ -39,9 +53,10 @@ class LayoutFirstUse(unittest.TestCase):
      if role=='text':self.assertEqual(layer['text']['text'],'NOVA')
     self.assertEqual(original,hashes(source));observations[name]={'manifest':delivery,'layout':report}
     if name=='padding':
-     bad=json.loads(json.dumps(plan));bad['variant']['safeArea']=[0,0,10,10];rejected=run(bad,'unsafe',source);self.assertEqual(rejected.returncode,1,rejected.stdout);self.assertIn('variant_safe_area_violation',rejected.stdout);self.assertFalse((root/'unsafe').exists())
-     bad=json.loads(json.dumps(plan));bad['variant']['width']=361;rejected=run(bad,'mismatch',source);self.assertEqual(rejected.returncode,1,rejected.stdout);self.assertIn('variant_size_mismatch',rejected.stdout);self.assertFalse((root/'mismatch').exists())
+     checkpoint=run(plan,'source',source);self.assertEqual(checkpoint.returncode,1,checkpoint.stdout+checkpoint.stderr);self.assertIn('output_exists',checkpoint.stdout);self.assertEqual(original,hashes(source))
+     bad=json.loads(json.dumps(plan));bad['variant']['safeArea']=[0,0,10,10];rejected=run(bad,'unsafe',source);self.assertEqual(rejected.returncode,1,rejected.stdout);self.assertIn('variant_safe_area_violation',rejected.stdout);failed_delivery('unsafe','variant_safe_area_violation')
+     bad=json.loads(json.dumps(plan));bad['variant']['width']=361;rejected=run(bad,'mismatch',source);self.assertEqual(rejected.returncode,1,rejected.stdout);self.assertIn('variant_size_mismatch',rejected.stdout);failed_delivery('mismatch','variant_size_mismatch')
    self.assertEqual(original,hashes(source));self.assertFalse(list(skill.rglob('*.pyc')))
    if os.environ.get('CRAFT_LAYOUT_EVIDENCE_FILE'):
-    with Path(os.environ['CRAFT_LAYOUT_EVIDENCE_FILE']).open('x') as file:json.dump({'schema':'photocraft-layout-first-use/v1','python':sys.version.split()[0],'sourceFiles':original,'variants':observations,'unsafeRejected':True,'sizeMismatchRejected':True,'allSourceFilesPreserved':True,'scope':'single copied resize skill, fresh runtime, native PNG/PSD/project geometry; synthetic product fixture, no creative quality acceptance'},file,indent=2)
+    with Path(os.environ['CRAFT_LAYOUT_EVIDENCE_FILE']).open('x') as file:json.dump({'schema':'photocraft-layout-first-use/v1','python':sys.version.split()[0],'sourceFiles':original,'variants':observations,'unsafeRejected':True,'sizeMismatchRejected':True,'allSourceFilesPreserved':True,'sourceOverwriteRejected':True,'failedDeliveries':failures,'retainedOutputs':bool(retained),'scope':'single copied resize skill, fresh runtime, native PNG/PSD/project geometry; synthetic product fixture, no creative quality acceptance'},file,indent=2)
 if __name__=='__main__':unittest.main()
