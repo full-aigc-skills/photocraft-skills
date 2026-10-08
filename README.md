@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+Source dev.40 adds pre-install argv and strict JSON validation for native run/batch/droplet/convert, preserving valid pinned-runtime formats. Complete entry reply contracts, Harness create/revise and full V1 acceptance remain open.
+
 Source dev.39 rejects invalid alias/command types with field paths and stable recovery fields. Save/export replies must prove their path and warning structure before success or reference binding; unknown replies stop editing. Candidate and fixed-installed native/desktop fault acceptance are recorded separately; full V1 remains open.
 
 Source dev.38 binds verified runtime version/build output/platform and owned desktop version/binary to capability snapshots. Headless and desktop discovery-reply drift stops before the next edit while retaining a saved native checkpoint. Fixed dev.42 acceptance is tracked separately; full upgrade/rollback remains open.
@@ -16,7 +18,7 @@ The complete PC-DM-004 size-variant contract passes fixed installed first use: p
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.39`; target plugin: `0.1.0-dev.44`; 13 independent skills.
+Current source: `0.1.0-dev.40`; target plugin: `0.1.0-dev.45`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 
