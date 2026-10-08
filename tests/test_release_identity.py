@@ -14,7 +14,7 @@ class ReleaseIdentityTests(unittest.TestCase):
     def test_current_combination_is_checkable(self):
         result = subprocess.run([sys.executable, '-I', '-B', str(ROOT / 'scripts/check_release_identity.py')], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertEqual(json.loads(result.stdout)['runtimeVariant'], 'maintained-capability-scoped-smart-content')
+        self.assertEqual(json.loads(result.stdout)['runtimeVariant'], 'maintained-capability-scoped-smart-content-supervised')
 
     def test_mismatched_suite_is_rejected_without_mutation(self):
         with tempfile.TemporaryDirectory() as temporary:
