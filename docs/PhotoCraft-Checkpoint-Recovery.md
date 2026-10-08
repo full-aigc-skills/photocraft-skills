@@ -31,3 +31,18 @@ Candidate tests: `test_checkpoint_source.py` and `checkpoint-revision.test.ts`, 
 ## Successful delivery producer identity
 
 Supervised success writes all five task identity fields into hash-covered task-binding.json and the manifest. Read-only validation checks structure and consistency; Harness compares the persisted original identity. Legacy unbound deliveries remain readable without gaining acceptance as a current supervised task.
+
+## Durable progress across hard interruption
+
+An independent atomic progress file binds the original output claim, plan, task, runtime and stage identity. Each native call follows a flushed submitted record; strict confirmation precedes a flushed reply_validated record. The plan, bindings, assets and known capability snapshot survive with it. Read-only inspection installs nothing, starts no session and changes neither project nor original claim. Observed progress does not prove worker termination, native integrity or revision permission. Missing failure.json is never fabricated.
+
+```mermaid
+flowchart LR
+  A[Original output claim] --> B[Atomic progress and stage identity]
+  B --> C[Flush submitted]
+  C --> D[Native call]
+  D -->|Strict confirmation| E[Flush reply_validated]
+  D -->|Hard interruption or unknown reply| F[Retain original progress and native]
+  F --> G[Read-only observation]
+  G --> H[Separate worker and project verification]
+```
