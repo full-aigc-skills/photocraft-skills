@@ -1,6 +1,8 @@
 # PhotoCraft Skills
 
-Source dev.37 adds actual flat-export color/ICC/alpha checks and bound provider receipt preservation, with generation usage separate from local editing. [Contract and evidence limits](skills/photocraft-use/references/flat-export.md). Fixed dev.41 installation acceptance is pending.
+Source dev.38 binds verified runtime version/build output/platform and owned desktop version/binary to capability snapshots. Headless and desktop discovery-reply drift stops before the next edit while retaining a saved native checkpoint. Fixed dev.42 acceptance is tracked separately; full upgrade/rollback remains open.
+
+Source dev.37 adds actual flat-export color/ICC/alpha checks and bound provider receipt preservation, with generation usage separate from local editing. [Contract and evidence limits](skills/photocraft-use/references/flat-export.md). Fixed dev.41 RGB8 acceptance is recorded in the plugin evidence.
 
 Source dev.36 adds required PSD feature gates, exact source-bound loss acceptance and fresh PSD reopening. Actual smart-to-PSD loss is refused; explicit accepted loss stays distinct from fidelity. Fixed release/installation acceptance is tracked separately. [Design and usage](docs/PhotoCraft-PSD-Policy-Architecture.md).
 
@@ -12,7 +14,7 @@ The complete PC-DM-004 size-variant contract passes fixed installed first use: p
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.37`; target plugin: `0.1.0-dev.41`; 13 independent skills.
+Current source: `0.1.0-dev.38`; target plugin: `0.1.0-dev.42`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 

@@ -46,6 +46,8 @@ class BootstrapTests(unittest.TestCase):
             second = self.install()
         self.assertEqual(first['executable'], second['executable'])
         self.assertTrue(second['reused'])
+        self.assertEqual(first['runtimeIdentity'], {'version':'0.2.0','versionOutput':'filmcraft-cli 0.2.0','platform':'darwin-arm64'})
+        self.assertEqual(second['runtimeIdentity'], first['runtimeIdentity'])
         self.assertEqual(Path(first['executable']).read_bytes(), self.binary)
         self.assertTrue((Path(first['executable']).parent / 'LICENSE-MIT').exists())
         self.assertEqual(json.loads((Path(first['executable']).parent / 'installation.json').read_text())['version'], '0.2.0')
