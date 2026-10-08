@@ -1,10 +1,14 @@
 # PhotoCraft Skills
 
+Development source dev.35 includes: strict preflight, explicit routing, capability snapshots, recursive preservation, PSD feature observations and filter context contracts. Historical fixed-release evidence keeps its original scope; acceptance of this version is recorded separately from host-model and full V1 acceptance.
+Source dev.35 also adds strict parameter and batch checks, saved-mask ownership/state, native text lines/tracking/leading, and explicit accepted font substitutions. Exact overflow/glyph coverage and full V1 acceptance remain open.
+
+
 The complete PC-DM-004 size-variant contract passes fixed installed first use: padding, crop, resample, editable native/PSD layers, safe-area/size refusal, preserved source and failed stages. [Acceptance architecture](docs/PhotoCraft-Complete-Variant-Contract-Architecture.md). FullV1 remains open.
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.34`; target plugin: `0.1.0-dev.38`; 13 independent skills.
+Current source: `0.1.0-dev.35`; target plugin: `0.1.0-dev.39`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 
@@ -66,7 +70,7 @@ All 748 commands now have verbatim parameters, skill routing, and same-session i
 
 Independent PhotoCraft skills. Implementation is in progress; this repository is not a completed plugin release.
 
-The `photocraft-use` skill contains a self-contained Python 3.11+ bootstrap installer for the pinned official macOS arm64 CLI. It verifies the archive and executable, retains license files, atomically installs a new version, and reuses an intact installation without downloading again.
+The `photocraft-use` skill contains a self-contained Python 3.11+ bootstrap installer for the pinned maintained macOS arm64 CLI. It verifies the archive and executable, retains license files, atomically installs a new version, and reuses an intact installation without downloading again.
 
 Run tests with `python3 -m unittest discover -s tests -v`. Full creative workflow and host acceptance remain pending.
 

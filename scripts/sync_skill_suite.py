@@ -24,7 +24,7 @@ def sync(check=False):
   for source in sorted((base/'references').glob('*')):
    if source.name in {'commands.json','scenario.md'} or not source.is_file():continue
    destination=target/'references'/source.name
-   data=source.read_text().replace(base.name,target.name).encode()
+   data=source.read_bytes() if source.suffix == '.json' else source.read_text().replace(base.name,target.name).encode()
    if check:
     if not destination.is_file() or destination.read_bytes()!=data:errors.append(str(destination.relative_to(ROOT)))
    else:destination.parent.mkdir(parents=True,exist_ok=True);destination.write_bytes(data)

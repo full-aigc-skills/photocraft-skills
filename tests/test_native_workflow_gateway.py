@@ -18,7 +18,7 @@ class NativeWorkflowTests(unittest.TestCase):
     if args['name']==m.commands.ROUTES[m.commands.DOMAIN][0]:return {'content':[{'type':'text','text':json.dumps([{'id':r['id'],'enabled':r['id']==identifier} for r in m.commands.catalog()['commands']])}]}
     return {'content':[{'type':'text','text':'{"id":17}'}]}
   state={};receipts=[];result=m.execute(Session(),{'command':identifier,'params':{}},state,receipts,ROOT)
-  self.assertEqual(result,{'id':17});self.assertEqual(receipts[-1]['nativeCommand'],identifier);self.assertEqual(state['lastAttempt']['phase'],'reply_received')
+  self.assertEqual(result,{'id':17});self.assertEqual(receipts[-1]['nativeCommand'],identifier);self.assertEqual(state['lastAttempt']['phase'],'reply_validated')
  def test_disabled_and_unknown_preserved(self):
   m=load();identifier=m.commands.catalog()['commands'][0]['id']
   class Session:

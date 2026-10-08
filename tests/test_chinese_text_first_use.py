@@ -58,7 +58,7 @@ class ChineseTextFirstUseTests(unittest.TestCase):
    bad=json.loads(json.dumps(revision));bad['operations'][0]['params']['layer']=999999999
    denied=execute(bad,'unknown-layer','v1');self.assertNotEqual(denied.returncode,0);self.assertFalse((root/'unknown-layer').exists())
    missing=json.loads(json.dumps(revision));missing['operations']=[{'command':'type.setStyle','params':{'layer':{'$ref':'headline.layer'},'font':'Craft Missing CJK Family 72625'}}]
-   denied=execute(missing,'missing-font','v1');self.assertNotEqual(denied.returncode,0);self.assertIn('missing_fonts',denied.stdout+denied.stderr);self.assertFalse((root/'missing-font').exists())
+   denied=execute(missing,'missing-font','v1');self.assertNotEqual(denied.returncode,0);self.assertIn('missing_fonts',denied.stdout+denied.stderr);self.assertFalse((root/'missing-font/manifest.json').exists());failure=json.loads((root/'missing-font/failure.json').read_text());self.assertFalse(failure['replayAllowed']);self.assertTrue((root/'missing-font'/failure['stage']).is_dir())
    self.assertFalse(any(skill.rglob('*.pyc')))
    evidence=os.environ.get('CRAFT_TEXT_EVIDENCE_DIR')
    if evidence:

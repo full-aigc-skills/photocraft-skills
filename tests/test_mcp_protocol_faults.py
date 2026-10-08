@@ -27,6 +27,10 @@ for line in sys.stdin:
     response = {"jsonrpc":"2.0", "id":request["id"]}
     if fault == "malformed":
         print("not-json", flush=True)
+    elif fault == "duplicate":
+        print('{"jsonrpc":"2.0","id":'+str(request["id"])+',"result":{},"result":{"content":[]}}',flush=True)
+    elif fault == "overflow":
+        print('{"jsonrpc":"2.0","id":'+str(request["id"])+',"result":1e999}',flush=True)
     elif fault == "scalar":
         print("[]", flush=True)
     elif fault == "missing":
@@ -52,7 +56,7 @@ def module():
 
 class McpProtocolFaultTests(unittest.TestCase):
     def test_invalid_responses_are_unknown_after_exactly_one_request(self):
-        for fault in ["malformed", "scalar", "missing", "ambiguous", "nonfinite"]:
+        for fault in ["malformed", "scalar", "missing", "ambiguous", "nonfinite", "duplicate", "overflow"]:
             with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temporary:
                 log = Path(temporary) / "requests.jsonl"
                 with module().Session([sys.executable, "-I", "-B", "-u", "-c", SERVER, fault, str(log)], timeout=3) as session:

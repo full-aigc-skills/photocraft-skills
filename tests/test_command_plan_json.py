@@ -32,6 +32,7 @@ class CommandPlanJsonTests(unittest.TestCase):
       result=subprocess.run(argv,capture_output=True,text=True)
       self.assertEqual(result.returncode,1,result.stdout+result.stderr)
       self.assertEqual(json.loads(result.stdout)['error'],'duplicate_json_key')
+      self.assertTrue(json.loads(result.stdout)['fieldPath'].startswith('$'))
       self.assertFalse(output.exists())
       self.assertFalse(runtime.exists())
  def test_each_standalone_skill_rejects_duplicate_keys_before_install(self):

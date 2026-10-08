@@ -40,7 +40,7 @@ class CommandsTests(unittest.TestCase):
             def __enter__(self): return self
             def __exit__(self,*args): pass
             def request(self,method,params):
-                if method=="tools/list":return {"tools":[{"name":name} for name in m.ROUTES[DOMAIN][:2]]}
+                if method=="tools/list":return {"tools":[{"name":name,"inputSchema":{"type":"object"}} for name in m.ROUTES[DOMAIN][:2]]}
                 if params["name"]==m.ROUTES[DOMAIN][0]:
                     rows = [{**r,"enabled":True} for r in m.catalog()["commands"]] if not edits else [None]
                     return {"content":[{"type":"text","text":json.dumps(rows)}]}
@@ -131,7 +131,7 @@ class CommandsTests(unittest.TestCase):
             def request(self, method, params):
                 calls.append((method,params))
                 if method == "tools/list":
-                    return {"tools":[{"name":m.native_call(first,{})[0]}, {"name":m.ROUTES[DOMAIN][0]}]}
+                    return {"tools":[{"name":m.native_call(first,{})[0],"inputSchema":{"type":"object"}}, {"name":m.ROUTES[DOMAIN][0],"inputSchema":{"type":"object"}}]}
                 if params["name"] == m.ROUTES[DOMAIN][0]:
                     return {"content":[{"type":"text","text":json.dumps([{**r,"enabled":True} for r in m.catalog()["commands"]])}]}
                 raise TimeoutError("outcome_unknown")
@@ -190,7 +190,7 @@ class CommandsTests(unittest.TestCase):
             def __exit__(self,*args): pass
             def request(self, method, params):
                 if method == "tools/list":
-                    return {"tools":[{"name":m.ROUTES[DOMAIN][0]}, {"name":m.ROUTES[DOMAIN][1]}]}
+                    return {"tools":[{"name":m.ROUTES[DOMAIN][0],"inputSchema":{"type":"object"}}, {"name":m.ROUTES[DOMAIN][1],"inputSchema":{"type":"object"}}]}
                 if params["name"] == m.ROUTES[DOMAIN][0]:
                     return {"content":[{"type":"text","text":json.dumps([{**r,"enabled":False,"why":"selection required"} for r in m.catalog()["commands"]])}]}
                 mutations.append(params)
@@ -218,7 +218,7 @@ class CommandsTests(unittest.TestCase):
             def __enter__(self):return self
             def __exit__(self,*args):pass
             def request(self,method,params):
-                if method=='tools/list':return {'tools':[{'name':name} for name in m.ROUTES[DOMAIN][:2]]}
+                if method=='tools/list':return {'tools':[{'name':name,'inputSchema':{'type':'object'}} for name in m.ROUTES[DOMAIN][:2]]}
                 if params['name']==m.ROUTES[DOMAIN][0]:return {'content':[{'type':'text','text':json.dumps([{**row,'enabled':True} for row in m.catalog()['commands']])}]}
                 calls.append(params);return {'content':[{'type':'text','text':'{"saved":true,"value":NaN}'}]}
         with tempfile.TemporaryDirectory() as temporary:

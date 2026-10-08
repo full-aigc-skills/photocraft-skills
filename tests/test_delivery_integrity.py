@@ -27,6 +27,14 @@ class DeliveryIntegrityTests(unittest.TestCase):
    with patch.object(workflow,'load_module',side_effect=load),self.assertRaisesRegex(ValueError,'delivery_file_checksum_mismatch'):
     workflow.execute(plan,root/'output',runtime_home=root/'runtime',source=source)
    self.assertFalse((root/'output').exists());self.assertFalse((root/'runtime').exists())
+ def test_protected_pixel_contract_refuses_non_rgb8_native_source_before_install(self):
+  for mode,depth in [('Cmyk',8),('Rgb',16),('Rgb',32)]:
+   with self.subTest(mode=mode,depth=depth),tempfile.TemporaryDirectory() as tmp:
+    root=Path(tmp);source=root/'source';manifest=self.fixture(source)
+    native=json.dumps({'mode':mode,'depth':depth,'layers':[]}).encode();(source/'native.json').write_bytes(native);manifest['files']['native.json']=hashlib.sha256(native).hexdigest()
+    loss=json.loads((source/'exchange-loss.json').read_text());loss['inspection']['sha256']=manifest['files']['native.json'];(source/'exchange-loss.json').write_text(json.dumps(loss));manifest['files']['exchange-loss.json']=hashlib.sha256((source/'exchange-loss.json').read_bytes()).hexdigest();manifest['lossReport']['sha256']=manifest['files']['exchange-loss.json'];(source/'manifest.json').write_text(json.dumps(manifest))
+    with self.assertRaisesRegex(ValueError,'protected_pixel_mode_unsupported'):module('workflow').preflight({'expectedProjectSha256':manifest['files']['project.pcraft'],'operations':[],'protectedRegions':[{'id':'keep','rect':[0,0,1,1]}]},root/'output',source)
+    self.assertFalse((root/'output').exists())
  def test_valid_moved_package_and_external_manifest_binding(self):
   with tempfile.TemporaryDirectory() as tmp:
    root=Path(tmp);source=root/'source';m=self.fixture(source);digest=hashlib.sha256((source/'manifest.json').read_bytes()).hexdigest();source.rename(root/'移动 交付')

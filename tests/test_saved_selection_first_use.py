@@ -60,11 +60,12 @@ class SavedSelectionFirstUseTests(unittest.TestCase):
    steps=[] if name=='empty' else [{'tool':'doc_open','params':{'path':{'$ref':'project.path'}}}]
    if name=='invalidOperation':steps.append({'command':'select.loadSelection','params':{'channel':'Product Local'}})
    steps += [{'command':command,'params':params},{'tool':'doc_save','params':{'path':{'$output':'forbidden.pcraft'}}}]
+   if name=='invalidOperation':
+    with self.assertRaisesRegex(ValueError,r'parameter_enum:.*params.operation'):
+     commands.execute({'schema':'craft-command-plan/v1','operations':steps},work/name,runtime_home=runtime,inputs={'project':str(original)},installer=lambda *_:self.fail('invalid enum reached installer'))
+    self.assertFalse((work/name).exists());self.assertEqual(digest(original),sha);failures.append({'case':name,'result':'FAIL','error':'parameter_enum','outcome':'not_executed','zeroInstallerCalls':True});continue
    with patch.dict(os.environ,env,clear=True):result=commands.execute({'schema':'craft-command-plan/v1','operations':steps},work/name,runtime_home=runtime,inputs={} if name=='empty' else {'project':str(original)})
    self.assertEqual(result['result'],'FAIL',result)
-   if name=='invalidOperation':
-    self.assertTrue(any(s.get('command')=='select.loadSelection' and s['state']=='succeeded' for s in result['steps']))
-    self.assertIn('operation',result['error']);self.assertNotIn('native_context_disabled',result['error'])
    self.assertFalse((work/name/'forbidden.pcraft').exists());self.assertFalse(any(s.get('tool')=='doc_save' for s in result['steps']));self.assertEqual(digest(original),sha);failures.append({'case':name,'result':'FAIL','error':result['error']})
   self.assertEqual(tree(skill),before);self.assertEqual(tree(source),source_before);self.assertEqual(digest(original),sha)
   if os.environ.get('CRAFT_SELECTION_EVIDENCE_FILE'):

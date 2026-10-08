@@ -70,7 +70,7 @@ class RetouchWorkflowFirstUse(unittest.TestCase):
             rejected = root / 'rejected'
             result = run(revision(manifest, stroke, [{'id': 'stroke-target', 'rect': [120, 170, 30, 30]}]), rejected, original)
             self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
-            self.assertIn('protected_region_changed', result.stdout); self.assertFalse(rejected.exists())
+            self.assertIn('protected_region_changed', result.stdout); self.assertFalse((rejected/'manifest.json').exists());failure=json.loads((rejected/'failure.json').read_text());self.assertFalse(failure['replayAllowed']);self.assertTrue((rejected/failure['stage']/'project.pcraft').is_file())
             self.assertEqual(originals, hashes(original)); self.assertEqual(painted_hashes, hashes(painted))
             self.assertFalse(list(skill.rglob('*.pyc')))
             if os.environ.get('CRAFT_RETOUCH_EVIDENCE_FILE'):

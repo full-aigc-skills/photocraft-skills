@@ -22,7 +22,7 @@ class LayoutFirstUse(unittest.TestCase):
    target.mkdir(exist_ok=False);workspace=contextlib.nullcontext(str(target))
   else:workspace=tempfile.TemporaryDirectory(prefix='photo-layout-first-use-')
   with workspace as temp:
-   root=Path(temp);skill=root/'only-resize'
+   root=Path(temp).resolve();skill=root/'only-resize'
    shutil.copytree(Path(os.environ.get('CRAFT_INSTALLED_RESIZE_SKILL_ROOT',ROOT/'skills/photocraft-cli-resize')),skill,ignore=shutil.ignore_patterns('__pycache__'))
    def chunk(kind,data):return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
    image=root/'product.png';image.write_bytes(b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',120,160,8,6,0,0,0))+chunk(b'IDAT',zlib.compress((b'\0'+bytes([233,99,64,255])*120)*160))+chunk(b'IEND',b''))
