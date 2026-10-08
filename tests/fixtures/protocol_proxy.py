@@ -16,6 +16,8 @@ def forward():
     try:
         for line in sys.stdin:
             request = json.loads(line)
+            with Path(log + '.requests.jsonl').open('a') as trace:
+                trace.write(json.dumps(request) + '\n')
             params = request.get('params', {})
             arguments = params.get('arguments', {})
             if request.get('method') == 'tools/call':
@@ -60,6 +62,21 @@ try:
             print(json.dumps(reply), flush=True)
         elif fault == 'nonfinite':
             reply['result'] = float('nan')
+            print(json.dumps(reply), flush=True)
+        elif fault == 'duplicate':
+            print('{"id":' + str(reply['id']) + ',"result":{},"result":{}}', flush=True)
+        elif fault == 'overflow':
+            print('{"id":' + str(reply['id']) + ',"result":1e999}', flush=True)
+        elif fault.startswith('inner-'):
+            text = {'inner-duplicate': '{"saved":true,"saved":false}',
+                    'inner-nonfinite': '{"saved":true,"value":NaN}',
+                    'inner-overflow': '{"saved":true,"value":1e999}',
+                    'inner-semantic-error': '{"error":"测试：保存后语义失败"}',
+                    'inner-ambiguous': '[]'}[fault]
+            reply['result'] = {'content': [{'type': 'text', 'text': text}]}
+            print(json.dumps(reply), flush=True)
+        elif fault == 'explicit-tool-error':
+            reply['result'] = {'isError': True, 'content': [{'type': 'text', 'text': '测试：已发送请求返回失败'}]}
             print(json.dumps(reply), flush=True)
         else:
             reply['result'] = {'content': [None]}
