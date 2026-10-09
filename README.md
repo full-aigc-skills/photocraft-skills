@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+Source dev.58 candidate preserves validated serve numeric wire forms and native ID echoes, charges actual aggregate response IDs and validates MCP lifecycle before installation. Healthy stdio/TCP and MCP sessions reuse one process; no GUI launches. Fixed installation and full9.6 remain separate. [Contract](docs/PhotoCraft-Numeric-Wire-Lifecycle.md).
+
 Source dev.57 candidate adds pinned MCP initialize type checks, rejects invalid Unicode before side effects, preserves exact JSON error paths and uses compact UTF-8 stream forwarding. Native extension/metadata modes and large Unicode IDs reuse one process per stream; no GUI launches. Fixed installation and full9.6 remain separate. [Contract](docs/PhotoCraft-Wire-Boundary.md).
 
 Source dev.56 candidate validates MCP/serve stdio launch configuration before input, installation or session startup. Native option compatibility and shared-session saves are tested without GUI launches. Fixed publication and full9.6 remain separate. [Contract](docs/PhotoCraft-Stream-Launch-Preflight.md).

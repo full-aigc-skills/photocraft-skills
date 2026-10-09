@@ -1,5 +1,7 @@
 # PhotoCraft 独立技能
 
+技能源dev.58候选保留已校验serve数值文本与原生ID语义，按实际聚合ID计费，并在安装前校验MCP生命周期；健康stdio／TCP及MCP会话复用单进程，零GUI启动。固定安装与完整9.6分别验收。[合同](docs/PhotoCraft-Numeric-Wire-Lifecycle.zh_CN.md)。
+
 源dev.57候选补齐固定MCP初始化类型、非法Unicode安装前拒绝及精确错误路径，并使用紧凑UTF-8转发。真实扩展／逐请求元数据模式和大中文ID每条流共用一个进程，零GUI启动。固定安装及完整9.6另行验收。[合同](docs/PhotoCraft-Wire-Boundary.zh_CN.md)。
 
 源dev.56候选在读取输入、安装及会话前校验MCP／serve stdio启动配置；保留原生参数兼容，同会话保存测试不启动GUI。固定发行与完整9.6单独验收。[合同](docs/PhotoCraft-Stream-Launch-Preflight.zh_CN.md)。

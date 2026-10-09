@@ -40,6 +40,7 @@ class StreamContract(unittest.TestCase):
    def send(self,message):sent.append(message)
    def receive(self,message,output):return {'jsonrpc':'2.0','id':message['id'],'result':{'content':[{'type':'text','text':'{"error":"native failure"}'}]}}
    def close(self):sent.append('closed')
+  messages[0]['params']['_meta']={'io.modelcontextprotocol/protocolVersion':'2026-07-28','io.modelcontextprotocol/clientCapabilities':{}}
   out=io.StringIO()
   with patch.object(stream,'Wire',Wire):code=stream.run(['mcp'],lambda:{'executable':'verified','binarySha256':'a'*64},io.StringIO(''.join(json.dumps(m)+'\n' for m in messages)),out)
   self.assertEqual(code,1);self.assertEqual(sent,[messages[0],'closed']);error=json.loads(out.getvalue())['error']['data'];self.assertEqual(error['outcome'],'failed');self.assertEqual(error['phase'],'reply_received');self.assertEqual(error['receipts'],[]);self.assertFalse(error['replayAllowed'])
