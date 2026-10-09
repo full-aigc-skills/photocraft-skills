@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+Source dev.52 supervises public serve stdio/TCP, with lazy installation, native authentication and one shared session. Reply or delivery faults quarantine all connections; no replay. [Contract](docs/PhotoCraft-Serve-TCP-Supervision.md). Aggregate interiors and full9.6 remain open.
+
 Source dev.51 adds supervised MCP streaming replies and lazy preflight; serve/TCP and aggregate interiors remain open. [Contract](docs/PhotoCraft-MCP-Stream-Supervision.md).
 
 Source dev.50 enables supervised public `run / batch / convert / droplet` on locked craft.5. Each reply is validated before approving the next operation; unknown results are never replayed. Streaming and nested aggregate acceptance remain open. [Contract](docs/PhotoCraft-Public-CLI-Supervision.md).
@@ -34,7 +36,7 @@ The complete PC-DM-004 size-variant contract passes fixed installed first use: p
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.51`; target plugin: `0.1.0-dev.66`; 13 independent skills.
+Current source: `0.1.0-dev.52`; target plugin: `0.1.0-dev.67`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 
