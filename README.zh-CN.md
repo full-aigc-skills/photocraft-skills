@@ -1,5 +1,7 @@
 # PhotoCraft 独立技能
 
+dev.55候选：自有桌面聚合剩余timeout传入实际MCP会话，12个签名GUI案例通过；固定安装与PC-TX-005完整输入验收分开记录。[合同](docs/PhotoCraft-Desktop-Aggregate-Supervision.zh_CN.md)。
+
 源dev.54接入MCP与命令计划聚合逐步确认、子回执保全及挂起回复严格核验。[合同](docs/PhotoCraft-MCP-Aggregate-Supervision.zh_CN.md)。固定安装及完整9.6单独验收。
 
 源dev.53增加serve stdio／TCP批量逐步确认、累计响应限额及已保存工程保全。[合同](docs/PhotoCraft-Serve-Aggregate-Supervision.zh_CN.md)。固定发布及完整9.6另行验收。

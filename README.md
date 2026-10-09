@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+dev.55 candidate: owned desktop aggregate timeout reaches the actual MCP session;12 signed GUI cases pass. Fixed installation and full PC-TX-005 input acceptance remain separate. [Contract](docs/PhotoCraft-Desktop-Aggregate-Supervision.md).
+
 Source dev.54 supervises MCP and command-plan aggregates with per-step acknowledgement, bound child receipts and strict pending-reply handling. [Contract](docs/PhotoCraft-MCP-Aggregate-Supervision.md). Fixed installation and full9.6 remain separate.
 
 Source dev.53 adds step-confirmed serve stdio/TCP batches, bounded aggregate responses and preserved saved checkpoints. [Contract](docs/PhotoCraft-Serve-Aggregate-Supervision.md). Fixed publication and complete9.6 remain separate.
