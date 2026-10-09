@@ -1,5 +1,9 @@
 # Version-bound release records
 
+## 0.1.0-dev.59
+
+Add incremental task sessions with one owned instance, stable roots and capability identity, stage checkpoint paths and failure/cleanup fencing. Full shared mutable ownership and V1 remain open.
+
 ## 0.1.0-dev.58
 
 Retain validated serve numeric forms and native echo IDs, reserve actual aggregate response bytes and preserve compact UTF-8 TCP output. Validate pinned MCP first-request lifecycle, ID bounds and known notification fields before installation. Full9.6 and V1 remain open.

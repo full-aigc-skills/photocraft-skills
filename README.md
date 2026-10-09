@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+Source dev.59 candidate adds a public task session for incremental command plans: one owned instance, fixed task root, separate stage outputs, bound capability identity and fail-closed continuation. Actual headless and signed-desktop five-stage create/revise/close/reopen/save use one instance per mode and preserve prior projects. Full shared ownership and V1 remain open. [Contract](docs/PhotoCraft-Task-Session.md).
+
 Source dev.58 candidate preserves validated serve numeric wire forms and native ID echoes, charges actual aggregate response IDs and validates MCP lifecycle before installation. Healthy stdio/TCP and MCP sessions reuse one process; no GUI launches. Fixed installation and full9.6 remain separate. [Contract](docs/PhotoCraft-Numeric-Wire-Lifecycle.md).
 
 Source dev.57 candidate adds pinned MCP initialize type checks, rejects invalid Unicode before side effects, preserves exact JSON error paths and uses compact UTF-8 stream forwarding. Native extension/metadata modes and large Unicode IDs reuse one process per stream; no GUI launches. Fixed installation and full9.6 remain separate. [Contract](docs/PhotoCraft-Wire-Boundary.md).
@@ -48,7 +50,7 @@ The complete PC-DM-004 size-variant contract passes fixed installed first use: p
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source: `0.1.0-dev.52`; target plugin: `0.1.0-dev.67`; 13 independent skills.
+Current source candidate: `0.1.0-dev.59`; target plugin candidate: `0.1.0-dev.75`; 13 independent skills.
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 
