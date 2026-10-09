@@ -125,7 +125,7 @@ class StreamSetupDiagnostics(unittest.TestCase):
   import shutil
   with tempfile.TemporaryDirectory() as temporary:
    scripts=Path(temporary)/'scripts';scripts.mkdir()
-   for name in ['cli.py','mcp_stream.py','strict_json.py','operation_errors.py']:shutil.copyfile(SCRIPTS/name,scripts/name)
+   for name in ['cli.py','mcp_stream.py','stream_launch.py','strict_json.py','operation_errors.py']:shutil.copyfile(SCRIPTS/name,scripts/name)
    message={'jsonrpc':'2.0','id':'init','method':'initialize','params':{}}
    result=subprocess.run([sys.executable,'-I','-B',str(scripts/'cli.py'),'--','mcp'],input=json.dumps(message)+'\n',capture_output=True,text=True)
    self.assertEqual(result.returncode,1,result.stdout+result.stderr);error=json.loads(result.stdout)['error']['data'];self.assertEqual(error['outcome'],'not_executed');self.assertEqual(error['dependencySetup']['bootstrapScript'],str((scripts/'bootstrap.py').resolve()));self.assertNotIn('Traceback',result.stderr)

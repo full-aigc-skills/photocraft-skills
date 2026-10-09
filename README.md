@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+Source dev.56 candidate validates MCP/serve stdio launch configuration before input, installation or session startup. Native option compatibility and shared-session saves are tested without GUI launches. Fixed publication and full9.6 remain separate. [Contract](docs/PhotoCraft-Stream-Launch-Preflight.md).
+
 dev.55 candidate: owned desktop aggregate timeout reaches the actual MCP session;12 signed GUI cases pass. Fixed installation and full PC-TX-005 input acceptance remain separate. [Contract](docs/PhotoCraft-Desktop-Aggregate-Supervision.md).
 
 Source dev.54 supervises MCP and command-plan aggregates with per-step acknowledgement, bound child receipts and strict pending-reply handling. [Contract](docs/PhotoCraft-MCP-Aggregate-Supervision.md). Fixed installation and full9.6 remain separate.
