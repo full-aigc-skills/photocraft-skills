@@ -1,5 +1,7 @@
 # PhotoCraft 独立技能
 
+源dev.57候选补齐固定MCP初始化类型、非法Unicode安装前拒绝及精确错误路径，并使用紧凑UTF-8转发。真实扩展／逐请求元数据模式和大中文ID每条流共用一个进程，零GUI启动。固定安装及完整9.6另行验收。[合同](docs/PhotoCraft-Wire-Boundary.zh_CN.md)。
+
 源dev.56候选在读取输入、安装及会话前校验MCP／serve stdio启动配置；保留原生参数兼容，同会话保存测试不启动GUI。固定发行与完整9.6单独验收。[合同](docs/PhotoCraft-Stream-Launch-Preflight.zh_CN.md)。
 
 dev.55候选：自有桌面聚合剩余timeout传入实际MCP会话，12个签名GUI案例通过；固定安装与PC-TX-005完整输入验收分开记录。[合同](docs/PhotoCraft-Desktop-Aggregate-Supervision.zh_CN.md)。

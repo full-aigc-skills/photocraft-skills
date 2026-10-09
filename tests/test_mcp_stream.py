@@ -50,7 +50,7 @@ import hashlib,os,subprocess,tempfile
 @unittest.skipUnless(os.environ.get('CRAFT_MCP_STREAM_NATIVE')=='1','explicit real native stream opt-in')
 class NativeStream(unittest.TestCase):
  def test_actual_public_mcp_post_save_faults_preserve_source_and_stop_next_edit(self):
-  self.verify(['duplicate','nonfinite','semantic','wrong-id','extra-frame','malformed-error'])
+   self.verify(['duplicate','nonfinite','invalid-unicode','semantic','wrong-id','extra-frame','malformed-error'])
  def test_actual_public_mcp_healthy_string_ids_notifications_and_legacy_replies(self):
   self.verify([None])
  def verify(self,faults):
@@ -72,6 +72,7 @@ class NativeStream(unittest.TestCase):
         if reply.get('id')==4 and fault:
          if fault=='duplicate':return b'{"jsonrpc":"2.0",'+raw[1:]
          if fault=='nonfinite':return b'{"probe":NaN,'+raw[1:]
+         if fault=='invalid-unicode':return b'{"probe":"\\ud800",'+raw[1:]
          if fault=='semantic':reply['result']={'content':[{'type':'text','text':'{"error":"injected native semantic failure"}'}]}
          elif fault=='wrong-id':reply['id']='unrelated'
          elif fault=='malformed-error':reply.pop('result');reply['error']={'code':'bad','message':7}
@@ -125,8 +126,8 @@ class StreamSetupDiagnostics(unittest.TestCase):
   import shutil
   with tempfile.TemporaryDirectory() as temporary:
    scripts=Path(temporary)/'scripts';scripts.mkdir()
-   for name in ['cli.py','mcp_stream.py','stream_launch.py','strict_json.py','operation_errors.py']:shutil.copyfile(SCRIPTS/name,scripts/name)
-   message={'jsonrpc':'2.0','id':'init','method':'initialize','params':{}}
+   for name in ['cli.py','mcp_stream.py','mcp_protocol.py','stream_launch.py','strict_json.py','operation_errors.py']:shutil.copyfile(SCRIPTS/name,scripts/name)
+   message={'jsonrpc':'2.0','id':'init','method':'initialize','params':{'protocolVersion':'2024-11-05','capabilities':{},'clientInfo':{'name':'setup-test','version':'1'}}}
    result=subprocess.run([sys.executable,'-I','-B',str(scripts/'cli.py'),'--','mcp'],input=json.dumps(message)+'\n',capture_output=True,text=True)
    self.assertEqual(result.returncode,1,result.stdout+result.stderr);error=json.loads(result.stdout)['error']['data'];self.assertEqual(error['outcome'],'not_executed');self.assertEqual(error['dependencySetup']['bootstrapScript'],str((scripts/'bootstrap.py').resolve()));self.assertNotIn('Traceback',result.stderr)
 

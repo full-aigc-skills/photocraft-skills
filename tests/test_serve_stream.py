@@ -63,7 +63,7 @@ import tempfile
 @unittest.skipUnless(os.environ.get('CRAFT_SERVE_STREAM_NATIVE')=='1','explicit real native serve stream opt-in')
 class NativeServeStream(unittest.TestCase):
  def test_actual_saved_files_survive_reply_fault_and_no_next_edit(self):
-  self.verify(['duplicate','nonfinite','semantic','wrong-id','extra-frame','malformed-error','missing-ok'])
+  self.verify(['duplicate','nonfinite','invalid-unicode','semantic','wrong-id','extra-frame','malformed-error','missing-ok'])
  def test_actual_healthy_native_protocol_ids_render_and_nullable_parameters(self):
   self.verify([None])
  def verify(self,faults):
@@ -86,6 +86,7 @@ class NativeServeStream(unittest.TestCase):
         if reply.get('id')==4 and fault:
          if fault=='duplicate':return b'{"ok":true,'+raw[1:]
          if fault=='nonfinite':return b'{"probe":NaN,'+raw[1:]
+         if fault=='invalid-unicode':return b'{"probe":"\\ud800",'+raw[1:]
          if fault=='semantic':reply['result']={'error':'injected semantic failure'}
          elif fault=='wrong-id':reply['id']='other'
          elif fault=='extra-frame':wire.buffer=json.dumps(reply).encode()+b'\n'+wire.buffer

@@ -1,5 +1,9 @@
 # Version-bound release records
 
+## 0.1.0-dev.57
+
+Validate pinned MCP initialization types and reject unpaired Unicode before installation. Keep structured JSON field paths intact and forward compact UTF-8 requests. Extended initialization, metadata-only MCP and large Unicode serve IDs use one process per stream. Full9.6 and V1 remain open.
+
 ## 0.1.0-dev.56
 
 Validate active MCP/serve stdio launch configuration before consuming input or installing. Preserve native option semantics and keep credentials out of diagnostics. Shared native create/save/inspect workflows reuse one process per protocol; desktop cross-invocation reuse and full9.6 remain open.
