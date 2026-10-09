@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+Source dev.53 adds step-confirmed serve stdio/TCP batches, bounded aggregate responses and preserved saved checkpoints. [Contract](docs/PhotoCraft-Serve-Aggregate-Supervision.md). Fixed publication and complete9.6 remain separate.
+
 Source dev.52 supervises public serve stdio/TCP, with lazy installation, native authentication and one shared session. Reply or delivery faults quarantine all connections; no replay. [Contract](docs/PhotoCraft-Serve-TCP-Supervision.md). Aggregate interiors and full9.6 remain open.
 
 Source dev.51 adds supervised MCP streaming replies and lazy preflight; serve/TCP and aggregate interiors remain open. [Contract](docs/PhotoCraft-MCP-Stream-Supervision.md).

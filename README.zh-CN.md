@@ -1,5 +1,7 @@
 # PhotoCraft 独立技能
 
+源dev.53增加serve stdio／TCP批量逐步确认、累计响应限额及已保存工程保全。[合同](docs/PhotoCraft-Serve-Aggregate-Supervision.zh_CN.md)。固定发布及完整9.6另行验收。
+
 技能源dev.52监督公开serve stdio／TCP，延迟安装、保留原生认证并共用一个会话。回复或交付异常隔离全部连接，不重放。[合同](docs/PhotoCraft-Serve-TCP-Supervision.zh_CN.md)。聚合内部及完整9.6仍开放。
 
 技能源 dev.51 增加 MCP 流式回复监督及延迟预检；serve／TCP和聚合内部逐项确认继续开放。[合同](docs/PhotoCraft-MCP-Stream-Supervision.zh_CN.md)。
