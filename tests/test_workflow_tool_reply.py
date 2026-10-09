@@ -15,11 +15,11 @@ class WorkflowToolReplyTests(unittest.TestCase):
   values=[None,[],{}, {'content':None},{'content':[None]}, {'content':[{'type':'text'}]}, {'content':[{'type':'text','text':3}]},{'content':[],'isError':'false'}]
   for value in values:
    with self.subTest(value=value):
-    child="import sys,json\nfor line in sys.stdin:\n r=json.loads(line)\n if 'id' in r: print(json.dumps({'id':r['id'],'result':json.loads(sys.argv[1]) if r['method']=='tools/call' else {}}),flush=True)\n"
+    child="import sys,json\nfor line in sys.stdin:\n r=json.loads(line)\n if 'id' in r: print(json.dumps({'jsonrpc':'2.0','id':r['id'],'result':json.loads(sys.argv[1]) if r['method']=='tools/call' else {}}),flush=True)\n"
     with self.session()([sys.executable,'-I','-B','-u','-c',child,json.dumps(value)]) as session:
      with self.assertRaisesRegex(RuntimeError,'outcome_unknown: invalid_tool_reply'):
       session.request('tools/call',{'name':'test_tool','arguments':{}})
  def test_valid_semantic_error_remains_a_known_reply(self):
-  child="import sys,json\nfor line in sys.stdin:\n r=json.loads(line)\n if 'id' in r: print(json.dumps({'id':r['id'],'result':{'isError':True,'content':[{'type':'text','text':'known error'}]} if r['method']=='tools/call' else {}}),flush=True)\n"
+  child="import sys,json\nfor line in sys.stdin:\n r=json.loads(line)\n if 'id' in r: print(json.dumps({'jsonrpc':'2.0','id':r['id'],'result':{'isError':True,'content':[{'type':'text','text':'known error'}]} if r['method']=='tools/call' else {}}),flush=True)\n"
   with self.session()([sys.executable,'-I','-B','-u','-c',child]) as session:
    self.assertTrue(session.request('tools/call',{'name':'test_tool','arguments':{}})['isError'])

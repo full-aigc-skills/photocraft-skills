@@ -22,7 +22,15 @@ class OptimizationNativeTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as temporary:
    output=Path(temporary)/'batch'
    plan={'schema':'craft-command-plan/v1','operations':[{'tool':'doc_new','params':{'width':32,'height':32}},{'tool':'command_batch','params':{'steps':[{'id':'layer.new.layer','params':{'name':'partial'}},{'id':'type.edit','params':{'text':'wrong kind'}}]},'as':'batch'},{'tool':'doc_save','params':{'path':{'$output':'must-not-save.pcraft'}}}]}
-   receipt=commands.execute(plan,output);self.assertEqual(receipt['result'],'unknown');self.assertEqual(len(receipt['steps']),2);self.assertEqual(receipt['steps'][-1]['result']['completed'],1);self.assertEqual(receipt['steps'][-1]['result']['failed'],1);self.assertFalse((output/'must-not-save.pcraft').exists())
+   receipt=commands.execute(plan,output)
+   self.assertEqual(receipt['result'],'FAIL');self.assertEqual(len(receipt['steps']),2)
+   batch=receipt['steps'][-1]
+   self.assertEqual(batch['result']['completed'],1);self.assertEqual(batch['result']['failed'],0)
+   self.assertEqual(len(batch['substeps']),1);self.assertEqual(batch['substeps'][0]['phase'],'reply_validated')
+   self.assertEqual(receipt['errorDetails']['aggregate']['stepIndex'],1)
+   self.assertEqual(receipt['errorDetails']['aggregate']['confirmedSteps'],1)
+   self.assertFalse(receipt['errorDetails']['replayAllowed']);self.assertEqual(batch['state'],'failed');self.assertFalse((output/'success.json').exists())
+   self.assertFalse((output/'must-not-save.pcraft').exists())
  def test_saved_mask_binding_and_text_layout_facts_reopen(self):
   from PIL import Image
   m=workflow()

@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+Source dev.54 supervises MCP and command-plan aggregates with per-step acknowledgement, bound child receipts and strict pending-reply handling. [Contract](docs/PhotoCraft-MCP-Aggregate-Supervision.md). Fixed installation and full9.6 remain separate.
+
 Source dev.53 adds step-confirmed serve stdio/TCP batches, bounded aggregate responses and preserved saved checkpoints. [Contract](docs/PhotoCraft-Serve-Aggregate-Supervision.md). Fixed publication and complete9.6 remain separate.
 
 Source dev.52 supervises public serve stdio/TCP, with lazy installation, native authentication and one shared session. Reply or delivery faults quarantine all connections; no replay. [Contract](docs/PhotoCraft-Serve-TCP-Supervision.md). Aggregate interiors and full9.6 remain open.
