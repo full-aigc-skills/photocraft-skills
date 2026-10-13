@@ -26,7 +26,7 @@ class ChineseTextFirstUseTests(unittest.TestCase):
    workflow_python=os.environ.get('CRAFT_WORKFLOW_PYTHON',sys.executable)
    def execute(value,name,previous=None):
     path=root/(name+'.json');path.write_text(json.dumps(value,ensure_ascii=False))
-    argv=[workflow_python,'-I','-B',str(skill/'scripts/workflow.py'),str(path),'--output',str(root/name),'--runtime-home',str(root/'fresh runtime'),'--asset','product='+str(product)]
+    argv=[workflow_python,'-I','-B',str(ROOT/'skills/photocraft-harness/scripts/workflow.py'),str(path),'--output',str(root/name),'--runtime-home',str(root/'fresh runtime'),'--asset','product='+str(product)]
     if previous:argv+=['--source',str(root/previous)]
     result=subprocess.run(argv,capture_output=True,text=True,env=dict(os.environ,PATH='/usr/bin:/bin'),timeout=240)
     return result
@@ -50,7 +50,7 @@ class ChineseTextFirstUseTests(unittest.TestCase):
    with Image.open(root/'v1/design.png') as a,Image.open(root/'v2/design.png') as b:
     self.assertIsNotNone(ImageChops.difference(a.convert('RGB').crop((0,0,320,100)),b.convert('RGB').crop((0,0,320,100))).getbbox())
     self.assertEqual(a.convert('RGBA').crop((0,100,320,400)).tobytes(),b.convert('RGBA').crop((0,100,320,400)).tobytes())
-   converted=subprocess.run([workflow_python,'-I','-B',str(skill/'scripts/cli.py'),'--runtime-home',str(root/'fresh runtime'),'--','convert',str(root/'v2/design.psd'),str(root/'psd-decoded.png')],capture_output=True,text=True,env=dict(os.environ,PATH='/usr/bin:/bin'),timeout=120)
+   converted=subprocess.run([workflow_python,'-I','-B',str(ROOT/'skills/photocraft-harness/scripts/cli.py'),'--runtime-home',str(root/'fresh runtime'),'--','convert',str(root/'v2/design.psd'),str(root/'psd-decoded.png')],capture_output=True,text=True,env=dict(os.environ,PATH='/usr/bin:/bin'),timeout=120)
    self.assertEqual(converted.returncode,0,converted.stdout+converted.stderr)
    with Image.open(root/'v2/design.png') as native,Image.open(root/'psd-decoded.png') as exchanged_image:self.assertEqual(native.convert('RGBA').tobytes(),exchanged_image.convert('RGBA').tobytes())
    for name,digest in hashes.items():self.assertEqual(hashlib.sha256((root/'v1'/name).read_bytes()).hexdigest(),digest)

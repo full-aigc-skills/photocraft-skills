@@ -7,7 +7,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = json.loads((ROOT / "skill-suite.json").read_text())["pluginId"]
-SCRIPT = ROOT / "skills" / (DOMAIN + "-use") / "scripts" / "commands.py"
+SCRIPT = ROOT / "skills" / (DOMAIN + "-harness") / "scripts" / "commands.py"
 
 def module():
     spec = importlib.util.spec_from_file_location("command_entry", SCRIPT)

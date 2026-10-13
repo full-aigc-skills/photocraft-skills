@@ -5,7 +5,7 @@ import tempfile
 import unittest
 ROOT=Path(__file__).resolve().parents[1]
 def load(name):
- s=importlib.util.spec_from_file_location('parameter_'+name,ROOT/'skills/photocraft-use/scripts'/f'{name}.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+ s=importlib.util.spec_from_file_location('parameter_'+name,ROOT/'skills/photocraft-harness/scripts'/f'{name}.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 class ParameterPreflightTests(unittest.TestCase):
  def test_mcp_tools_use_fixed_schema_before_install_and_after_resolution(self):
   commands=load('commands')

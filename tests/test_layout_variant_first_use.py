@@ -28,7 +28,7 @@ class LayoutFirstUse(unittest.TestCase):
    image=root/'product.png';image.write_bytes(b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',120,160,8,6,0,0,0))+chunk(b'IDAT',zlib.compress((b'\0'+bytes([233,99,64,255])*120)*160))+chunk(b'IEND',b''))
    env={**os.environ,'PATH':'/usr/bin:/bin'};env.pop('CRAFT_RUNTIME_HOME',None)
    def run(plan,name,source=None):
-    path=root/(name+'.json');path.write_text(json.dumps(plan));args=[sys.executable,'-I','-B',str(skill/'scripts/workflow.py'),str(path),'--output',str(root/name),'--runtime-home',str(root/'runtime')]
+    path=root/(name+'.json');path.write_text(json.dumps(plan));args=[sys.executable,'-I','-B',str(ROOT/'skills/photocraft-harness/scripts/workflow.py'),str(path),'--output',str(root/name),'--runtime-home',str(root/'runtime')]
     if source:args.extend(['--source',str(source)])
     else:args.extend(['--asset','product='+str(image)])
     return subprocess.run(args,env=env,text=True,capture_output=True,timeout=180)

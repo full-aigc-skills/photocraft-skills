@@ -13,7 +13,9 @@ class CapabilityFirstUse(unittest.TestCase):
   else:
    with tempfile.TemporaryDirectory(prefix='photo-capability-') as td:self.run_case(Path(td))
  def run_case(self,root):
-  skill=Path(os.environ.get('CRAFT_INSTALLED_CAPABILITY_SKILL',ROOT/'skills/photocraft-cli'));scripts=skill/'scripts'
+  skill=Path(os.environ.get('CRAFT_INSTALLED_CAPABILITY_SKILL',ROOT/'skills/photocraft-cli'))
+  # 执行实现收敛在 harness；复制技能保留示例与参考知识。
+  scripts=ROOT/'skills/photocraft-harness/scripts'
   def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
   def hashes(p):return {str(f.relative_to(p)):sha(f) for f in p.rglob('*') if f.is_file() and '__pycache__' not in str(f)}
   before=hashes(skill);runtime=root/'runtime';records=[]

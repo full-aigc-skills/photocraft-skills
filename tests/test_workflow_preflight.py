@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / 'skills/photocraft-use/scripts/workflow.py'
+SCRIPT = ROOT / 'skills/photocraft-harness/scripts/workflow.py'
 
 
 def workflow():

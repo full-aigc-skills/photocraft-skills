@@ -2,7 +2,7 @@
 import importlib.util,io,json,sys,unittest
 from pathlib import Path
 from unittest.mock import patch
-SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-use/scripts'
+SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-harness/scripts'
 def load(name,scripts=SCRIPTS):
  spec=importlib.util.spec_from_file_location('stream_test_'+name,scripts/(name+'.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 class PublicStreamPreflight(unittest.TestCase):

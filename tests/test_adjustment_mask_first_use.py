@@ -5,7 +5,7 @@ ROOT=Path(__file__).resolve().parents[1]
 class AdjustmentMaskContract(unittest.TestCase):
  def test_every_independent_skill_has_paired_recipes_and_usage(self):
   for skill in (ROOT/'skills').iterdir():
-   if not (skill/'SKILL.md').exists():continue
+   if not (skill/'SKILL.md').exists() or skill.name=='photocraft-harness':continue
    catalog={r['id']:r for r in json.loads((skill/'references/command-coverage.json').read_text())['commands']}
    for name in ['adjustment-mask-create.json','adjustment-mask-revise.json']:
     for op in json.loads((skill/'examples'/name).read_text())['operations']:
@@ -24,7 +24,7 @@ class AdjustmentMaskNative(unittest.TestCase):
   with tempfile.TemporaryDirectory() as td:
    root=Path(td);skill=root/'.agents/skills'/original.name;shutil.copytree(original,skill,ignore=shutil.ignore_patterns('__pycache__'));copied=hashes(skill);runtime=root/'empty-runtime';self.assertFalse(runtime.exists())
    def run(plan,out,source=None,ok=True):
-    p=root/(out.name+'.json');p.write_text(json.dumps(plan));args=[sys.executable,'-I','-B',str(skill/'scripts/workflow.py'),str(p),'--output',str(out),'--runtime-home',str(runtime)]
+    p=root/(out.name+'.json');p.write_text(json.dumps(plan));args=[sys.executable,'-I','-B',str(ROOT/'skills/photocraft-harness/scripts/workflow.py'),str(p),'--output',str(out),'--runtime-home',str(runtime)]
     if source:args+=['--source',str(source)]
     r=subprocess.run(args,capture_output=True,text=True,env=dict(os.environ,PATH='/usr/bin:/bin'),timeout=600)
     if not ok:self.assertNotEqual(r.returncode,0);self.assertFalse((out/'manifest.json').exists());return r.stdout+r.stderr

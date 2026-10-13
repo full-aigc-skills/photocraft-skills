@@ -15,7 +15,8 @@ import unittest
 import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL = Path(os.environ['CRAFT_INSTALLED_SKILL_ROOT']).resolve() if os.environ.get('CRAFT_INSTALLED_SKILL_ROOT') else ROOT / 'skills/photocraft-use'
+# 执行实现收敛在 harness；可经 CRAFT_INSTALLED_SKILL_ROOT 指向已安装副本。
+SKILL = Path(os.environ['CRAFT_INSTALLED_SKILL_ROOT']).resolve() if os.environ.get('CRAFT_INSTALLED_SKILL_ROOT') else ROOT / 'skills/photocraft-harness'
 SCRIPTS = SKILL / 'scripts'
 
 def product_fixture(path):

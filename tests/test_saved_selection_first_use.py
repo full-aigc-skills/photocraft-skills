@@ -25,7 +25,7 @@ class SavedSelectionFirstUseTests(unittest.TestCase):
   else:
    tmp=tempfile.TemporaryDirectory();self.addCleanup(tmp.cleanup);work=Path(tmp.name)
   skill=work/'项目 空格/.agents/skills/photocraft-cli-selection';shutil.copytree(source,skill,ignore=shutil.ignore_patterns('__pycache__'));before=tree(skill);source_before=tree(source);self.assertEqual({p.name for p in skill.parent.iterdir()},{skill.name})
-  runtime=work/'runtime 空缓存';self.assertFalse(runtime.exists());spec=importlib.util.spec_from_file_location('selection_commands',skill/'scripts/commands.py');commands=importlib.util.module_from_spec(spec);spec.loader.exec_module(commands);env={k:v for k,v in os.environ.items() if not k.startswith('CRAFT_')};env['PATH']='/usr/bin:/bin';receipts={}
+  runtime=work/'runtime 空缓存';self.assertFalse(runtime.exists());spec=importlib.util.spec_from_file_location('selection_commands',ROOT/'skills/photocraft-harness/scripts/commands.py');commands=importlib.util.module_from_spec(spec);spec.loader.exec_module(commands);env={k:v for k,v in os.environ.items() if not k.startswith('CRAFT_')};env['PATH']='/usr/bin:/bin';receipts={}
   def run(name,project=None,output=None):
    plan=json.loads((skill/f'examples/saved-selection-{name}.json').read_text());inputs={} if project is None else {'project':str(project)};commands.validate(plan,inputs)
    with patch.dict(os.environ,env,clear=True):result=commands.execute(plan,work/(output or name),runtime_home=runtime,inputs=inputs)

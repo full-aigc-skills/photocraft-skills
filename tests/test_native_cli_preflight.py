@@ -10,7 +10,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / 'skills/photocraft-use/scripts'
+SCRIPTS = ROOT / 'skills/photocraft-harness/scripts'
 
 # 观察而不修改独立技能；测试决不进行真实安装或启动原生进程。
 OBSERVER = '''import importlib.util,json,runpy,subprocess,sys

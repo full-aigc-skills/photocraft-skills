@@ -3,7 +3,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 def load():
  path=ROOT/'skills'/ROOT.name.removesuffix('-skills')/'unused'
- path=ROOT/'skills'/(ROOT.name.removesuffix('-skills')+'-use')/'scripts/native_workflow.py'
+ path=ROOT/'skills'/(ROOT.name.removesuffix('-skills')+'-harness')/'scripts/native_workflow.py'
  s=importlib.util.spec_from_file_location('native',path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 class NativeWorkflowTests(unittest.TestCase):
  def test_complete_fixed_catalog_validation(self):

@@ -7,7 +7,7 @@ import tempfile
 import unittest
 ROOT=Path(__file__).resolve().parents[1]
 def workflow():
- spec=importlib.util.spec_from_file_location('optimization_workflow',ROOT/'skills/photocraft-use/scripts/workflow.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+ spec=importlib.util.spec_from_file_location('optimization_workflow',ROOT/'skills/photocraft-harness/scripts/workflow.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 @unittest.skipUnless(os.environ.get('CRAFT_OPTIMIZATION_NATIVE_TEST')=='1','explicit native optimization opt-in')
 class OptimizationNativeTests(unittest.TestCase):
  def test_native_16_bit_source_cannot_claim_rgba8_protection(self):

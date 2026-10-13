@@ -9,7 +9,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / 'skills/photocraft-use/scripts'
+SCRIPTS = ROOT / 'skills/photocraft-harness/scripts'
 
 
 def load(name):

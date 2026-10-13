@@ -5,7 +5,7 @@ import unittest
 ROOT=Path(__file__).resolve().parents[1]
 class LayoutVariantTests(unittest.TestCase):
  def setUp(self):
-  spec=importlib.util.spec_from_file_location('layout',ROOT/'skills/photocraft-use/scripts/layout_variant.py')
+  spec=importlib.util.spec_from_file_location('layout',ROOT/'skills/photocraft-harness/scripts/layout_variant.py')
   self.m=importlib.util.module_from_spec(spec);spec.loader.exec_module(self.m)
   self.config={'width':120,'height':80,'safeArea':[10,10,100,60],'roles':{'background':1,'product':2,'text':3}}
   self.before={'width':100,'height':100,'layers':[{'id':1,'kind':'Pixel','bounds':[0,0,100,100],'visible':True},{'id':2,'kind':'Pixel','bounds':[20,30,20,20],'visible':True},{'id':3,'kind':'Type','bounds':[20,20,30,10],'visible':True,'text':{'text':'NOVA','font':'Arial'}}]}
@@ -36,7 +36,7 @@ class LayoutVariantTests(unittest.TestCase):
 
 class VariantWorkflowPreflightTests(unittest.TestCase):
  def test_invalid_variant_is_rejected_before_runtime_or_source_access(self):
-  spec=importlib.util.spec_from_file_location('variant_workflow',ROOT/'skills/photocraft-use/scripts/workflow.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+  spec=importlib.util.spec_from_file_location('variant_workflow',ROOT/'skills/photocraft-harness/scripts/workflow.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
   plan={'operations':[],'variant':{'width':120,'height':80,'safeArea':[0,0,121,80],'roles':{'background':1,'product':2,'text':3}}}
   with self.assertRaisesRegex(ValueError,'invalid_variant_safe_area'):module.validate(plan)
 

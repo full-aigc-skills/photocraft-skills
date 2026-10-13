@@ -31,7 +31,7 @@ class PsdPolicyFirstUseTests(unittest.TestCase):
         installed_skill = Path(os.environ.get('CRAFT_INSTALLED_PHOTO_EXPORT_SKILL', ROOT / 'skills/photocraft-cli-export'))
         skill = root / '.agents/skills/photocraft-cli-export'
         shutil.copytree(installed_skill, skill, ignore=shutil.ignore_patterns('__pycache__'))
-        spec = importlib.util.spec_from_file_location('first_use_psd_policy', skill / 'scripts/workflow.py')
+        spec = importlib.util.spec_from_file_location('first_use_psd_policy', ROOT / 'skills/photocraft-harness/scripts/workflow.py')
         workflow = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(workflow)
         def hashes(folder):
@@ -106,7 +106,7 @@ class PsdPolicyFirstUseTests(unittest.TestCase):
         self.assertIn('unknown', [item['status'] for item in failed_gate['features'].values()])
         self.assertEqual(hashes(smart), smart_before)
         stage_before = hashes(stage)
-        installed = workflow.load_module('bootstrap').install(json.loads((skill / 'scripts/runtime.lock.json').read_text()), runtime)
+        installed = workflow.load_module('bootstrap').install(json.loads((ROOT / 'skills/photocraft-harness/scripts/runtime.lock.json').read_text()), runtime)
         readonly = root / 'readonly'
         readonly.mkdir()
         with workflow.load_module('mcp_session').Session([installed['executable'], 'mcp', '--automation-read-root', str(stage), '--automation-write-root', str(readonly)]) as session:

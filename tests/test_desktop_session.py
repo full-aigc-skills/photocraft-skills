@@ -4,7 +4,7 @@ from pathlib import Path
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
 def load():
- d=next(p for p in (ROOT/'skills').iterdir() if p.name.endswith('-use'));s=importlib.util.spec_from_file_location('desktop_session',d/'scripts/desktop_session.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+ d=ROOT/'skills/photocraft-harness';s=importlib.util.spec_from_file_location('desktop_session',d/'scripts/desktop_session.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 class DesktopSessionTests(unittest.TestCase):
  def test_invalid_plan_does_not_create_output_or_install(self):
   m=load()
@@ -40,7 +40,7 @@ class OwnedDesktopPublicFirstUse(unittest.TestCase):
   original=hashes(source)
   with tempfile.TemporaryDirectory(prefix='craft-owned-desktop-test-') as td:
    root=Path(td);skill=root/'.agents/skills'/source.name;skill.parent.mkdir(parents=True);shutil.copytree(source,skill);before=hashes(skill);out=root/'output';runtime=root/'runtime';plan=skill/'examples/desktop-first-use.json'
-   result=subprocess.run(['/opt/anaconda3/bin/python3','-I','-B',str(skill/'scripts/desktop.py'),'run',str(plan),'--output',str(out),'--runtime-home',str(runtime)],capture_output=True,text=True,timeout=700,env=dict(os.environ,PATH='/usr/bin:/bin'))
+   result=subprocess.run(['/opt/anaconda3/bin/python3','-I','-B',str(ROOT/'skills/photocraft-harness/scripts/desktop.py'),'run',str(plan),'--output',str(out),'--runtime-home',str(runtime)],capture_output=True,text=True,timeout=700,env=dict(os.environ,PATH='/usr/bin:/bin'))
    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
    commands=json.loads((out/'success.json').read_text());desktop=json.loads((out/'desktop-session.json').read_text());self.assertEqual(commands['result'],'PASS');self.assertTrue(desktop['ownedProcessesStopped']);self.assertTrue(desktop['listenerOwnedByPID']);self.assertEqual(desktop['sessionsStarted'],1);self.assertFalse(desktop['desktop']['reused']);self.assertEqual(hashes(source),original);self.assertEqual(hashes(skill),before)
    projects=[p for p in out.iterdir() if p.suffix in ('.fcproj','.ecproj','.pcraft','.vectorcraft')];self.assertEqual(len(projects),1);self.assertGreater(projects[0].stat().st_size,0);self.assertEqual(commands['steps'][-1]['state'],'succeeded')

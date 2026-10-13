@@ -12,7 +12,7 @@ def png(width,height,pixels,channels=4):
  return b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,8,6 if channels==4 else 2,0,0,0))+chunk(b'IDAT',zlib.compress(raw))+chunk(b'IEND',b'')
 class PixelGuardTests(unittest.TestCase):
  def module(self):
-  spec=importlib.util.spec_from_file_location('pixel_guard',ROOT/'skills/photocraft-use/scripts/pixel_guard.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+  spec=importlib.util.spec_from_file_location('pixel_guard',ROOT/'skills/photocraft-harness/scripts/pixel_guard.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
  def test_outside_change_is_allowed_but_protected_change_refuses(self):
   m=self.module();a=bytes([100,20,40,255])*6;b=bytearray(a);b[4:8]=bytes([0,0,0,255]);regions=[{'id':'left','rect':[0,0,1,2]}]
   with tempfile.TemporaryDirectory() as temp:
@@ -47,7 +47,7 @@ class PixelGuardTests(unittest.TestCase):
     content=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',2,2,8,6,0,0,0))+chunk(b'IDAT',zlib.compress(b''.join(bytes([mode])+bytes(row) for row in scanlines)))+chunk(b'IEND',b'');path.write_bytes(content)
     self.assertEqual(m.decode(path)[2],expected,mode)
  def test_workflow_requires_source_before_installing_or_writing_output(self):
-  spec=importlib.util.spec_from_file_location('protected_workflow',ROOT/'skills/photocraft-use/scripts/workflow.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+  spec=importlib.util.spec_from_file_location('protected_workflow',ROOT/'skills/photocraft-harness/scripts/workflow.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
   with tempfile.TemporaryDirectory() as temp:
    root=Path(temp);plan={'document':{'width':20,'height':20},'operations':[],'protectedRegions':[{'id':'keep','rect':[0,0,10,10]}]}
    with self.assertRaisesRegex(ValueError,'protected_source_required'):m.execute(plan,root/'output',runtime_home=root/'runtime')

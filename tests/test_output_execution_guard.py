@@ -8,7 +8,8 @@ import sys
 import tempfile
 import unittest
 
-SCRIPT = Path(os.environ.get('CRAFT_INSTALLED_OUTPUT_GUARD_SKILL', Path(__file__).resolve().parents[1] / 'skills/photocraft-use')) / 'scripts/output_guard.py'
+ROOT = Path(__file__).resolve().parents[1]
+SCRIPT = Path(os.environ.get('CRAFT_INSTALLED_OUTPUT_GUARD_SKILL', ROOT / 'skills/photocraft-harness')) / 'scripts/output_guard.py'
 
 
 class OutputGuardTests(unittest.TestCase):
@@ -49,7 +50,7 @@ class OutputGuardTests(unittest.TestCase):
         def module_from_spec(spec):
             return spec.replacement if hasattr(spec, 'replacement') else original_module(spec)
         with tempfile.TemporaryDirectory() as directory, patch.object(workflow.importlib.util, 'spec_from_file_location', side_effect=module_spec), patch.object(workflow.importlib.util, 'module_from_spec', side_effect=module_from_spec), patch('subprocess.check_output', return_value='[{"id":"text.fonts"}]'):
-            document=json.loads((SCRIPT.parent.parent/'examples/native-workflow.json').read_text())['document']
+            document=json.loads((ROOT/'skills/photocraft-use/examples/native-workflow.json').read_text())['document']
             with self.assertRaisesRegex(ValueError, 'output_execution_conflict'):
                 workflow.execute({'document':document, 'operations': []}, Path(directory)/'delivery')
             self.assertEqual(claims, [(Path(directory)/'delivery').resolve()])

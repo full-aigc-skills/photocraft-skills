@@ -5,7 +5,7 @@ import tempfile,unittest
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
 def module(name):
- spec=importlib.util.spec_from_file_location('photo_integrity_'+name,ROOT/'skills/photocraft-use/scripts'/(name+'.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+ spec=importlib.util.spec_from_file_location('photo_integrity_'+name,ROOT/'skills/photocraft-harness/scripts'/(name+'.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 class DeliveryIntegrityTests(unittest.TestCase):
  def fixture(self,root):
   root.mkdir();files={'project.pcraft':b'native','native.json':b'{}','design.png':b'preview','operations.json':b'[]','plan.json':b'{}'}

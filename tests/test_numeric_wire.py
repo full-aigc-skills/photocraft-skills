@@ -14,7 +14,7 @@ from test_serve_tcp import Client
 from test_stream_launch import NATIVE_OBSERVER
 
 ROOT=Path(__file__).resolve().parents[1]
-SCRIPTS=ROOT/'skills/photocraft-use/scripts'
+SCRIPTS=ROOT/'skills/photocraft-harness/scripts'
 
 def load(name):
     spec=importlib.util.spec_from_file_location('numeric_test_'+name,SCRIPTS/(name+'.py'))

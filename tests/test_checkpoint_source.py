@@ -2,7 +2,7 @@
 import hashlib,importlib.util,json,tempfile,unittest,os,subprocess,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-SCRIPTS=ROOT/'skills/photocraft-use/scripts'
+SCRIPTS=ROOT/'skills/photocraft-harness/scripts'
 def load(name):
  spec=importlib.util.spec_from_file_location('test_'+name,SCRIPTS/(name+'.py'));module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()

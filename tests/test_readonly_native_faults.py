@@ -10,7 +10,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / 'skills/photocraft-use/scripts'
+SCRIPTS = ROOT / 'skills/photocraft-harness/scripts'
 
 @unittest.skipUnless(os.environ.get('CRAFT_NATIVE_PROTOCOL_FAULTS') == '1', 'explicit native readonly fault opt-in')
 class ReadonlyNativeFaults(unittest.TestCase):

@@ -20,11 +20,11 @@ class SmartFirstUse(unittest.TestCase):
    root=Path(temp);source=Path(os.environ.get('CRAFT_INSTALLED_SMART_SKILL',Path(__file__).resolve().parents[1]/'skills/photocraft-cli-layers'));skill=root/'.agents/skills/photocraft-cli-layers';shutil.copytree(source,skill,ignore=shutil.ignore_patterns('__pycache__'));baseline=hashes(skill);runtime=root/'empty-runtime'
    self.assertFalse(runtime.exists())
    if os.environ.get('CRAFT_SMART_CANDIDATE_ARCHIVE'):
-    result=subprocess.run([sys.executable,'-I','-B',str(skill/'scripts/bootstrap.py'),'--runtime-home',str(runtime),'--archive',os.environ['CRAFT_SMART_CANDIDATE_ARCHIVE']],capture_output=True,text=True);self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    result=subprocess.run([sys.executable,'-I','-B',str(ROOT/'skills/photocraft-harness/scripts/bootstrap.py'),'--runtime-home',str(runtime),'--archive',os.environ['CRAFT_SMART_CANDIDATE_ARCHIVE']],capture_output=True,text=True);self.assertEqual(result.returncode,0,result.stdout+result.stderr)
    red=root/'red.png';green=root/'green.png';blue=root/'blue.png'
    for p,color in [(red,'red'),(green,'green'),(blue,'blue')]:Image.new('RGBA',(16,16),color).save(p)
    def run(plan,out,source=None,assets=(),expected=0):
-    path=root/'plan.json';path.write_text(json.dumps(plan));argv=[sys.executable,'-I','-B',str(skill/'scripts/workflow.py'),str(path),'--output',str(out),'--runtime-home',str(runtime)]
+    path=root/'plan.json';path.write_text(json.dumps(plan));argv=[sys.executable,'-I','-B',str(ROOT/'skills/photocraft-harness/scripts/workflow.py'),str(path),'--output',str(out),'--runtime-home',str(runtime)]
     if source:argv+=['--source',str(source)]
     for assignment in assets:argv+=['--asset',assignment]
     result=subprocess.run(argv,capture_output=True,text=True,env=dict(os.environ,PATH='/usr/bin:/bin'),timeout=600);self.assertEqual(result.returncode,expected,result.stdout+result.stderr);return json.loads(result.stdout)

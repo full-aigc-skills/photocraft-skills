@@ -10,7 +10,7 @@ import unittest
 from test_native_cli_preflight import OBSERVER
 from test_stream_launch import NATIVE_OBSERVER
 
-ROOT=Path(__file__).resolve().parents[1];SCRIPTS=ROOT/'skills/photocraft-use/scripts'
+ROOT=Path(__file__).resolve().parents[1];SCRIPTS=ROOT/'skills/photocraft-harness/scripts'
 META={'io.modelcontextprotocol/protocolVersion':'2026-07-28','io.modelcontextprotocol/clientCapabilities':{}}
 
 def load(name):
@@ -28,10 +28,12 @@ def invalid_messages():
     return cases
 
 class MCPPreflightLifecycle(unittest.TestCase):
-    def test_lifecycle_invalid_first_messages_refuse_before_install_in_all_skills(self):
+    def test_lifecycle_invalid_first_messages_refuse_before_install_in_harness(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);observer=root/'observer.py';observer.write_text(OBSERVER)
             for scripts in sorted((ROOT/'skills').glob('*/scripts')):
+                # 执行实现唯一收敛在 harness；领域技能不再自带脚本目录。
+                self.assertEqual(scripts.parent.name,'photocraft-harness')
                 for raw,path in invalid_messages():
                     with self.subTest(skill=scripts.parent.name,path=path):
                         counts=root/'counts.json';result=subprocess.run([sys.executable,'-I','-B',str(observer),str(scripts/'cli.py'),str(counts),'--runtime-home',str(root/'runtime'),'--','mcp'],input=raw+'\n',capture_output=True,text=True,timeout=20)

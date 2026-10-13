@@ -22,7 +22,8 @@ class PsdIndependentFirstUseTests(unittest.TestCase):
             shutil.copytree(os.environ['CRAFT_INSTALLED_PHOTO_EXPORT_SKILL'], skill,
                             ignore=shutil.ignore_patterns('__pycache__'))
             self.assertEqual(len(list(skill.parent.iterdir())), 1)
-            spec = importlib.util.spec_from_file_location('isolated_photo_export', skill / 'scripts/workflow.py')
+            # 执行实现收敛在 harness；复制技能保留示例与参考知识。
+            spec = importlib.util.spec_from_file_location('isolated_photo_export', ROOT / 'skills/photocraft-harness/scripts/workflow.py')
             workflow = importlib.util.module_from_spec(spec); spec.loader.exec_module(workflow)
             runtime = root / 'empty-runtime'
             self.assertFalse(runtime.exists())

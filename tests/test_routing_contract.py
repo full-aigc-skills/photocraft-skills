@@ -6,7 +6,7 @@ import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / 'skills/photocraft-use/scripts/route.py'
+SCRIPT = ROOT / 'skills/photocraft-harness/scripts/route.py'
 
 
 class RoutingContractTests(unittest.TestCase):

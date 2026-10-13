@@ -13,34 +13,37 @@ class SkillSuiteTests(unittest.TestCase):
  def test_suite_contains_separate_cli_setup_and_task_skills(self):
   suite=json.loads((ROOT/'skill-suite.json').read_text())
   names={entry['name'] for entry in suite['skills']}
-  domain=suite['pluginId']
-  for entry in suite['skills']:
-   lock=json.loads((ROOT/'skills'/entry['name']/'scripts/runtime.lock.json').read_text())
-   self.assertEqual(suite['runtimeVersion'],lock['resolvedVersion'])
+  domain=suite['pluginId'];harness=domain+'-harness'
+  self.assertIn(harness,names)
+  lock=json.loads((ROOT/'skills'/harness/'scripts/runtime.lock.json').read_text())
+  self.assertEqual(suite['runtimeVersion'],lock['resolvedVersion'])
   self.assertTrue({domain+'-use',domain+'-cli',domain+'-cli-setup'}.issubset(names))
   self.assertGreater(len(names),3)
+  # 执行实现只收敛在 harness；领域技能不再自带脚本目录。
   for name in names:
-   with tempfile.TemporaryDirectory() as temporary:
-    isolated=Path(temporary)/'only-skill';shutil.copytree(ROOT/'skills'/name,isolated,ignore=shutil.ignore_patterns('__pycache__'))
-    result=subprocess.run([sys.executable,'-I','-B',str(isolated/'scripts/cli.py'),'--help'],capture_output=True,text=True)
-    self.assertEqual(result.returncode,0,result.stderr)
-    self.assertFalse(any(isolated.rglob('*.pyc')))
+   self.assertEqual((ROOT/'skills'/name/'scripts').exists(),name==harness)
+  with tempfile.TemporaryDirectory() as temporary:
+   isolated=Path(temporary)/'only-skill';shutil.copytree(ROOT/'skills'/harness,isolated,ignore=shutil.ignore_patterns('__pycache__'))
+   result=subprocess.run([sys.executable,'-I','-B',str(isolated/'scripts/cli.py'),'--help'],capture_output=True,text=True)
+   self.assertEqual(result.returncode,0,result.stderr)
+   self.assertFalse(any(isolated.rglob('*.pyc')))
  def test_unknown_command_is_refused_before_installation(self):
   suite=json.loads((ROOT/'skill-suite.json').read_text())
-  for entry in suite['skills']:
-   with tempfile.TemporaryDirectory() as temporary:
-    isolated=Path(temporary)/'only-skill';shutil.copytree(ROOT/'skills'/entry['name'],isolated,ignore=shutil.ignore_patterns('__pycache__'))
-    runtime=Path(temporary)/'runtime'
-    result=subprocess.run([sys.executable,'-I','-B',str(isolated/'scripts/cli.py'),'--runtime-home',str(runtime),'--','invented-subcommand'],capture_output=True,text=True)
-    self.assertNotEqual(result.returncode,0)
-    self.assertFalse(runtime.exists())
+  harness=ROOT/'skills'/(suite['pluginId']+'-harness')
+  with tempfile.TemporaryDirectory() as temporary:
+   isolated=Path(temporary)/'only-skill';shutil.copytree(harness,isolated,ignore=shutil.ignore_patterns('__pycache__'))
+   runtime=Path(temporary)/'runtime'
+   result=subprocess.run([sys.executable,'-I','-B',str(isolated/'scripts/cli.py'),'--runtime-home',str(runtime),'--','invented-subcommand'],capture_output=True,text=True)
+   self.assertNotEqual(result.returncode,0)
+   self.assertFalse(runtime.exists())
 
 @unittest.skipUnless(os.environ.get('CRAFT_LIVE_SUITE')=='1','requires declared native CLI platform and live runtime')
 class LiveSkillSuiteTests(unittest.TestCase):
- def test_every_single_skill_discovers_pinned_runtime_and_commands(self):
+ def test_harness_discovers_pinned_runtime_and_commands(self):
   suite=json.loads((ROOT/'skill-suite.json').read_text());domain=suite['pluginId']
   runtime=Path(os.environ.get('CRAFT_RUNTIME_HOME',str(Path.home()/'.local/share/craft-runtimes')))
   for entry in suite['skills']:
+   if entry['name']!=domain+'-harness':continue
    with self.subTest(skill=entry['name']),tempfile.TemporaryDirectory() as temporary:
     isolated=Path(temporary)/'only-skill';shutil.copytree(ROOT/'skills'/entry['name'],isolated,ignore=shutil.ignore_patterns('__pycache__'))
     def run(*args):

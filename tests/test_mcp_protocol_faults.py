@@ -8,7 +8,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = json.loads((ROOT / "skill-suite.json").read_text())["pluginId"]
-SCRIPT = ROOT / "skills" / (DOMAIN + "-use") / "scripts/mcp_session.py"
+SCRIPT = ROOT / "skills" / (DOMAIN + "-harness") / "scripts/mcp_session.py"
 SERVER = r'''
 import json, sys
 from pathlib import Path

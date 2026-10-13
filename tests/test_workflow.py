@@ -3,7 +3,7 @@ import importlib.util
 from pathlib import Path
 import unittest
 
-SOURCE = Path(__file__).resolve().parents[1] / 'skills/photocraft-use/scripts/workflow.py'
+SOURCE = Path(__file__).resolve().parents[1] / 'skills/photocraft-harness/scripts/workflow.py'
 
 class WorkflowTests(unittest.TestCase):
     def setUp(self):

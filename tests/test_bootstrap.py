@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 import zipfile
 
-SOURCE = Path(__file__).resolve().parents[1] / 'skills/photocraft-use/scripts/bootstrap.py'
+SOURCE = Path(__file__).resolve().parents[1] / 'skills/photocraft-harness/scripts/bootstrap.py'
 
 
 class BootstrapTests(unittest.TestCase):

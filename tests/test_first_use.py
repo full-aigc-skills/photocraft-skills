@@ -16,7 +16,8 @@ class FirstUseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='craft-first-use-') as tmp:
             root = Path(tmp)
             skill = root / 'single-skill'
-            shutil.copytree(package / 'skills' / (name + '-use'), skill, ignore=shutil.ignore_patterns('__pycache__'))
+            # 执行实现收敛在 harness；单技能隔离安装针对 harness 技能。
+            shutil.copytree(package / 'skills' / (name + '-harness'), skill, ignore=shutil.ignore_patterns('__pycache__'))
             def run(argv):
                 result = subprocess.run(argv, cwd=root, capture_output=True, text=True, timeout=180)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

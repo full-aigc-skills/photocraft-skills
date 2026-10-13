@@ -1,7 +1,7 @@
 {
   "schema": "craft-skill-suite/v1",
   "pluginId": "photocraft",
-  "version": "0.1.0-dev.59",
+  "version": "0.1.0-dev.60",
   "source": {
     "repository": "https://github.com/storytold/photocraft",
     "commit": "f114f621799a96dc9f28ffb8faa01da680b64947",
@@ -159,6 +159,14 @@
       "commandPrefixes": [
         "filter."
       ]
+    },
+    {
+      "name": "photocraft-harness",
+      "title": "内置执行 harness",
+      "description": "全部领域技能共用的统一执行通道：首次安装、原生命令入口、workflow 编排、桌面桥接与连续任务会话脚本都在本技能 scripts/ 内。",
+      "kind": "harness",
+      "commandCount": 0,
+      "commandPrefixes": []
     }
   ],
   "resourceSource": "photocraft-use",

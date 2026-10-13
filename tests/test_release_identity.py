@@ -19,7 +19,7 @@ class ReleaseIdentityTests(unittest.TestCase):
     def test_mismatched_suite_is_rejected_without_mutation(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            for name in ['.claude-plugin/plugin.json', 'skill-suite.json', 'skills/photocraft-use/scripts/runtime.lock.json']:
+            for name in ['.claude-plugin/plugin.json', 'skill-suite.json', 'skills/photocraft-harness/scripts/runtime.lock.json']:
                 target = root / name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(ROOT / name, target)

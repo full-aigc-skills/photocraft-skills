@@ -1,5 +1,7 @@
 # PhotoCraft Skills
 
+Source dev.60 converges the duplicated execution payload of the 13 domain skills into a single built-in **photocraft-harness** skill: the shared scripts (12 documented entry points and execution-contract JSON) now exist once, and domain skills become thin documentation that routes execution to the harness by name (`HARNESS_DIR`). Repository tests and the sync script are updated for the new layout; target-platform and host acceptance remain open; this is a development release.
+
 Source dev.59 candidate adds a public task session for incremental command plans: one owned instance, fixed task root, separate stage outputs, bound capability identity and fail-closed continuation. Actual headless and signed-desktop five-stage create/revise/close/reopen/save use one instance per mode and preserve prior projects. Full shared ownership and V1 remain open. [Contract](docs/PhotoCraft-Task-Session.md).
 
 Source dev.58 candidate preserves validated serve numeric wire forms and native ID echoes, charges actual aggregate response IDs and validates MCP lifecycle before installation. Healthy stdio/TCP and MCP sessions reuse one process; no GUI launches. Fixed installation and full9.6 remain separate. [Contract](docs/PhotoCraft-Numeric-Wire-Lifecycle.md).
@@ -50,19 +52,19 @@ The complete PC-DM-004 size-variant contract passes fixed installed first use: p
 
 Turn images, text and layer-design requirements into `.pcraft`, applicable PSD and flat exports.
 
-Current source candidate: `0.1.0-dev.59`; target plugin candidate: `0.1.0-dev.75`; 13 independent skills.
+Current source candidate: `0.1.0-dev.60`; target plugin candidate: `0.1.0-dev.75`; 14 independent skills (13 domain skills + 1 built-in execution harness).
 
 Verified first-use platform: macOS arm64 and Python 3.11+. Pinned runtimes install into the user data directory; skill files stay in their host-loaded directory. These are development releases; complete V1 acceptance and generic Skills CLI installation remain open.
 
 ## First use
 
-Invoke **`photocraft-use`** in your host. For direct CLI use, set `SKILL_DIR` to the absolute directory of the `SKILL.md` actually loaded by that host. It may be under user/project `.agents/skills`, the plugin, or a host cache; use the actual path. Each entry below installs/verifies its locked runtime before invoking it.
+Invoke **`photocraft-use`** in your host. All execution goes through the built-in **photocraft-harness** skill: set `HARNESS_DIR` to its actually loaded absolute directory, and `SKILL_DIR` to the domain skill directory (for example photocraft-use). Each entry below installs/verifies its locked runtime before invoking it.
 
 <!-- CRAFT_FIRST_USE_START -->
 ```bash
-: "${SKILL_DIR:?Set to the actual loaded skill directory}"
-python3 -I -B "$SKILL_DIR/scripts/cli.py" -- --version
-python3 -I -B "$SKILL_DIR/scripts/cli.py" -- commands --json
+: "${HARNESS_DIR:?Set to the actually loaded photocraft-harness skill directory}"
+python3 -I -B "$HARNESS_DIR/scripts/cli.py" -- --version
+python3 -I -B "$HARNESS_DIR/scripts/cli.py" -- commands --json
 ```
 <!-- CRAFT_FIRST_USE_END -->
 
@@ -133,6 +135,7 @@ Development version dev.2 includes hash-bound exchange-loss.json with every nati
 | Skill | Purpose |
 | :--- | :--- |
 | `photocraft-use` | use |
+| `photocraft-harness` | built-in execution harness shared by all domain skills |
 | `photocraft-cli` | cli |
 | `photocraft-cli-setup` | cli setup |
 | `photocraft-cli-project` | cli project |
@@ -147,7 +150,7 @@ Development version dev.2 includes hash-bound exchange-loss.json with every nati
 
 `npx skills add full-aigc-skills/photocraft-skills --skill <skill-name>`
 
-Commands use `SKILL_DIR`, the absolute directory of the `SKILL.md` actually loaded by the host. User/project `.agents/skills` and plugin-internal/cache layouts are supported; the CLI runtime is installed separately in the user data directory. Each skill was copied alone into all three layouts, including paths with spaces, and its documented script entry points ran `--help`. [Path verification](docs/evidence/installed-skill-paths.json). Existing host caches need an explicit update to receive the corrected documentation.
+Execution resources live once in `photocraft-harness`; domain skills are thin documentation skills that route through it and still install independently. Commands use `SKILL_DIR` (domain knowledge) and `HARNESS_DIR` (shared execution), the absolute directories actually loaded by the host. User/project `.agents/skills` and plugin-internal/cache layouts are supported; the CLI runtime is installed separately in the user data directory. Each skill was copied alone into all three layouts, including paths with spaces, and its documented script entry points ran `--help`. [Path verification](docs/evidence/installed-skill-paths.json). Existing host caches need an explicit update to receive the corrected documentation.
 
 Version dev.5 adds explicit selection/mask prerequisites for local adjustments and target-layer selection plus distinct brush/clone/healing units. Nine focused task skills each cold-installed only their own copied skill and completed native edits with structural/pixel checks. The full regression passed 36 tests with no skips. [Evidence](docs/evidence/task-skill-first-use.json). This does not prove all 748 commands, complex retouch quality or GUI/model dispatch.
 

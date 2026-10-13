@@ -14,7 +14,7 @@ class DeliveryFirstUse(unittest.TestCase):
   def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
   calls=[]
   def run(script,args,expected=0):
-   result=subprocess.run([sys.executable,'-I','-B',str(skill/'scripts'/script),*map(str,args)],env=environment,capture_output=True,text=True,timeout=300)
+   result=subprocess.run([sys.executable,'-I','-B',str(ROOT/'skills/photocraft-harness/scripts'/script),*map(str,args)],env=environment,capture_output=True,text=True,timeout=300)
    log=root/('call-%02d.log'%len(calls));log.write_text(result.stdout+result.stderr);calls.append({'script':script,'exitCode':result.returncode,'logSha256':digest(log)})
    self.assertEqual(result.returncode,expected,result.stdout+result.stderr);return json.loads(result.stdout)
   image=root/'product.png';product_fixture(image);plan=json.loads((skill/'examples/poster-plan.json').read_text());path=root/'plan.json';path.write_text(json.dumps(plan))

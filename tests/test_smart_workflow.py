@@ -2,7 +2,7 @@
 import importlib.util
 from pathlib import Path
 import unittest
-P=Path(__file__).resolve().parents[1]/'skills/photocraft-use/scripts/workflow.py'
+P=Path(__file__).resolve().parents[1]/'skills/photocraft-harness/scripts/workflow.py'
 class SmartWorkflowTests(unittest.TestCase):
  def setUp(self):
   s=importlib.util.spec_from_file_location('smart_workflow',P);self.m=importlib.util.module_from_spec(s);s.loader.exec_module(self.m)

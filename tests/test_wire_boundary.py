@@ -16,7 +16,7 @@ from test_native_cli_preflight import OBSERVER
 from test_stream_launch import NATIVE_OBSERVER
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT/'skills/photocraft-use/scripts'
+SCRIPTS = ROOT/'skills/photocraft-harness/scripts'
 PARAMS = {'protocolVersion':'2024-11-05','capabilities':{},'clientInfo':{'name':'工艺','version':'1'}}
 
 
@@ -59,7 +59,7 @@ def invalid_initializations():
 
 
 class ProtocolPreflight(unittest.TestCase):
-    def test_invalid_initialization_never_installs_in_any_standalone_skill(self):
+    def test_invalid_initialization_never_installs_in_harness_entries(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);observer=root/'observer.py';observer.write_text(OBSERVER)
             for scripts in sorted((ROOT/'skills').glob('*/scripts')):
@@ -116,7 +116,7 @@ class ProtocolPreflight(unittest.TestCase):
             except ValueError as error:self.assertEqual(errors.describe(error)['fieldPath'],path)
             else:self.fail('invalid JSON accepted')
 
-    def test_escaped_surrogates_are_rejected_before_install_in_public_editing_entries(self):
+    def test_escaped_surrogates_are_rejected_before_install_in_harness_editing_entries(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);observer=root/'observer.py';observer.write_text(OBSERVER);plan=root/'plan.json'
             for scripts in sorted((ROOT/'skills').glob('*/scripts')):

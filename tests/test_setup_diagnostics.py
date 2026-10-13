@@ -12,7 +12,7 @@ ROOT=Path(__file__).resolve().parents[1]
 class SetupFailureTests(unittest.TestCase):
  def test_public_bootstrap_failure_identifies_own_setup_without_retry(self):
   domain=json.loads((ROOT/'skill-suite.json').read_text())['pluginId']
-  path=ROOT/'skills'/f'{domain}-use'/'scripts/bootstrap.py'
+  path=ROOT/'skills'/f'{domain}-harness'/'scripts/bootstrap.py'
   spec=importlib.util.spec_from_file_location('setup_failure_boot',path);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
   installer='install_node' if domain=='artcraft' else 'install'
   with tempfile.TemporaryDirectory(prefix='craft setup space ') as temporary:
@@ -28,7 +28,7 @@ class SetupFailureTests(unittest.TestCase):
  def test_native_failure_is_not_reported_as_missing_dependency(self):
   from types import SimpleNamespace
   domain=json.loads((ROOT/'skill-suite.json').read_text())['pluginId']
-  path=ROOT/'skills'/f'{domain}-use'/'scripts/cli.py'
+  path=ROOT/'skills'/f'{domain}-harness'/'scripts/cli.py'
   spec=importlib.util.spec_from_file_location('setup_failure_cli',path);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
   output=io.StringIO()
   with patch.object(sys,'argv',[str(path),'--','--version']),contextlib.redirect_stdout(output):
@@ -48,7 +48,7 @@ class SetupFailureTests(unittest.TestCase):
   import shutil
   import subprocess
   domain=json.loads((ROOT/'skill-suite.json').read_text())['pluginId']
-  source=ROOT/'skills'/f'{domain}-use'/'scripts/bootstrap.py'
+  source=ROOT/'skills'/f'{domain}-harness'/'scripts/bootstrap.py'
   with tempfile.TemporaryDirectory(prefix='craft missing lock ') as temporary:
    home=Path(temporary)/'one skill';scripts=home/'scripts';scripts.mkdir(parents=True);path=scripts/'bootstrap.py';shutil.copyfile(source,path);runtime=Path(temporary)/'runtime'
    result=subprocess.run([sys.executable,'-I','-B',str(path),'--runtime-home',str(runtime)],capture_output=True,text=True)
@@ -60,7 +60,7 @@ class SetupFailureTests(unittest.TestCase):
   import shutil
   import subprocess
   domain=json.loads((ROOT/'skill-suite.json').read_text())['pluginId']
-  source=ROOT/'skills'/f'{domain}-use'/'scripts/cli.py'
+  source=ROOT/'skills'/f'{domain}-harness'/'scripts/cli.py'
   with tempfile.TemporaryDirectory(prefix='craft missing bootstrap ') as temporary:
    scripts=Path(temporary)/'one skill/scripts';scripts.mkdir(parents=True);path=scripts/'cli.py';shutil.copyfile(source,path);runtime=Path(temporary)/'runtime'
    result=subprocess.run([sys.executable,'-I','-B',str(path),'--runtime-home',str(runtime),'--','--version'],capture_output=True,text=True)
@@ -73,7 +73,7 @@ class SetupFailureTests(unittest.TestCase):
   import shutil
   import subprocess
   domain=json.loads((ROOT/'skill-suite.json').read_text())['pluginId']
-  source=ROOT/'skills'/f'{domain}-use/scripts'
+  source=ROOT/'skills'/f'{domain}-harness/scripts'
   filename='node.lock.json' if domain=='artcraft' else 'runtime.lock.json'
   original=json.loads((source/filename).read_text())
   cases=[None, [], {}, 'not an object']

@@ -1,7 +1,7 @@
 """持久进度只观察原执行；不能把未知结果或暂存冒充成功交付。"""
 import hashlib,importlib.util,json,os,signal,subprocess,sys,tempfile,time,unittest
 from pathlib import Path
-ROOT=Path(__file__).resolve().parents[1];SCRIPTS=ROOT/'skills/photocraft-use/scripts'
+ROOT=Path(__file__).resolve().parents[1];SCRIPTS=ROOT/'skills/photocraft-harness/scripts'
 def load(name):
  spec=importlib.util.spec_from_file_location('progress_test_'+name,SCRIPTS/(name+'.py'));module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()

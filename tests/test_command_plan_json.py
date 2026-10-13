@@ -9,7 +9,7 @@ import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
 DOMAIN=json.loads((ROOT/'skill-suite.json').read_text())['pluginId']
-SCRIPT=ROOT/'skills'/(DOMAIN+'-use')/'scripts/commands.py'
+SCRIPT=ROOT/'skills'/(DOMAIN+'-harness')/'scripts/commands.py'
 
 class CommandPlanJsonTests(unittest.TestCase):
  def test_duplicate_keys_are_rejected_by_isolated_public_check(self):
@@ -35,9 +35,11 @@ class CommandPlanJsonTests(unittest.TestCase):
       self.assertTrue(json.loads(result.stdout)['fieldPath'].startswith('$'))
       self.assertFalse(output.exists())
       self.assertFalse(runtime.exists())
- def test_each_standalone_skill_rejects_duplicate_keys_before_install(self):
+ def test_harness_rejects_duplicate_keys_before_install(self):
+  # 执行实现唯一收敛在 harness；公开入口只保留一份正典。
   suite=json.loads((ROOT/'skill-suite.json').read_text())
   for entry in suite['skills']:
+   if entry['name']!=suite['pluginId']+'-harness':continue
    with self.subTest(skill=entry['name']),tempfile.TemporaryDirectory() as temporary:
     root=Path(temporary);skill=root/entry['name']
     shutil.copytree(ROOT/'skills'/entry['name'],skill,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))

@@ -2,7 +2,7 @@
 import importlib.util,io,json,sys,tempfile,unittest
 from pathlib import Path
 from unittest.mock import patch
-SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-use/scripts'
+SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-harness/scripts'
 
 def load(name,path):
  spec=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m

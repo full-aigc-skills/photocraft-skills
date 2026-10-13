@@ -1,5 +1,7 @@
 # PhotoCraft 独立技能
 
+源dev.60收敛重复执行实现：13 个领域技能的重复执行载荷收敛为唯一内置 **photocraft-harness** 技能——共享脚本（12 个文档化入口与执行契约 JSON）只保留一份，领域技能变为薄文档技能并按名称（`HARNESS_DIR`）路由执行。本仓库测试与同步脚本按新布局更新；目标平台与宿主验收仍开放；当前为开发版。
+
 源dev.59候选增加公开任务会话：连续计划共用所属实例，固定任务根、独立阶段输出、能力身份和失败停止。实际headless与签名桌面五阶段创建／修订／关闭／重开／保存各只用一个实例，旧工程字节保全。共享可变工程及完整V1仍开放。[合同](docs/PhotoCraft-Task-Session.zh_CN.md)。
 
 技能源dev.58候选保留已校验serve数值文本与原生ID语义，按实际聚合ID计费，并在安装前校验MCP生命周期；健康stdio／TCP及MCP会话复用单进程，零GUI启动。固定安装与完整9.6分别验收。[合同](docs/PhotoCraft-Numeric-Wire-Lifecycle.zh_CN.md)。
@@ -50,19 +52,19 @@ PC-DM-004尺寸变体完整合同已通过固定安装首用：留白、裁切�
 
 图像、文字与图层设计需求进入，交付 `.pcraft`，适用时附 PSD 与平面导出。
 
-当前技能源候选：`0.1.0-dev.59`；目标插件候选：`0.1.0-dev.75`；13 个独立技能。
+当前技能源候选：`0.1.0-dev.60`；目标插件候选：`0.1.0-dev.75`；14 个独立技能（13 领域技能 + 1 内置执行 harness）。
 
 已验证首次使用平台：macOS arm64、Python 3.11+。固定运行时安装在用户数据目录，技能文件保留在宿主加载目录。当前为开发版本；完整首版验收及通用 Skills CLI 实际安装仍未完成。
 
 ## 首次使用
 
-在宿主中调用 **`photocraft-use`**。直接使用 CLI 时，将 `SKILL_DIR` 设为宿主实际加载的 `SKILL.md` 所在绝对目录；可能位于用户／项目 `.agents/skills`、插件内部或宿主缓存，以实际路径为准。以下入口在调用前安装并核验固定运行时。
+在宿主中调用 **`photocraft-use`**。所有执行经由内置的 **photocraft-harness** 技能：将 `HARNESS_DIR` 设为该技能实际加载的绝对目录，`SKILL_DIR` 设为领域技能（如 photocraft-use）实际加载的绝对目录。以下入口在调用前安装并核验固定运行时。
 
 <!-- CRAFT_FIRST_USE_START -->
 ```bash
-: "${SKILL_DIR:?Set to the actual loaded skill directory}"
-python3 -I -B "$SKILL_DIR/scripts/cli.py" -- --version
-python3 -I -B "$SKILL_DIR/scripts/cli.py" -- commands --json
+: "${HARNESS_DIR:?Set to the actually loaded photocraft-harness skill directory}"
+python3 -I -B "$HARNESS_DIR/scripts/cli.py" -- --version
+python3 -I -B "$HARNESS_DIR/scripts/cli.py" -- commands --json
 ```
 <!-- CRAFT_FIRST_USE_END -->
 
@@ -133,6 +135,7 @@ python3 -I -B "$SKILL_DIR/scripts/cli.py" -- commands --json
 | 技能 | 用途 |
 | :--- | :--- |
 | `photocraft-use` | 组合多个本工具能力并保留可编辑原生交付 |
+| `photocraft-harness` | 全部领域技能共用的内置执行 harness |
 | `photocraft-cli` | 查询实际命令参数和能力，调用公开 CLI、MCP 与诊断 |
 | `photocraft-cli-setup` | 首次安装、摘要校验、版本检查与缺失运行时排障 |
 | `photocraft-cli-project` | 创建、打开和保存 pcraft，检查尺寸、深度和色彩模式 |
@@ -147,7 +150,7 @@ python3 -I -B "$SKILL_DIR/scripts/cli.py" -- commands --json
 
 `npx skills add full-aigc-skills/photocraft-skills --skill <skill-name>`
 
-命令统一使用 `SKILL_DIR`，其值为宿主实际加载的 `SKILL.md` 所在绝对目录。支持用户级、项目级 `.agents/skills` 及插件内部或缓存目录；CLI 运行时另外安装到用户数据目录。每个技能单独复制到三种含空格的布局后，文档中的脚本入口均可运行 `--help`。[路径验证](docs/evidence/installed-skill-paths.json)。既有宿主缓存需更新后才会收到修正文档。
+执行资源只在 `photocraft-harness` 保存一份；领域技能是经其路由执行、仍可独立安装的薄文档技能。命令使用 `SKILL_DIR`（领域知识）与 `HARNESS_DIR`（共享执行），值为宿主实际加载的对应 `SKILL.md` 所在绝对目录。支持用户级、项目级 `.agents/skills` 及插件内部或缓存目录；CLI 运行时另外安装到用户数据目录。每个技能单独复制到三种含空格的布局后，文档中的脚本入口均可运行 `--help`。[路径验证](docs/evidence/installed-skill-paths.json)。既有宿主缓存需更新后才会收到修正文档。
 
 dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及画笔/克隆/修复数值范围。九类场景均只复制当前技能并冷安装，完成真实原生编辑、结构和像素核验；完整回归 36 项、零跳过。[证据](docs/evidence/task-skill-first-use.json)。此证据不覆盖全部 748 命令、复杂纹理修复质量或 GUI/模型派发。
 

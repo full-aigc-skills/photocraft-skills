@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT/'skills/photocraft-use/scripts'
+SCRIPTS = ROOT/'skills/photocraft-harness/scripts'
 
 def load():
     spec=importlib.util.spec_from_file_location('photo_task_session_test',SCRIPTS/'task_session.py')

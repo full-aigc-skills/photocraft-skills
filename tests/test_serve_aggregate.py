@@ -10,7 +10,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-use/scripts'
+SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-harness/scripts'
 def load(name):
  spec=importlib.util.spec_from_file_location('aggregate_test_'+name,SCRIPTS/(name+'.py'));module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 

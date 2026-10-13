@@ -20,7 +20,7 @@ class RetouchWorkflowFirstUse(unittest.TestCase):
             root = Path(temp)
             source = Path(os.environ.get('CRAFT_INSTALLED_RETOUCH_SKILL_ROOT', ROOT / 'skills/photocraft-cli-retouch'))
             skill = root / 'only-retouch'; shutil.copytree(source, skill, ignore=shutil.ignore_patterns('__pycache__'))
-            spec = importlib.util.spec_from_file_location('retouch_png', skill / 'scripts/pixel_guard.py')
+            spec = importlib.util.spec_from_file_location('retouch_png', ROOT / 'skills/photocraft-harness/scripts/pixel_guard.py')
             guard = importlib.util.module_from_spec(spec); spec.loader.exec_module(guard)
             def chunk(kind, data):
                 return struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data) & 0xffffffff)
@@ -31,7 +31,7 @@ class RetouchWorkflowFirstUse(unittest.TestCase):
             runtime = root / 'fresh-runtime'
             def run(plan, output, prior=None, asset=False):
                 file = root / (output.name + '.json'); file.write_text(json.dumps(plan))
-                args = [sys.executable, '-I', '-B', str(skill / 'scripts/workflow.py'), str(file), '--output', str(output), '--runtime-home', str(runtime)]
+                args = [sys.executable, '-I', '-B', str(ROOT / 'skills/photocraft-harness/scripts/workflow.py'), str(file), '--output', str(output), '--runtime-home', str(runtime)]
                 if prior: args.extend(['--source', str(prior)])
                 if asset: args.extend(['--asset', 'product=' + str(image)])
                 result = subprocess.run(args, capture_output=True, text=True, env=environment, timeout=180)

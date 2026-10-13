@@ -2,7 +2,7 @@ import copy
 import importlib.util
 from pathlib import Path
 import unittest
-SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-use/scripts'
+SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-harness/scripts'
 def module():
  spec=importlib.util.spec_from_file_location('domain_assertions',SCRIPTS/'domain_assertions.py');value=importlib.util.module_from_spec(spec);spec.loader.exec_module(value);return value
 class DomainAssertionsTests(unittest.TestCase):

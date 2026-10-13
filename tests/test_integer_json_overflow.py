@@ -10,7 +10,7 @@ import unittest
 ROOT=Path(__file__).resolve().parents[1]
 
 def load(name):
-    path=ROOT/'skills/photocraft-use/scripts'/(name+'.py')
+    path=ROOT/'skills/photocraft-harness/scripts'/(name+'.py')
     spec=importlib.util.spec_from_file_location('integer_overflow_'+name,path)
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 
@@ -32,11 +32,12 @@ class IntegerJSONOverflow(unittest.TestCase):
         actual=load('strict_json').loads(json.dumps({'values':values}))['values']
         self.assertEqual(actual,values);self.assertEqual([type(v) for v in actual],[type(v) for v in values])
 
-    def test_all_thirteen_public_skills_reject_before_install_session_and_output(self):
+    def test_harness_public_entries_reject_before_install_session_and_output(self):
         helper=Path(__file__).with_name('test_native_cli_preflight.py')
         spec=importlib.util.spec_from_file_location('integer_preflight_observer',helper)
         module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
-        scripts=sorted((ROOT/'skills').glob('*/scripts/cli.py'));self.assertEqual(len(scripts),13)
+        # 执行实现唯一收敛在 harness；公开入口只保留一份正典。
+        scripts=sorted((ROOT/'skills').glob('*/scripts/cli.py'));self.assertEqual(len(scripts),1);self.assertEqual(scripts[0].parent.parent.name,'photocraft-harness')
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);wrapper=root/'observer.py';wrapper.write_text(module.OBSERVER)
             source=root/'original.pcraft';source.write_bytes(b'original must not be opened')

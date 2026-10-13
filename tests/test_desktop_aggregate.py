@@ -1,7 +1,7 @@
 """桌面聚合截止时间和真实GUI失败后保全；不以headless替代桌面验收。"""
 import importlib.util,json,os,sys,tempfile,time,unittest
 from pathlib import Path
-SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-use/scripts'
+SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-harness/scripts'
 def load(name):
  spec=importlib.util.spec_from_file_location('desktop_aggregate_'+name,SCRIPTS/(name+'.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 class DesktopDeadline(unittest.TestCase):

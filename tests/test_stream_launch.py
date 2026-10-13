@@ -13,7 +13,7 @@ from unittest.mock import patch
 from test_native_cli_preflight import OBSERVER
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / 'skills/photocraft-use/scripts'
+SCRIPTS = ROOT / 'skills/photocraft-harness/scripts'
 
 NATIVE_OBSERVER = '''import json,runpy,subprocess,sys
 from pathlib import Path
@@ -35,6 +35,8 @@ def load(name):
 class StreamLaunchPreflight(unittest.TestCase):
     def test_invalid_roots_and_missing_values_are_rejected_before_install(self):
         for scripts in sorted((ROOT/'skills').glob('*/scripts')):
+            # 执行实现唯一收敛在 harness；公开入口只保留一份正典。
+            self.assertEqual(scripts.parent.name,'photocraft-harness')
             with self.subTest(skill=scripts.parent.name):
                 self.check_invalid_launch(scripts)
 

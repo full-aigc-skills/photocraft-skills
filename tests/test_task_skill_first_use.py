@@ -42,7 +42,9 @@ class TaskSkillFirstUseTests(unittest.TestCase):
         cls.temporary = tempfile.TemporaryDirectory(prefix='photocraft-task-fixture-')
         cls.fixture = Path(cls.temporary.name)
         source = ROOT / 'skills/photocraft-use'
-        spec = importlib.util.spec_from_file_location('photo_task_fixture', source / 'scripts/workflow.py')
+        # 执行实现收敛在 harness；计划示例与领域参考仍取自领域技能。
+        harness = ROOT / 'skills/photocraft-harness'
+        spec = importlib.util.spec_from_file_location('photo_task_fixture', harness / 'scripts/workflow.py')
         workflow = importlib.util.module_from_spec(spec); spec.loader.exec_module(workflow)
         product = cls.fixture / 'product.png'
         Image.new('RGBA', (120, 160), (233, 99, 64, 255)).save(product)
@@ -77,12 +79,12 @@ class TaskSkillFirstUseTests(unittest.TestCase):
         self.assertFalse(self.runtime.exists())
 
     def cli(self, *arguments, success=True):
-        result = subprocess.run([sys.executable, '-I', '-B', str(self.skill / 'scripts/cli.py'),
+        result = subprocess.run([sys.executable, '-I', '-B', str(ROOT / 'skills/photocraft-harness/scripts/cli.py'),
                                  '--runtime-home', str(self.runtime), '--', *map(str, arguments)],
                                 env=self.environment, capture_output=True, text=True, timeout=240)
         if success:
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-            self.assertTrue((self.runtime / 'photocraft' / json.loads((self.skill / 'scripts/runtime.lock.json').read_text())['resolvedVersion'] / 'photocraft-cli').is_file())
+            self.assertTrue((self.runtime / 'photocraft' / json.loads((ROOT / 'skills/photocraft-harness/scripts/runtime.lock.json').read_text())['resolvedVersion'] / 'photocraft-cli').is_file())
         else:
             self.assertNotEqual(result.returncode, 0)
         self.assertFalse(any(self.skill.rglob('*.pyc')))

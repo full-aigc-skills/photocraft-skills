@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / 'skills/photocraft-use/scripts'
+SCRIPTS = ROOT / 'skills/photocraft-harness/scripts'
 
 def load(name):
     spec = importlib.util.spec_from_file_location('readonly_test_' + name, SCRIPTS / (name + '.py'))

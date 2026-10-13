@@ -2,7 +2,7 @@
 import hashlib,importlib.util,io,json,os,select,subprocess,tempfile,unittest
 from pathlib import Path
 from unittest.mock import patch
-SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-use/scripts'
+SCRIPTS=Path(__file__).resolve().parents[1]/'skills/photocraft-harness/scripts'
 def load(name):
  spec=importlib.util.spec_from_file_location('mcp_aggregate_'+name,SCRIPTS/(name+'.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 class BatchPreflight(unittest.TestCase):

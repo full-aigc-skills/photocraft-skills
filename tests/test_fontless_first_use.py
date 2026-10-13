@@ -89,7 +89,8 @@ class FontlessFirstUseTests(unittest.TestCase):
     def run_workflow(self, root, skill, runtime, plan, output, asset=None, source=None, success=True):
         path = root / (output.name + '-plan.json')
         path.write_text(json.dumps(plan))
-        argv = [sys.executable, '-I', '-B', str(skill / 'scripts/workflow.py'), str(path),
+        # 执行实现收敛在 harness；复制技能保留示例与参考知识。
+        argv = [sys.executable, '-I', '-B', str(ROOT / 'skills/photocraft-harness/scripts/workflow.py'), str(path),
                 '--output', str(output), '--runtime-home', str(runtime)]
         if asset:
             argv.extend(['--asset', 'product=' + str(asset)])

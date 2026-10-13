@@ -9,7 +9,7 @@ ROOT=Path(__file__).resolve().parents[1]
 DOMAIN=json.loads((ROOT/'skill-suite.json').read_text())['pluginId']
 class WorkflowToolReplyTests(unittest.TestCase):
  def session(self):
-  p=ROOT/'skills'/(DOMAIN+'-use')/'scripts/mcp_session.py'
+  p=ROOT/'skills'/(DOMAIN+'-harness')/'scripts/mcp_session.py'
   spec=importlib.util.spec_from_file_location('workflow_session',p);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m.Session
  def test_bad_tool_results_are_unknown_without_python_type_errors(self):
   values=[None,[],{}, {'content':None},{'content':[None]}, {'content':[{'type':'text'}]}, {'content':[{'type':'text','text':3}]},{'content':[],'isError':'false'}]

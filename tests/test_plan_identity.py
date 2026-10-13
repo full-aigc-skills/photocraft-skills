@@ -1,7 +1,7 @@
 """版本化有限 binary64 计划身份，历史格式只读兼容。"""
 import hashlib,importlib.util,json,unittest
 from pathlib import Path
-spec=importlib.util.spec_from_file_location('tested_plan_identity',Path(__file__).resolve().parents[1]/'skills/photocraft-use/scripts/plan_identity.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+spec=importlib.util.spec_from_file_location('tested_plan_identity',Path(__file__).resolve().parents[1]/'skills/photocraft-harness/scripts/plan_identity.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 class PlanIdentityTests(unittest.TestCase):
  def test_numeric_representation_is_semantic_and_type_tags_do_not_collide(self):
   sha=lambda value:module.sha(value,module.ALGORITHM)

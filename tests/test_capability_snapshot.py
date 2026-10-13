@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import unittest
 
-SCRIPTS = Path(__file__).resolve().parents[1] / 'skills/photocraft-use/scripts'
+SCRIPTS = Path(__file__).resolve().parents[1] / 'skills/photocraft-harness/scripts'
 
 def module():
     spec = importlib.util.spec_from_file_location('capabilities', SCRIPTS/'capabilities.py')

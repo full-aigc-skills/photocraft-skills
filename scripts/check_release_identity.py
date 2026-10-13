@@ -9,7 +9,7 @@ from pathlib import Path
 def check(root):
     package = json.loads((root / '.claude-plugin/plugin.json').read_text())
     suite = json.loads((root / 'skill-suite.json').read_text())
-    runtime = json.loads((root / 'skills/photocraft-use/scripts/runtime.lock.json').read_text())
+    runtime = json.loads((root / 'skills/photocraft-harness/scripts/runtime.lock.json').read_text())
     errors = []
     if suite['version'] != package['version']:
         errors.append('suite_version_mismatch')

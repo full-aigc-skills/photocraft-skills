@@ -5,7 +5,7 @@ from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1];DOMAIN=json.loads((ROOT/'skill-suite.json').read_text())['pluginId']
 class PreservedStageTests(unittest.TestCase):
  def setUp(self):
-  spec=importlib.util.spec_from_file_location('preservation',ROOT/'skills'/(DOMAIN+'-use')/'scripts/preserved_stage.py');self.m=importlib.util.module_from_spec(spec);spec.loader.exec_module(self.m)
+  spec=importlib.util.spec_from_file_location('preservation',ROOT/'skills'/(DOMAIN+'-harness')/'scripts/preserved_stage.py');self.m=importlib.util.module_from_spec(spec);spec.loader.exec_module(self.m)
  def test_unknown_error_keeps_original_paths_and_successful_operations(self):
   with tempfile.TemporaryDirectory() as tmp:
    output=Path(tmp)/'delivery';state={'operations':[{'command':'created','result':{'id':7}}]}

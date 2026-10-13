@@ -2,7 +2,7 @@ import importlib.util
 import json
 from pathlib import Path
 import unittest
-ROOT=Path(__file__).resolve().parents[1]/'skills/photocraft-use/scripts'
+ROOT=Path(__file__).resolve().parents[1]/'skills/photocraft-harness/scripts'
 def load(name):
  spec=importlib.util.spec_from_file_location('json_test_'+name,ROOT/(name+'.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 class StrictJSONPaths(unittest.TestCase):

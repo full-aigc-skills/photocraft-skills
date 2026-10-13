@@ -4,7 +4,7 @@ import tempfile
 import unittest
 import zipfile
 import json
-ROOT=Path(__file__).resolve().parents[1]/'skills/photocraft-use/scripts'
+ROOT=Path(__file__).resolve().parents[1]/'skills/photocraft-harness/scripts'
 def load(name):
  s=importlib.util.spec_from_file_location('facts_'+name,ROOT/(name+'.py'));m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 class NativeFactsTests(unittest.TestCase):

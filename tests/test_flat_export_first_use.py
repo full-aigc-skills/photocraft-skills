@@ -14,7 +14,7 @@ class FlatExportFirstUse(unittest.TestCase):
   from PIL import Image
   original=Path(os.environ.get('CRAFT_INSTALLED_FLAT_EXPORT_SKILL',ROOT/'skills/photocraft-cli-export'))
   skill=root/'.agents/skills/photocraft-cli-export';shutil.copytree(original,skill,ignore=shutil.ignore_patterns('__pycache__'))
-  spec=importlib.util.spec_from_file_location('native_flat_workflow',skill/'scripts/workflow.py');w=importlib.util.module_from_spec(spec);spec.loader.exec_module(w)
+  spec=importlib.util.spec_from_file_location('native_flat_workflow',ROOT/'skills/photocraft-harness/scripts/workflow.py');w=importlib.util.module_from_spec(spec);spec.loader.exec_module(w)
   def hashes(folder):return {p.relative_to(folder).as_posix():w.sha(p) for p in folder.rglob('*') if p.is_file()}
   before=hashes(skill);image=root/'generated-fixture.png';im=Image.new('RGBA',(4,4),(230,50,40,128));im.putpixel((0,0),(0,0,0,0));im.putpixel((3,3),(230,50,40,255));im.save(image)
   receipt=root/'provider-fixture.json';receipt.write_text('{"id":"fixture-only-no-service-call","usage":{"images":1}}')
@@ -33,7 +33,7 @@ class FlatExportFirstUse(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'flat_transparency_changed'):w.execute(jpeg,root/'jpeg-refused',runtime,source)
   failure=json.loads((root/'jpeg-refused/failure.json').read_text());stage=(root/'jpeg-refused'/failure['stage']).resolve();self.assertTrue((stage/'project.pcraft').is_file());self.assertFalse((root/'jpeg-refused/manifest.json').exists());self.assertFalse((stage/'manifest.json').exists());jpeg_loss=json.loads((stage/'flat-export.json').read_text());self.assertEqual(jpeg_loss['status'],'FAIL')
   stage_before=hashes(stage)
-  installed=w.load_module('bootstrap').install(json.loads((skill/'scripts/runtime.lock.json').read_text()),runtime)
+  installed=w.load_module('bootstrap').install(json.loads((ROOT/'skills/photocraft-harness/scripts/runtime.lock.json').read_text()),runtime)
   with w.load_module('mcp_session').Session([installed['executable'],'mcp','--automation-read-root',str(stage),'--automation-write-root',str(root)]) as session:
    parse=w.load_module('commands').parse_reply;parse(session.request('tools/call',{'name':'doc_open','arguments':{'path':'project.pcraft'}}));actual=parse(session.request('tools/call',{'name':'doc_inspect','arguments':{}}));self.assertEqual(actual['width'],16)
   self.assertEqual(hashes(stage),stage_before)

@@ -4,7 +4,7 @@ from pathlib import Path
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
 def module(name):
- spec=importlib.util.spec_from_file_location('flat_test_'+name,ROOT/'skills/photocraft-use/scripts'/(name+'.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+ spec=importlib.util.spec_from_file_location('flat_test_'+name,ROOT/'skills/photocraft-harness/scripts'/(name+'.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 class FlatExportTests(unittest.TestCase):
  def test_invalid_export_policy_refuses_before_runtime_and_output(self):
   w=module('workflow')

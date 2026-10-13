@@ -1,7 +1,7 @@
 import importlib.util
 from pathlib import Path
 import unittest
-SOURCE=Path(__file__).resolve().parents[1]/'skills/photocraft-use/scripts/psd_features.py'
+SOURCE=Path(__file__).resolve().parents[1]/'skills/photocraft-harness/scripts/psd_features.py'
 def module():
  s=importlib.util.spec_from_file_location('psd_features',SOURCE);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 class PsdFeatureTests(unittest.TestCase):

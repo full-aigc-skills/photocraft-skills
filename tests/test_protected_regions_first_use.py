@@ -20,7 +20,7 @@ class ProtectedFirstUse(unittest.TestCase):
    image=root/'product.png';raw=(b'\0'+bytes([233,99,64,255])*120)*160;image.write_bytes(b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',120,160,8,6,0,0,0))+chunk(b'IDAT',zlib.compress(raw))+chunk(b'IEND',b''))
    environment={**os.environ,'PATH':'/usr/bin:/bin'};environment.pop('CRAFT_RUNTIME_HOME',None);runtime=root/'runtime'
    def run(plan,output,source_project=None,asset=False):
-    file=root/(output.name+'.json');file.write_text(json.dumps(plan));args=[sys.executable,'-I','-B',str(skill/'scripts/workflow.py'),str(file),'--output',str(output),'--runtime-home',str(runtime)]
+    file=root/(output.name+'.json');file.write_text(json.dumps(plan));args=[sys.executable,'-I','-B',str(ROOT/'skills/photocraft-harness/scripts/workflow.py'),str(file),'--output',str(output),'--runtime-home',str(runtime)]
     if source_project:args.extend(['--source',str(source_project)])
     if asset:args.extend(['--asset','product='+str(image)])
     return subprocess.run(args,capture_output=True,text=True,env=environment,timeout=180)
