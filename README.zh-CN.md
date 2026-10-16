@@ -219,4 +219,4 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 
 ## 场景操作手册
 
-新增 `photocraft-scenario-playbooks`，包含 30 条具有实际命令、参数和结果检查的原创场景，覆盖修复、影调、人像、商品、版式和交付。入口见 [场景技能](skills/photocraft-scenario-playbooks/SKILL.md)。命令存在性已依据官方 Windows CLI 0.9.0 目录核对，完整场景效果仍需逐项运行与看图验收。
+新增 `photocraft-scenario-playbooks`，包含 50 条具有实际命令、参数和结果检查的原创场景，覆盖修复、影调、人像、商品、版式和交付。入口见 [场景技能](skills/photocraft-scenario-playbooks/SKILL.md)。命令存在性已依据官方 Windows CLI 0.9.0 目录核对，完整场景效果仍需逐项运行与看图验收。
