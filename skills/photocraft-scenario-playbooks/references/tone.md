@@ -1,6 +1,6 @@
 # PhotoCraft tone 场景
 
-以下坐标以256×192单一栅格原图为例。先读取尺寸、图层和当前命令schema；依据输入重算轮廓与采样位置。原图含活动路径时先退出路径编辑，避免调整层错误使用矢量蒙版。
+每条流程从新打开的栅格原图开始（无选区、无活动路径）。复用会话时先选择原像素层；仅在确有活动选区时取消选区，`select.deselect` 在无选区时会被拒绝。坐标以256×192为例，必须按当前输入重算。
 
 ## faded-gray-tones：褪色黑白照片灰阶恢复
 
@@ -75,9 +75,8 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"B&W channel mix"}` |
-| 3. 无选区时创建整体可编辑黑白调整层 | `layer.newAdjustmentLayer.blackWhite` | `{"reds":45,"yellows":65,"greens":40,"cyans":55,"blues":15,"magentas":65}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"B&W channel mix"}` |
+| 2. 无选区时创建整体可编辑黑白调整层 | `layer.newAdjustmentLayer.blackWhite` | `{"reds":45,"yellows":65,"greens":40,"cyans":55,"blues":15,"magentas":65}` |
 
 检查：RGB三个通道相等或接近；肤色与衣物灰阶可分；原彩色像素图层保留。
 
@@ -89,12 +88,11 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Selective color"}` |
-| 3. 按实际目标轮廓定位；此处为256×192测试矩形 | `select.rect` | `{"x":88,"y":56,"width":80,"height":96,"mode":"replace","feather":1}` |
-| 4. 反选到非主体区 | `select.inverse` | `{}` |
-| 5. 以反选区蒙版创建黑白调整层 | `layer.newAdjustmentLayer.blackWhite` | `{}` |
-| 6. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Selective color"}` |
+| 2. 按实际目标轮廓定位；此处为256×192测试矩形 | `select.rect` | `{"x":88,"y":56,"width":80,"height":96,"mode":"replace","feather":1}` |
+| 3. 反选到非主体区 | `select.inverse` | `{}` |
+| 4. 以反选区蒙版创建黑白调整层 | `layer.newAdjustmentLayer.blackWhite` | `{}` |
+| 5. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
 
 检查：主体中心RGB保持；背景转为灰阶；边缘没有遗漏彩点。
 

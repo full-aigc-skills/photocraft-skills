@@ -1,6 +1,6 @@
 # PhotoCraft portrait 场景
 
-以下坐标以256×192单一栅格原图为例。先读取尺寸、图层和当前命令schema；依据输入重算轮廓与采样位置。原图含活动路径时先退出路径编辑，避免调整层错误使用矢量蒙版。
+每条流程从新打开的栅格原图开始（无选区、无活动路径）。复用会话时先选择原像素层；仅在确有活动选区时取消选区，`select.deselect` 在无选区时会被拒绝。坐标以256×192为例，必须按当前输入重算。
 
 ## portrait-small-blemish：自然人像局部痘印修饰
 
@@ -60,10 +60,9 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Skin shine"}` |
-| 3. 在油光区域以低曝光加深高光 | `paint.burn` | `{"points":[[112,60,1],[116,64,1]],"size":12,"hardness":0,"range":"highlights","exposure":6,"protectTones":true}` |
-| 4. 减弱整个修饰层，避免灰斑 | `layer.setProps` | `{"opacity":0.65}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Skin shine"}` |
+| 2. 在油光区域以低曝光加深高光 | `paint.burn` | `{"points":[[112,60,1],[116,64,1]],"size":12,"hardness":0,"range":"highlights","exposure":6,"protectTones":true}` |
+| 3. 减弱整个修饰层，避免灰斑 | `layer.setProps` | `{"opacity":0.65}` |
 
 检查：皮肤毛孔仍可见；油光不再刺眼；没有灰色笔触边缘。
 
@@ -75,10 +74,9 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Stray hair"}` |
-| 3. 从同高度背景取样，以细硬笔短段修补 | `paint.cloneStamp` | `{"points":[[168,40,1],[172,44,1]],"source":[188,40],"size":3,"hardness":65,"opacity":90,"sampleLayer":"current"}` |
-| 4. 降低修饰层强度，保留自然细发 | `layer.setProps` | `{"opacity":0.8}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Stray hair"}` |
+| 2. 从同高度背景取样，以细硬笔短段修补 | `paint.cloneStamp` | `{"points":[[168,40,1],[172,44,1]],"source":[188,40],"size":3,"hardness":65,"opacity":90,"sampleLayer":"current"}` |
+| 3. 降低修饰层强度，保留自然细发 | `layer.setProps` | `{"opacity":0.8}` |
 
 检查：主体发量与轮廓未变；背景没有重复斑块；100%视图没有残余断发。
 
@@ -90,11 +88,10 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Teeth neutral"}` |
-| 3. 沿牙齿区域勾选，避免嘴唇牙龈 | `select.lasso` | `{"points":[[100,102],[128,102],[126,112],[102,112]],"mode":"replace","feather":0.5}` |
-| 4. 只降低黄色，保留冷暖与齿间阴影 | `layer.newAdjustmentLayer.hueSaturation` | `{"yellows":{"saturation":-25,"lightness":3}}` |
-| 5. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Teeth neutral"}` |
+| 2. 沿牙齿区域勾选，避免嘴唇牙龈 | `select.lasso` | `{"points":[[100,102],[128,102],[126,112],[102,112]],"mode":"replace","feather":0.5}` |
+| 3. 只降低黄色，保留冷暖与齿间阴影 | `layer.newAdjustmentLayer.hueSaturation` | `{"yellows":{"saturation":-25,"lightness":3}}` |
+| 4. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
 
 检查：唇色牙龈不变；牙齿未成白块；原有齿间纹理仍清晰。
 

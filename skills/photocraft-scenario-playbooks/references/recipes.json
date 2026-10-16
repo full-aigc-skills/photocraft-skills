@@ -1323,12 +1323,6 @@
       "inputs": "窗外仍有真实纹理，窗框可定位；矩形应落在窗内，不跨入室内。",
       "steps": [
         {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
-        {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
           "params": {
@@ -1399,12 +1393,6 @@
       "inputs": "人工确认脸部区域，保留额头已有高光；示例矩形须按实际脸形改为套索。",
       "steps": [
         {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
-        {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
           "params": {
@@ -1457,12 +1445,6 @@
       "category": "mask-local",
       "inputs": "硬边、不透明、规则矩形包装，要求商品颜色逐像素保持；实际选区必须准确沿商品边界。",
       "steps": [
-        {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
         {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
@@ -1525,12 +1507,6 @@
       "category": "mask-local",
       "inputs": "主体与背景边界明确，不用于透明物体。",
       "steps": [
-        {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
         {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
@@ -1599,12 +1575,6 @@
       "category": "mask-local",
       "inputs": "经授权修改服装色；先用套索标出衣物，不包含皮肤。",
       "steps": [
-        {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
         {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
@@ -1675,12 +1645,6 @@
       "inputs": "白色包装区域有可观察黄色偏色，保留环境暖光。",
       "steps": [
         {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
-        {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
           "params": {
@@ -1737,12 +1701,6 @@
       "inputs": "天空偏亮但未剪切，地平线无遮挡；例子假设天空在上半部。",
       "steps": [
         {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
-        {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
           "params": {
@@ -1792,12 +1750,6 @@
             "dither": false
           },
           "parameterReference": "{\"from\":[x,y],\"to\":[x,y],\"style\":\"linear|radial|angle|reflected|diamond\"=\"linear\",\"colors\":[\"#rrggbb\",…]? (evenly spaced),\"gradient\":preset name?,\"stops\":[[t,\"#rrggbb\"|\"foreground\"|\"background\"],…]?,\"transparency\":[[t,0..100],…]? (default: the current gradient, see gradient.presets.select),\"method\":\"classic|perceptual|linear|smooth\"? (Photoshop's interpolation; omitted: straight stops),\"smoothness\":0..100=100,\"reverse\":bool=false,\"dither\":bool=true,\"opacity\":1..100=100,\"mode\":\"normal|multiply|…\"=\"normal\",\"target\":\"pixels\"|\"mask\"|\"quickMask\"|{\"channel\":i}=Channels panel target}"
-        },
-        {
-          "purpose": "结束局部操作，清除活动选区",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
         }
       ],
       "checks": [
@@ -1817,12 +1769,6 @@
       "category": "mask-local",
       "inputs": "用户希望轻度暗角；主体处于中央，四角没有需保留的文字。",
       "steps": [
-        {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
         {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
@@ -1891,12 +1837,6 @@
       "category": "restoration",
       "inputs": "划痕紧贴人物外缘，已知边界不应移动。",
       "steps": [
-        {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
         {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
@@ -1985,12 +1925,6 @@
       "inputs": "污点周围有足够同材质纹理，没有人物或文字被遮挡。",
       "steps": [
         {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
-        {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
           "params": {
@@ -2048,12 +1982,6 @@
       "category": "portrait",
       "inputs": "仅调整有纹理的额头/鼻梁高光，不处理纯白剪切区域。",
       "steps": [
-        {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
         {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
@@ -2113,12 +2041,6 @@
       "category": "portrait",
       "inputs": "仅移除主体外孤立杂发，保留发际线与原发量。",
       "steps": [
-        {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
         {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
@@ -2181,12 +2103,6 @@
       "category": "portrait",
       "inputs": "露齿区域有自然纹理；明确不修改牙形、不做纯白填充。",
       "steps": [
-        {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
         {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
@@ -2259,12 +2175,6 @@
       "inputs": "高光周围有同曲率、同材质可采样区；仅处理不承载商标的小点。",
       "steps": [
         {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
-        {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
           "params": {
@@ -2322,12 +2232,6 @@
       "inputs": "标签文字本来可辨，需提高缩图前局部清晰度。",
       "steps": [
         {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
-        {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
           "params": {
@@ -2382,12 +2286,6 @@
       "category": "product",
       "inputs": "客户要求比较已有产品区域的替代配色，输出标明效果预览。",
       "steps": [
-        {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
         {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
@@ -2444,12 +2342,6 @@
       "inputs": "边缘均为扫描台或污边；确认内容不触边，示例裁到240×176。",
       "steps": [
         {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
-        {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
           "params": {
@@ -2489,12 +2381,6 @@
       "inputs": "输出用于叠加排版；原图不需要生成新背景。",
       "steps": [
         {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
-        {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
           "params": {
@@ -2532,12 +2418,6 @@
       "category": "tone",
       "inputs": "要求黑白艺术版，红色衣物与肤色需分离层次。",
       "steps": [
-        {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
         {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",
@@ -2577,12 +2457,6 @@
       "category": "tone",
       "inputs": "用户明确要求选择性色彩创作，主体颜色与背景区域均可定位。",
       "steps": [
-        {
-          "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
-          "command": "select.deselect",
-          "params": {},
-          "parameterReference": "{}"
-        },
         {
           "purpose": "保留原始像素，复制并激活工作层",
           "command": "layer.duplicate",

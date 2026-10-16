@@ -1,6 +1,6 @@
 # PhotoCraft product 场景
 
-以下坐标以256×192单一栅格原图为例。先读取尺寸、图层和当前命令schema；依据输入重算轮廓与采样位置。原图含活动路径时先退出路径编辑，避免调整层错误使用矢量蒙版。
+每条流程从新打开的栅格原图开始（无选区、无活动路径）。复用会话时先选择原像素层；仅在确有活动选区时取消选区，`select.deselect` 在无选区时会被拒绝。坐标以256×192为例，必须按当前输入重算。
 
 ## product-neutral-packshot：商品中性白底基础校正
 
@@ -75,10 +75,9 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Reflection cleanup"}` |
-| 3. 同材质取样以低透明度恢复局部过渡 | `paint.healingBrush` | `{"points":[[156,88,1]],"source":[144,88],"size":8,"hardness":30,"opacity":35,"sampleLayer":"current"}` |
-| 4. 减弱修饰层，仍保留材质光泽 | `layer.setProps` | `{"opacity":0.75}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Reflection cleanup"}` |
+| 2. 同材质取样以低透明度恢复局部过渡 | `paint.healingBrush` | `{"points":[[156,88,1]],"source":[144,88],"size":8,"hardness":30,"opacity":35,"sampleLayer":"current"}` |
+| 3. 减弱修饰层，仍保留材质光泽 | `layer.setProps` | `{"opacity":0.75}` |
 
 检查：高光未完全抹平；曲面光线连续；商标文字与产品形状保持。
 
@@ -90,11 +89,10 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Label detail"}` |
-| 3. 按实际目标轮廓定位；此处为256×192测试矩形 | `select.rect` | `{"x":80,"y":64,"width":96,"height":56,"mode":"replace","feather":1}` |
-| 4. 只对标签像素轻度锐化 | `filter.sharpen.unsharpMask` | `{"amount":45,"radius":0.6,"threshold":3}` |
-| 5. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Label detail"}` |
+| 2. 按实际目标轮廓定位；此处为256×192测试矩形 | `select.rect` | `{"x":80,"y":64,"width":96,"height":56,"mode":"replace","feather":1}` |
+| 3. 只对标签像素轻度锐化 | `filter.sharpen.unsharpMask` | `{"amount":45,"radius":0.6,"threshold":3}` |
+| 4. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
 
 检查：标签外背景噪声不变；细字没有白边；没有产生不存在的笔画。
 
@@ -106,11 +104,10 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Color proof"}` |
-| 3. 按实际目标轮廓定位；此处为256×192测试矩形 | `select.rect` | `{"x":64,"y":64,"width":96,"height":80,"mode":"replace","feather":1}` |
-| 4. 在局部蒙版调整色相与饱和度 | `layer.newAdjustmentLayer.hueSaturation` | `{"hue":-35,"saturation":12}` |
-| 5. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Color proof"}` |
+| 2. 按实际目标轮廓定位；此处为256×192测试矩形 | `select.rect` | `{"x":64,"y":64,"width":96,"height":80,"mode":"replace","feather":1}` |
+| 3. 在局部蒙版调整色相与饱和度 | `layer.newAdjustmentLayer.hueSaturation` | `{"hue":-35,"saturation":12}` |
+| 4. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
 
 检查：背景与商标排除区保持；反光阴影仍保留；文件名注明配色预览。
 

@@ -1,6 +1,6 @@
 # PhotoCraft delivery 场景
 
-以下坐标以256×192单一栅格原图为例。先读取尺寸、图层和当前命令schema；依据输入重算轮廓与采样位置。原图含活动路径时先退出路径编辑，避免调整层错误使用矢量蒙版。
+每条流程从新打开的栅格原图开始（无选区、无活动路径）。复用会话时先选择原像素层；仅在确有活动选区时取消选区，`select.deselect` 在无选区时会被拒绝。坐标以256×192为例，必须按当前输入重算。
 
 ## restore-final-sharpen：修复成片的最终锐化
 
@@ -46,9 +46,8 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Transparent padding"}` |
-| 3. 居中增加四边透明画布，示例每边16像素 | `image.canvasSize` | `{"width":288,"height":224,"anchor":"center","extensionColor":"transparent"}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Transparent padding"}` |
+| 2. 居中增加四边透明画布，示例每边16像素 | `image.canvasSize` | `{"width":288,"height":224,"anchor":"center","extensionColor":"transparent"}` |
 
 检查：输出为288×224；PNG四角alpha为0；原图内容居中且未缩放。
 

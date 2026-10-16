@@ -1,6 +1,6 @@
 # PhotoCraft restoration 场景
 
-以下坐标以256×192单一栅格原图为例。先读取尺寸、图层和当前命令schema；依据输入重算轮廓与采样位置。原图含活动路径时先退出路径编辑，避免调整层错误使用矢量蒙版。
+每条流程从新打开的栅格原图开始（无选区、无活动路径）。复用会话时先选择原像素层；仅在确有活动选区时取消选区，`select.deselect` 在无选区时会被拒绝。坐标以256×192为例，必须按当前输入重算。
 
 ## old-photo-conservative：老照片保守修复全流程
 
@@ -143,11 +143,10 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Protected scratch"}` |
-| 3. 沿背景侧勾选修补区域，避开人物 | `select.lasso` | `{"points":[[28,30],[52,30],[52,70],[28,70]],"mode":"replace","feather":0.5}` |
-| 4. 在选区中克隆邻近同材质背景 | `paint.cloneStamp` | `{"points":[[40,40,1],[40,60,1]],"source":[24,40],"size":5,"hardness":70,"opacity":85,"sampleLayer":"current"}` |
-| 5. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Protected scratch"}` |
+| 2. 沿背景侧勾选修补区域，避开人物 | `select.lasso` | `{"points":[[28,30],[52,30],[52,70],[28,70]],"mode":"replace","feather":0.5}` |
+| 3. 在选区中克隆邻近同材质背景 | `paint.cloneStamp` | `{"points":[[40,40,1],[40,60,1]],"source":[24,40],"size":5,"hardness":70,"opacity":85,"sampleLayer":"current"}` |
+| 4. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
 
 检查：边界内人物像素保持；划痕连续性打断；背景纹理方向连贯。
 
@@ -159,11 +158,10 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Patch stain"}` |
-| 3. 按实际目标轮廓定位；此处为256×192测试矩形 | `select.rect` | `{"x":96,"y":72,"width":24,"height":20,"mode":"replace","feather":1}` |
-| 4. 把选区拖向右侧干净纹理，源模式回填原污点区 | `paint.patch` | `{"offset":[40,0],"mode":"source","contentAware":false}` |
-| 5. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Patch stain"}` |
+| 2. 按实际目标轮廓定位；此处为256×192测试矩形 | `select.rect` | `{"x":96,"y":72,"width":24,"height":20,"mode":"replace","feather":1}` |
+| 3. 把选区拖向右侧干净纹理，源模式回填原污点区 | `paint.patch` | `{"offset":[40,0],"mode":"source","contentAware":false}` |
+| 4. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
 
 检查：原污点区被干净纹理替代；取样区没有同步破坏；接缝与邻域明暗接近。
 

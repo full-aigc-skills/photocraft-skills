@@ -1,6 +1,6 @@
 # PhotoCraft geometry 场景
 
-坐标以256×192单一栅格原图为例；先重算目标轮廓。多个流程串联时先重新选择工作像素层；不能复制上一流程的调整层当作原图。
+每条流程从新打开的栅格原图开始（无选区、无活动路径）。复用会话时先选择原像素层；仅在确有活动选区时取消选区，`select.deselect` 在无选区时会被拒绝。坐标以256×192为例，必须按当前输入重算。
 
 ## scan-deskew-border：扫描倾斜与边框整理
 
@@ -22,9 +22,8 @@
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
-| 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
-| 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Clean scan crop"}` |
-| 3. 按已确认的内容框裁切；保留外部像素供编辑回退 | `image.crop` | `{"x":8,"y":8,"width":240,"height":176,"deleteCroppedPixels":false}` |
+| 1. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Clean scan crop"}` |
+| 2. 按已确认的内容框裁切；保留外部像素供编辑回退 | `image.crop` | `{"x":8,"y":8,"width":240,"height":176,"deleteCroppedPixels":false}` |
 
 检查：输出尺寸240×176；内容没有截断；保存后重开验证副本，执行 image.revealAll {} 并核对原始256×192边缘仍存在。
 
