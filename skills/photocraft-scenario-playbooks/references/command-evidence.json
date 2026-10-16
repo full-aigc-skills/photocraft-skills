@@ -275,5 +275,25 @@
       "shortcut": null
     }
   },
-  "sceneAcceptance": "NOT_RUN"
+  "sceneAcceptance": "CREATIVE_NOT_RUN",
+  "technicalRoundtrip": {
+    "ciRun": "https://github.com/partme-ai/full-aigc-plugins/actions/runs/38922079603",
+    "recipes": [
+      "old-photo-conservative",
+      "hairline-scratch",
+      "fold-line-background",
+      "faded-gray-tones",
+      "red-cast-aging",
+      "scan-deskew-border",
+      "jpeg-block-reduction",
+      "print-resolution-tag",
+      "portrait-small-blemish",
+      "portrait-white-balance",
+      "product-neutral-packshot",
+      "web-image-downsample",
+      "duotone-editorial"
+    ],
+    "sourceCommit": "7558efcb36cc3a32117e04f253fbc260687fca2c",
+    "input": "deterministic synthetic 256x192 RGB fixture; not damaged-photo quality evidence"
+  }
 }

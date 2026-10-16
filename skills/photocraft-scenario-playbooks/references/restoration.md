@@ -79,7 +79,6 @@
 | --- | --- | --- |
 | 1. 保留原图层，复制到修复工作层 | `layer.duplicate` | `{"name":"Restoration working copy"}` |
 | 2. 按边缘方向取样，以低透明度短笔触接续纹理 | `paint.cloneStamp` | `{"points":[[80,40,1],[84,42,1]],"source":[60,40],"size":6,"hardness":65,"opacity":60,"aligned":true,"sampleLayer":"current"}` |
-| 3. 整体影调仅作轻微回调 | `layer.newAdjustmentLayer.levels` | `{"gamma":1.02}` |
 
 检查：高光变化局限于确认损伤；图案边界连续。
 
