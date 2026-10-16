@@ -212,3 +212,7 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 未发行的 batch 候选现已绑定原生输入／动作清单，并逐条确认每个文件的操作，健康批处理保留原 stdout。公开运行时接入与固定安装验收仍开放。[批处理候选](docs/PhotoCraft-Supervised-Batch-Candidate.zh_CN.md)。
 
 检查点恢复候选：已实现摘要绑定的保存工程副本及显式Harness恢复修订；完整恢复验收保持开放。[合同](docs/PhotoCraft-Checkpoint-Recovery.zh_CN.md)。
+
+## 场景技能开发候选
+
+已增加 6 个领域场景技能及 1 个内嵌编辑器入口。详见 [场景目录](docs/scene-skills.md)。本地未发布候选，不代表全部场景的创作质量已验收。

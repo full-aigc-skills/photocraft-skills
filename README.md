@@ -218,3 +218,7 @@ Historical supervised-run runtime candidate (internal modules packaged in dev.42
 The historical batch runtime candidate (modules packaged in dev.42; public runtime unchanged) binds native input/action plans and acknowledges each file operation, with legacy stdout preserved for healthy batches. Public runtime integration and fixed-install acceptance remain open. [Batch candidate](docs/PhotoCraft-Supervised-Batch-Candidate.md).
 
 Checkpoint recovery candidate: hash-bound saved-project forks and explicit Harness recovery revisions; full recovery acceptance remains open. [Contract](docs/PhotoCraft-Checkpoint-Recovery.md).
+
+## 场景技能开发候选
+
+已增加 6 个领域场景技能及 1 个内嵌编辑器入口。详见 [场景目录](docs/scene-skills.md)。本地未发布候选，不代表全部场景的创作质量已验收。
