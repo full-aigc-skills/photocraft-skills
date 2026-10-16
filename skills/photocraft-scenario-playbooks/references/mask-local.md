@@ -1,6 +1,6 @@
 # PhotoCraft mask-local 场景
 
-以下坐标以256×192单一栅格原图为例。先读取尺寸、图层和当前命令schema；依据输入重算轮廓与采样位置。原图含活动路径时先退出路径编辑，避免调整层错误使用矢量蒙版。
+坐标以256×192单一栅格原图为例；先重算目标轮廓。多个流程串联时先重新选择工作像素层；不能复制上一流程的调整层当作原图。
 
 ## window-highlight-local：室内窗景局部压高光
 
@@ -36,21 +36,20 @@
 
 ## background-desaturate-focus：保留商品颜色并弱化背景色
 
-输入：商品轮廓能够人工勾选；矩形仅用于方形包装正面示例。
+输入：硬边、不透明、规则矩形包装，要求商品颜色逐像素保持；实际选区必须准确沿商品边界。
 
 | 顺序与目的 | Craft 命令 | 参数示例 |
 | --- | --- | --- |
 | 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
 | 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Background quiet"}` |
-| 3. 按实际目标轮廓定位；此处为256×192测试矩形 | `select.rect` | `{"x":64,"y":48,"width":128,"height":96,"mode":"replace","feather":0}` |
+| 3. 沿硬边包装建立无羽化、无抗锯齿的保护区；例子为矩形包装 | `select.rect` | `{"x":64,"y":48,"width":128,"height":96,"mode":"replace","feather":0,"antiAlias":false}` |
 | 4. 反选到背景 | `select.inverse` | `{}` |
-| 5. 轻柔过渡，避免轮廓外硬线 | `select.modify.feather` | `{"radius":1}` |
-| 6. 仅降低背景饱和度，主体通过蒙版排除 | `layer.newAdjustmentLayer.hueSaturation` | `{"saturation":-55}` |
-| 7. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
+| 5. 仅降低背景饱和度，主体通过蒙版排除 | `layer.newAdjustmentLayer.hueSaturation` | `{"saturation":-55}` |
+| 6. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
 
-检查：主体中心RGB不变；背景仍保留明暗层次；边缘无漏色或灰边。
+检查：商品区域包括轮廓内侧RGB逐像素保持；背景仍保留明暗层次；检查边界仅在背景一侧处理，商品内无灰边。
 
-边界：透明、反光与毛发边缘需要额外手绘蒙版，矩形不能代替真实轮廓。
+边界：仅适用于硬边不透明商品；毛发、透明、反光物体需另做渐变蒙版并事先约定过渡带，不承诺所有边缘像素保持。
 
 ## background-soft-blur：主体外背景柔化
 
@@ -62,13 +61,13 @@
 | 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Background blur"}` |
 | 3. 按实际目标轮廓定位；此处为256×192测试矩形 | `select.rect` | `{"x":64,"y":48,"width":128,"height":96,"mode":"replace","feather":0}` |
 | 4. 反选背景 | `select.inverse` | `{}` |
-| 5. 在背景一侧形成过渡 | `select.modify.feather` | `{"radius":2}` |
+| 5. 羽化轮廓两侧形成过渡带；中心主体受保护，边缘会混合 | `select.modify.feather` | `{"radius":2}` |
 | 6. 只模糊选区内像素 | `filter.blur.gaussianBlur` | `{"radius":3}` |
 | 7. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
 
 检查：主体中心纹理不变；背景细节减少；轮廓没有明显亮边。
 
-边界：这是选择性高斯模糊，不等同真实镜头景深；重叠边缘可能出现光晕。
+边界：这是选择性高斯模糊，不等同真实镜头景深；重叠边缘可能出现光晕。 羽化会跨越边界，轮廓过渡带允许改变；要求全主体逐像素不变时不要使用此流程。
 
 ## garment-color-local：服装定向改色并保持肤色
 
@@ -111,7 +110,7 @@
 | 1. 从单一栅格原图复制工作层；当前无活动路径，已有选区先取消 | `select.deselect` | `{}` |
 | 2. 保留原始像素，复制并激活工作层 | `layer.duplicate` | `{"name":"Sky gradient"}` |
 | 3. 先建整体压亮曲线；随后立即将蒙版限定到上方 | `layer.newAdjustmentLayer.curves` | `{"points":[[0,0],[128,105],[255,240]]}` |
-| 4. 在调整层蒙版从上白到下黑，地面恢复原曝光 | `paint.gradient` | `{"target":"mask","from":[128,40],"to":[128,112],"colors":["#ffffff","#000000"],"opacity":100}` |
+| 4. 在调整层蒙版从上白到下黑，地面恢复原曝光 | `paint.gradient` | `{"target":"mask","from":[128,40],"to":[128,112],"colors":["#ffffff","#000000"],"opacity":100,"dither":false}` |
 | 5. 结束局部操作，清除活动选区 | `select.deselect` | `{}` |
 
 检查：天空层次增加；地面下方曝光不变；地平线过渡平滑。

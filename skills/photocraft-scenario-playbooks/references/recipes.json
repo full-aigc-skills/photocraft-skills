@@ -1455,7 +1455,7 @@
       "id": "background-desaturate-focus",
       "title": "保留商品颜色并弱化背景色",
       "category": "mask-local",
-      "inputs": "商品轮廓能够人工勾选；矩形仅用于方形包装正面示例。",
+      "inputs": "硬边、不透明、规则矩形包装，要求商品颜色逐像素保持；实际选区必须准确沿商品边界。",
       "steps": [
         {
           "purpose": "从单一栅格原图复制工作层；当前无活动路径，已有选区先取消",
@@ -1472,7 +1472,7 @@
           "parameterReference": "{\"layer\":id?,\"inPlace\":bool=false (artboards: keep the copy on the original instead of beside it),\"name\":str? (one layer: the copy's name),\"document\":index|\"new\"=same document (Photoshop's Destination: \"new\" makes a new document the size of this canvas holding just the copies),\"documentName\":str? (the new document's name)} (no layer: every selected layer)"
         },
         {
-          "purpose": "按实际目标轮廓定位；此处为256×192测试矩形",
+          "purpose": "沿硬边包装建立无羽化、无抗锯齿的保护区；例子为矩形包装",
           "command": "select.rect",
           "params": {
             "x": 64,
@@ -1480,7 +1480,8 @@
             "width": 128,
             "height": 96,
             "mode": "replace",
-            "feather": 0
+            "feather": 0,
+            "antiAlias": false
           },
           "parameterReference": "{\"x\":i32,\"y\":i32,\"width\":u32,\"height\":u32,\"mode\":\"replace|add|subtract|intersect\"=\"replace\",\"ellipse\":bool=false,\"line\":\"row|column\"?,\"antiAlias\":bool=true,\"feather\":px=0}"
         },
@@ -1489,14 +1490,6 @@
           "command": "select.inverse",
           "params": {},
           "parameterReference": "{}"
-        },
-        {
-          "purpose": "轻柔过渡，避免轮廓外硬线",
-          "command": "select.modify.feather",
-          "params": {
-            "radius": 1
-          },
-          "parameterReference": "{\"radius\":0.1..1000=1,\"applyAtCanvasBounds\":bool=false}"
         },
         {
           "purpose": "仅降低背景饱和度，主体通过蒙版排除",
@@ -1514,11 +1507,11 @@
         }
       ],
       "checks": [
-        "主体中心RGB不变",
+        "商品区域包括轮廓内侧RGB逐像素保持",
         "背景仍保留明暗层次",
-        "边缘无漏色或灰边"
+        "检查边界仅在背景一侧处理，商品内无灰边"
       ],
-      "limits": "透明、反光与毛发边缘需要额外手绘蒙版，矩形不能代替真实轮廓。",
+      "limits": "仅适用于硬边不透明商品；毛发、透明、反光物体需另做渐变蒙版并事先约定过渡带，不承诺所有边缘像素保持。",
       "sourceReferences": [
         "GNOME/gimp-help:src/dialogs/layer-mask.xml",
         "GNOME/gimp-help:src/menus/colors/hue-saturation.xml",
@@ -1566,7 +1559,7 @@
           "parameterReference": "{}"
         },
         {
-          "purpose": "在背景一侧形成过渡",
+          "purpose": "羽化轮廓两侧形成过渡带；中心主体受保护，边缘会混合",
           "command": "select.modify.feather",
           "params": {
             "radius": 2
@@ -1593,7 +1586,7 @@
         "背景细节减少",
         "轮廓没有明显亮边"
       ],
-      "limits": "这是选择性高斯模糊，不等同真实镜头景深；重叠边缘可能出现光晕。",
+      "limits": "这是选择性高斯模糊，不等同真实镜头景深；重叠边缘可能出现光晕。 羽化会跨越边界，轮廓过渡带允许改变；要求全主体逐像素不变时不要使用此流程。",
       "sourceReferences": [
         "GNOME/gimp-help:src/dialogs/layer-mask.xml",
         "GNOME/gimp-help:src/menus/select/invert.xml"
@@ -1795,7 +1788,8 @@
               "#ffffff",
               "#000000"
             ],
-            "opacity": 100
+            "opacity": 100,
+            "dither": false
           },
           "parameterReference": "{\"from\":[x,y],\"to\":[x,y],\"style\":\"linear|radial|angle|reflected|diamond\"=\"linear\",\"colors\":[\"#rrggbb\",…]? (evenly spaced),\"gradient\":preset name?,\"stops\":[[t,\"#rrggbb\"|\"foreground\"|\"background\"],…]?,\"transparency\":[[t,0..100],…]? (default: the current gradient, see gradient.presets.select),\"method\":\"classic|perceptual|linear|smooth\"? (Photoshop's interpolation; omitted: straight stops),\"smoothness\":0..100=100,\"reverse\":bool=false,\"dither\":bool=true,\"opacity\":1..100=100,\"mode\":\"normal|multiply|…\"=\"normal\",\"target\":\"pixels\"|\"mask\"|\"quickMask\"|{\"channel\":i}=Channels panel target}"
         },
@@ -2479,7 +2473,7 @@
       "checks": [
         "输出尺寸240×176",
         "内容没有截断",
-        "工程可回退检查裁掉区域"
+        "保存后重开验证副本，执行 image.revealAll {} 并核对原始256×192边缘仍存在"
       ],
       "limits": "不是透视矫正；输入尺寸与污边宽度变化后必须重算裁切框。",
       "sourceReferences": [

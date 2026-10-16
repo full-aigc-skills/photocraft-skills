@@ -396,6 +396,18 @@
       "needsDocument": true,
       "params": "{\"layer\":id?,\"name\":str?,\"visible\":bool?,\"opacity\":0..1?,\"fill\":0..1?,\"blend\":\"Multiply|…\"?,\"clipped\":bool?,\"locked\":bool?,\"locks\":{\"transparency\",\"pixels\",\"position\",\"artboard\",\"all\":bool}?,\"channels\":[bool,…]? (Advanced Blending: which colour channels blend, R G B / C M Y K / L a b)}",
       "shortcut": null
+    },
+    "image.revealAll": {
+      "disabledReason": "no document open",
+      "enabled": false,
+      "id": "image.revealAll",
+      "label": "Reveal All",
+      "menu": [
+        "Image"
+      ],
+      "needsDocument": true,
+      "params": "{}",
+      "shortcut": null
     }
   },
   "sceneAcceptance": "CREATIVE_NOT_RUN",
