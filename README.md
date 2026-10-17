@@ -237,3 +237,5 @@ The main-candidate guide maps named JPEG settings to the actual export command. 
 ## 老照片修复分阶段操作候选 / Staged restoration candidate
 
 完善[老照片修复技能](skills/photocraft-restore-old-photo/SKILL.md)：独立包含具体CLI/MCP方法与参数、局部修补检查点、可选全局调色和原层核验；复用既有old-photo-conservative流程，不增加场景计数。合成损伤检查与真实照片质量、MCP业务及同画面同步分别记录，冻结基础技能版本不变。
+
+The batch image delivery skill now includes an original PhotoCraft CLI contact sheet workflow: embedded image layers, editable filename captions, aspect-preserving placement and pagination. macOS synthetic inputs were exercised; Windows and embedded-editor acceptance are pending.
