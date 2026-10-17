@@ -212,3 +212,17 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 未发行的 batch 候选现已绑定原生输入／动作清单，并逐条确认每个文件的操作，健康批处理保留原 stdout。公开运行时接入与固定安装验收仍开放。[批处理候选](docs/PhotoCraft-Supervised-Batch-Candidate.zh_CN.md)。
 
 检查点恢复候选：已实现摘要绑定的保存工程副本及显式Harness恢复修订；完整恢复验收保持开放。[合同](docs/PhotoCraft-Checkpoint-Recovery.zh_CN.md)。
+
+## 场景技能开发候选
+
+已增加 6 个领域场景技能及 1 个内嵌编辑器入口。详见 [场景目录](docs/scene-skills.md)。本地未发布候选，不代表全部场景的创作质量已验收。
+
+## 场景操作手册
+
+新增 `photocraft-scenario-playbooks`，包含 50 条具有实际命令、参数和结果检查的原创场景，覆盖修复、影调、人像、商品、版式和交付。入口见 [场景技能](skills/photocraft-scenario-playbooks/SKILL.md)。命令存在性已依据官方 Windows CLI 0.9.0 目录核对，完整场景效果仍需逐项运行与看图验收。
+
+## main导出预设工作流 / main export presets
+
+新增[预设到实际JPEG交付](skills/photocraft-scenario-playbooks/references/main-export-presets.md)：真实Codex宿主同会话执行四个预设方法，映射到320×240 JPEG并核对母版不变。仅适用于支持对应方法的main候选；持久化和中文字体分别验收。
+
+The main-candidate guide maps named JPEG settings to the actual export command. Native Codex host calls, same-session editing and JPEG dimensions were checked; persistent reload and Chinese UI fonts have separate acceptance states.
