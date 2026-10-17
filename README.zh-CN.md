@@ -226,3 +226,8 @@ dev.5 补齐局部调整的选区/蒙版前置、修图的目标图层选择及�
 新增[预设到实际JPEG交付](skills/photocraft-scenario-playbooks/references/main-export-presets.md)：真实Codex宿主同会话执行四个预设方法，映射到320×240 JPEG并核对母版不变。仅适用于支持对应方法的main候选；持久化和中文字体分别验收。
 
 The main-candidate guide maps named JPEG settings to the actual export command. Native Codex host calls, same-session editing and JPEG dimensions were checked; persistent reload and Chinese UI fonts have separate acceptance states.
+
+
+## 老照片修复分阶段操作候选 / Staged restoration candidate
+
+完善[老照片修复技能](skills/photocraft-restore-old-photo/SKILL.md)：独立包含具体CLI/MCP方法与参数、局部修补检查点、可选全局调色和原层核验；复用既有old-photo-conservative流程，不增加场景计数。合成损伤检查与真实照片质量、MCP业务及同画面同步分别记录，冻结基础技能版本不变。
