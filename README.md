@@ -218,3 +218,17 @@ Historical supervised-run runtime candidate (internal modules packaged in dev.42
 The historical batch runtime candidate (modules packaged in dev.42; public runtime unchanged) binds native input/action plans and acknowledges each file operation, with legacy stdout preserved for healthy batches. Public runtime integration and fixed-install acceptance remain open. [Batch candidate](docs/PhotoCraft-Supervised-Batch-Candidate.md).
 
 Checkpoint recovery candidate: hash-bound saved-project forks and explicit Harness recovery revisions; full recovery acceptance remains open. [Contract](docs/PhotoCraft-Checkpoint-Recovery.md).
+
+## 场景技能开发候选
+
+已增加 6 个领域场景技能及 1 个内嵌编辑器入口。详见 [场景目录](docs/scene-skills.md)。本地未发布候选，不代表全部场景的创作质量已验收。
+
+## 场景操作手册
+
+新增 `photocraft-scenario-playbooks`，包含 50 条具有实际命令、参数和结果检查的原创场景，覆盖修复、影调、人像、商品、版式和交付。入口见 [场景技能](skills/photocraft-scenario-playbooks/SKILL.md)。命令存在性已依据官方 Windows CLI 0.9.0 目录核对，完整场景效果仍需逐项运行与看图验收。
+
+## main导出预设工作流 / main export presets
+
+新增[预设到实际JPEG交付](skills/photocraft-scenario-playbooks/references/main-export-presets.md)：真实Codex宿主同会话执行四个预设方法，映射到320×240 JPEG并核对母版不变。仅适用于支持对应方法的main候选；持久化和中文字体分别验收。
+
+The main-candidate guide maps named JPEG settings to the actual export command. Native Codex host calls, same-session editing and JPEG dimensions were checked; persistent reload and Chinese UI fonts have separate acceptance states.
